@@ -18,7 +18,7 @@ const viteServerConfig = defineConfig({
 
 async function start() {
   // VITE
-  const server = await createServer(viteServerConfig)
+  const server = await createServer({ configFile: false, ...viteServerConfig })
   await server.listen()
   server.bindCLIShortcuts({ print: true })
   console.log('VITE server up')
