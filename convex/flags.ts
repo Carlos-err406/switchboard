@@ -3,7 +3,6 @@ import { query } from './_generated/server';
 import { getConvexUser } from './helpers';
 
 export const getUserFlags = query({
-  args: {},
   handler: async (ctx) => {
     const user = await getConvexUser(ctx)
     if (!user) return null

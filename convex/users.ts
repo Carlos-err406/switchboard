@@ -3,7 +3,6 @@ import { mutation, query } from './_generated/server';
 import { getConvexUser, getUserByAuthId } from './helpers';
 
 export const getCurrentUser = query({
-  args: {},
   handler: async (ctx) => {
     return getConvexUser(ctx)
   },
