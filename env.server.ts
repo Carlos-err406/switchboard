@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 export const serverEnv = z
   .object({
-    NODE_ENV: z.literal(['development', 'production']).default('development'),
+    NODE_ENV: z.enum(['development', 'production']).default('development'),
 
     CLERK_WEBHOOK_SECRET: z.string(),
     CLERK_WEBHOOK_SIGNING_SECRET: z.string(),
@@ -16,7 +16,7 @@ export const serverEnv = z
   })
   .refine(
     ({ NODE_ENV, NGROK_AUTH_TOKEN, NGROK_URL }) =>
-      NODE_ENV == 'development' && NGROK_AUTH_TOKEN && NGROK_URL,
+      NODE_ENV !== 'development' || (!!NGROK_AUTH_TOKEN && !!NGROK_URL),
     { message: 'In development, NGROK variables are required' },
   )
   .parse(process.env)
