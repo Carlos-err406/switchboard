@@ -15,8 +15,8 @@ export const serverEnv = z
     NGROK_URL: z.string().optional(),
   })
   .refine(
-    ({ NODE_ENV, PORT, NGROK_AUTH_TOKEN, NGROK_URL }) =>
-      NODE_ENV == 'development' && PORT && NGROK_AUTH_TOKEN && NGROK_URL,
-    { message: 'In development, NGROK variables and PORT are required' },
+    ({ NODE_ENV, NGROK_AUTH_TOKEN, NGROK_URL }) =>
+      NODE_ENV == 'development' && NGROK_AUTH_TOKEN && NGROK_URL,
+    { message: 'In development, NGROK variables are required' },
   )
   .parse(process.env)
