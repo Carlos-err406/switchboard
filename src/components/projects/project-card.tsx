@@ -24,10 +24,13 @@ export const ProjectCard: FC<{ project: UserProject }> = ({ project }) => {
         </Link>
       </CardHeader>
       <CardContent>
-        <Badge variant={'outline'}>
-          {project.environmentsCount} environment(s)
-        </Badge>
-        <Badge variant={'outline'}>{project.flagsCount} flags(s)</Badge>
+        <div className="flex flex-wrap gap-2">
+          <Badge variant={'outline'}>
+            {project.environmentsCount} environment(s)
+          </Badge>
+          <Badge variant={'outline'}>{project.flagsCount} flags(s)</Badge>
+          <Badge variant={'outline'}>{project.membersCount} member(s)</Badge>
+        </div>
       </CardContent>
 
       <CardFooter className="justify-end">

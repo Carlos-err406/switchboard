@@ -27,11 +27,13 @@ export const getUserProjectsQuery = query({
 
     const projects = await Promise.all(
       userProjects.map(async (userProject) => {
-        const [project, environments, flags] = await Promise.all([
-          getProjectById(ctx, { id: userProject.projectId }),
-          getProjectEnvironments(ctx, { id: userProject.projectId }),
-          getProjectFlags(ctx, { id: userProject.projectId }),
-        ])
+        const [project, environments, flags, projectMembers] =
+          await Promise.all([
+            getProjectById(ctx, { id: userProject.projectId }),
+            getProjectEnvironments(ctx, { id: userProject.projectId }),
+            getProjectFlags(ctx, { id: userProject.projectId }),
+            getProjectUsers(ctx, { id: userProject.projectId }),
+          ])
 
         return project
           ? {
@@ -39,6 +41,7 @@ export const getUserProjectsQuery = query({
               permissions: userProject.permissions,
               environmentsCount: environments.length,
               flagsCount: flags.length,
+              membersCount: projectMembers.length,
             }
           : null
       }),
