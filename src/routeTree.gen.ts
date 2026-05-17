@@ -14,6 +14,7 @@ import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
+import { Route as authenticatedProjectsRouteRouteImport } from './routes/(authenticated)/projects/route'
 import { Route as authenticatedProjectsIndexRouteImport } from './routes/(authenticated)/projects/index'
 import { Route as authenticatedProjectsProjectIdIndexRouteImport } from './routes/(authenticated)/projects/$projectId/index'
 import { Route as authenticatedProjectsProjectIdMembersRouteImport } from './routes/(authenticated)/projects/$projectId/members'
@@ -44,40 +45,47 @@ const AuthSigninRoute = AuthSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const authenticatedProjectsRouteRoute =
+  authenticatedProjectsRouteRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
 const authenticatedProjectsIndexRoute =
   authenticatedProjectsIndexRouteImport.update({
-    id: '/projects/',
-    path: '/projects/',
-    getParentRoute: () => authenticatedRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
 const authenticatedProjectsProjectIdIndexRoute =
   authenticatedProjectsProjectIdIndexRouteImport.update({
-    id: '/projects/$projectId/',
-    path: '/projects/$projectId/',
-    getParentRoute: () => authenticatedRouteRoute,
+    id: '/$projectId/',
+    path: '/$projectId/',
+    getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
 const authenticatedProjectsProjectIdMembersRoute =
   authenticatedProjectsProjectIdMembersRouteImport.update({
-    id: '/projects/$projectId/members',
-    path: '/projects/$projectId/members',
-    getParentRoute: () => authenticatedRouteRoute,
+    id: '/$projectId/members',
+    path: '/$projectId/members',
+    getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
 const authenticatedProjectsProjectIdEnvironmentsRoute =
   authenticatedProjectsProjectIdEnvironmentsRouteImport.update({
-    id: '/projects/$projectId/environments',
-    path: '/projects/$projectId/environments',
-    getParentRoute: () => authenticatedRouteRoute,
+    id: '/$projectId/environments',
+    path: '/$projectId/environments',
+    getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
 const authenticatedProjectsProjectIdApiKeysRoute =
   authenticatedProjectsProjectIdApiKeysRouteImport.update({
-    id: '/projects/$projectId/api-keys',
-    path: '/projects/$projectId/api-keys',
-    getParentRoute: () => authenticatedRouteRoute,
+    id: '/$projectId/api-keys',
+    path: '/$projectId/api-keys',
+    getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/projects': typeof authenticatedProjectsRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
   '/projects/': typeof authenticatedProjectsIndexRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/(authenticated)/projects': typeof authenticatedProjectsRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
   '/(authenticated)/projects/': typeof authenticatedProjectsIndexRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/projects'
     | '/auth/signin'
     | '/auth/'
     | '/projects/'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/(authenticated)'
     | '/auth'
+    | '/(authenticated)/projects'
     | '/auth/signin'
     | '/auth/'
     | '/(authenticated)/projects/'
@@ -188,45 +199,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSigninRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/(authenticated)/projects': {
+      id: '/(authenticated)/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof authenticatedProjectsRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
     '/(authenticated)/projects/': {
       id: '/(authenticated)/projects/'
-      path: '/projects'
+      path: '/'
       fullPath: '/projects/'
       preLoaderRoute: typeof authenticatedProjectsIndexRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      parentRoute: typeof authenticatedProjectsRouteRoute
     }
     '/(authenticated)/projects/$projectId/': {
       id: '/(authenticated)/projects/$projectId/'
-      path: '/projects/$projectId'
+      path: '/$projectId'
       fullPath: '/projects/$projectId/'
       preLoaderRoute: typeof authenticatedProjectsProjectIdIndexRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      parentRoute: typeof authenticatedProjectsRouteRoute
     }
     '/(authenticated)/projects/$projectId/members': {
       id: '/(authenticated)/projects/$projectId/members'
-      path: '/projects/$projectId/members'
+      path: '/$projectId/members'
       fullPath: '/projects/$projectId/members'
       preLoaderRoute: typeof authenticatedProjectsProjectIdMembersRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      parentRoute: typeof authenticatedProjectsRouteRoute
     }
     '/(authenticated)/projects/$projectId/environments': {
       id: '/(authenticated)/projects/$projectId/environments'
-      path: '/projects/$projectId/environments'
+      path: '/$projectId/environments'
       fullPath: '/projects/$projectId/environments'
       preLoaderRoute: typeof authenticatedProjectsProjectIdEnvironmentsRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      parentRoute: typeof authenticatedProjectsRouteRoute
     }
     '/(authenticated)/projects/$projectId/api-keys': {
       id: '/(authenticated)/projects/$projectId/api-keys'
-      path: '/projects/$projectId/api-keys'
+      path: '/$projectId/api-keys'
       fullPath: '/projects/$projectId/api-keys'
       preLoaderRoute: typeof authenticatedProjectsProjectIdApiKeysRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+      parentRoute: typeof authenticatedProjectsRouteRoute
     }
   }
 }
 
-interface authenticatedRouteRouteChildren {
+interface authenticatedProjectsRouteRouteChildren {
   authenticatedProjectsIndexRoute: typeof authenticatedProjectsIndexRoute
   authenticatedProjectsProjectIdApiKeysRoute: typeof authenticatedProjectsProjectIdApiKeysRoute
   authenticatedProjectsProjectIdEnvironmentsRoute: typeof authenticatedProjectsProjectIdEnvironmentsRoute
@@ -234,16 +252,30 @@ interface authenticatedRouteRouteChildren {
   authenticatedProjectsProjectIdIndexRoute: typeof authenticatedProjectsProjectIdIndexRoute
 }
 
+const authenticatedProjectsRouteRouteChildren: authenticatedProjectsRouteRouteChildren =
+  {
+    authenticatedProjectsIndexRoute: authenticatedProjectsIndexRoute,
+    authenticatedProjectsProjectIdApiKeysRoute:
+      authenticatedProjectsProjectIdApiKeysRoute,
+    authenticatedProjectsProjectIdEnvironmentsRoute:
+      authenticatedProjectsProjectIdEnvironmentsRoute,
+    authenticatedProjectsProjectIdMembersRoute:
+      authenticatedProjectsProjectIdMembersRoute,
+    authenticatedProjectsProjectIdIndexRoute:
+      authenticatedProjectsProjectIdIndexRoute,
+  }
+
+const authenticatedProjectsRouteRouteWithChildren =
+  authenticatedProjectsRouteRoute._addFileChildren(
+    authenticatedProjectsRouteRouteChildren,
+  )
+
+interface authenticatedRouteRouteChildren {
+  authenticatedProjectsRouteRoute: typeof authenticatedProjectsRouteRouteWithChildren
+}
+
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
-  authenticatedProjectsIndexRoute: authenticatedProjectsIndexRoute,
-  authenticatedProjectsProjectIdApiKeysRoute:
-    authenticatedProjectsProjectIdApiKeysRoute,
-  authenticatedProjectsProjectIdEnvironmentsRoute:
-    authenticatedProjectsProjectIdEnvironmentsRoute,
-  authenticatedProjectsProjectIdMembersRoute:
-    authenticatedProjectsProjectIdMembersRoute,
-  authenticatedProjectsProjectIdIndexRoute:
-    authenticatedProjectsProjectIdIndexRoute,
+  authenticatedProjectsRouteRoute: authenticatedProjectsRouteRouteWithChildren,
 }
 
 const authenticatedRouteRouteWithChildren =
