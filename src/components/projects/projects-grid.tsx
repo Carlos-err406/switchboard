@@ -1,10 +1,10 @@
-import { api } from '#convex/_generated/api.js';
-import { convexQuery } from '@convex-dev/react-query';
-import { useQuery } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
-import type { FC } from 'react';
-import { EmptyProjectsGrid } from './empty-projects-list';
-import { ProjectCard } from './project-card';
+import { api } from '#convex/_generated/api.js'
+import { convexQuery } from '@convex-dev/react-query'
+import { useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
+import type { FC } from 'react'
+import { EmptyProjectsGrid } from './empty-projects-list'
+import { ProjectCard } from './project-card'
 
 export const ProjectsGrid: FC = () => {
   const { data } = useQuery({

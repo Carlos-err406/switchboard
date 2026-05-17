@@ -21,6 +21,7 @@ export default [
       'prettier.config.js',
       '.output/**',
       'convex/_generated/**',
+      'src/components/ui/*',
     ],
   },
 ]
