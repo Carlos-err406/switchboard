@@ -9,7 +9,7 @@ export const Header: FC = () => {
       <Link to="/">Open Flagger</Link>
       <div className="flex items-center gap-4">
         <Authenticated>
-          <Link to="/home">Home</Link>
+          <Link to="/projects">Projects</Link>
         </Authenticated>
         <HeaderUser />
       </div>

@@ -10,6 +10,7 @@ import appCss from '../styles.css?url'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '#/components/layout/header.tsx'
+import { Toaster } from '#/components/ui/sonner'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -50,6 +51,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ConvexProvider>
           <Header />
           {children}
+          <Toaster />
         </ConvexProvider>
         <Scripts />
       </body>

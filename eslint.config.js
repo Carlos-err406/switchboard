@@ -15,7 +15,12 @@ export default [
     },
   },
   {
-    includes:["scripts/**", "env.js"],
-    ignores: ['eslint.config.js', 'prettier.config.js'],
+    // includes: ['scripts/**', 'env.js'],
+    ignores: [
+      'eslint.config.js',
+      'prettier.config.js',
+      '.output/**',
+      'convex/_generated/**',
+    ],
   },
 ]

@@ -5,6 +5,7 @@ import {
 } from '@convex-dev/auth/server'
 import { ConvexCredentials } from '@convex-dev/auth/providers/ConvexCredentials'
 import { Scrypt } from 'lucia'
+import type { Id } from './_generated/dataModel'
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
@@ -32,21 +33,27 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
             const created = await createAccount(ctx, {
               provider: 'password',
               account: { id: email, secret: password },
-              profile: { email, role: 'admin' as const, name: 'Administrator' },
+              profile: {
+                email,
+                role: 'admin' as const,
+                name: 'Administrator',
+                permissions: [
+                  'project.create',
+                  'member.invite',
+                  'member.remove',
+                ],
+              },
             })
             return { userId: created.user._id }
           }
         }
-
         const retrieved = await retrieveAccount(ctx, {
           provider: 'password',
           account: { id: email, secret: password },
         })
-
-        if (!retrieved) {
+        if (!retrieved.user._id) {
           throw new Error('Invalid credentials')
         }
-
         return { userId: retrieved.user._id }
       },
       crypto: {

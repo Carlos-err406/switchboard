@@ -1,2 +1,1 @@
-Open Flagger
----
+## Open Flagger

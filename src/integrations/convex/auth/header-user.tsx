@@ -5,6 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
@@ -36,7 +37,7 @@ export const HeaderUser: FC = () => {
 }
 
 export function AvatarDropdown() {
-  const user = useQuery(api.users.currentUser)
+  const user = useQuery(api.models.users.currentUser)
   const { signOut } = useAuthActions()
   const navigate = useNavigate()
   if (!user) return null
@@ -55,15 +56,15 @@ export function AvatarDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
-        <p className="text-muted-foreground text-sm text-center">
+        <DropdownMenuLabel className="text-muted-foreground text-sm text-center">
           {user.email}
-        </p>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        </DropdownMenuGroup> 
+        <DropdownMenuSeparator />*/}
         <DropdownMenuGroup>
           <DropdownMenuItem
             variant="destructive"

@@ -11,30 +11,14 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "paths": {
-      "#/*": [
-        "./src/*"
-      ],
-      "#env": [
-        "./env.ts"
-      ],
-      "#env/server": [
-        "./env.server.ts"
-      ],
-      "#convex/*": [
-        "./convex/*"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
+      "#/*": ["./src/*"],
+      "#env": ["./env.ts"],
+      "#env/server": ["./env.server.ts"],
+      "#convex/*": ["./convex/*"],
+      "@/*": ["./src/*"]
     },
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "types": [
-      "vite/client"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,

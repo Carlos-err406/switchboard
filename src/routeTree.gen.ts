@@ -14,8 +14,11 @@ import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
-import { Route as authenticatedHomeRouteRouteImport } from './routes/(authenticated)/home/route'
-import { Route as authenticatedHomeIndexRouteImport } from './routes/(authenticated)/home/index'
+import { Route as authenticatedProjectsIndexRouteImport } from './routes/(authenticated)/projects/index'
+import { Route as authenticatedProjectsProjectIdIndexRouteImport } from './routes/(authenticated)/projects/$projectId/index'
+import { Route as authenticatedProjectsProjectIdMembersRouteImport } from './routes/(authenticated)/projects/$projectId/members'
+import { Route as authenticatedProjectsProjectIdEnvironmentsRouteImport } from './routes/(authenticated)/projects/$projectId/environments'
+import { Route as authenticatedProjectsProjectIdApiKeysRouteImport } from './routes/(authenticated)/projects/$projectId/api-keys'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
@@ -41,55 +44,105 @@ const AuthSigninRoute = AuthSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const authenticatedHomeRouteRoute = authenticatedHomeRouteRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => authenticatedRouteRoute,
-} as any)
-const authenticatedHomeIndexRoute = authenticatedHomeIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => authenticatedHomeRouteRoute,
-} as any)
+const authenticatedProjectsIndexRoute =
+  authenticatedProjectsIndexRouteImport.update({
+    id: '/projects/',
+    path: '/projects/',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedProjectsProjectIdIndexRoute =
+  authenticatedProjectsProjectIdIndexRouteImport.update({
+    id: '/projects/$projectId/',
+    path: '/projects/$projectId/',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedProjectsProjectIdMembersRoute =
+  authenticatedProjectsProjectIdMembersRouteImport.update({
+    id: '/projects/$projectId/members',
+    path: '/projects/$projectId/members',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedProjectsProjectIdEnvironmentsRoute =
+  authenticatedProjectsProjectIdEnvironmentsRouteImport.update({
+    id: '/projects/$projectId/environments',
+    path: '/projects/$projectId/environments',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedProjectsProjectIdApiKeysRoute =
+  authenticatedProjectsProjectIdApiKeysRouteImport.update({
+    id: '/projects/$projectId/api-keys',
+    path: '/projects/$projectId/api-keys',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/home': typeof authenticatedHomeRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
-  '/home/': typeof authenticatedHomeIndexRoute
+  '/projects/': typeof authenticatedProjectsIndexRoute
+  '/projects/$projectId/api-keys': typeof authenticatedProjectsProjectIdApiKeysRoute
+  '/projects/$projectId/environments': typeof authenticatedProjectsProjectIdEnvironmentsRoute
+  '/projects/$projectId/members': typeof authenticatedProjectsProjectIdMembersRoute
+  '/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth': typeof AuthIndexRoute
-  '/home': typeof authenticatedHomeIndexRoute
+  '/projects': typeof authenticatedProjectsIndexRoute
+  '/projects/$projectId/api-keys': typeof authenticatedProjectsProjectIdApiKeysRoute
+  '/projects/$projectId/environments': typeof authenticatedProjectsProjectIdEnvironmentsRoute
+  '/projects/$projectId/members': typeof authenticatedProjectsProjectIdMembersRoute
+  '/projects/$projectId': typeof authenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
-  '/(authenticated)/home': typeof authenticatedHomeRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
-  '/(authenticated)/home/': typeof authenticatedHomeIndexRoute
+  '/(authenticated)/projects/': typeof authenticatedProjectsIndexRoute
+  '/(authenticated)/projects/$projectId/api-keys': typeof authenticatedProjectsProjectIdApiKeysRoute
+  '/(authenticated)/projects/$projectId/environments': typeof authenticatedProjectsProjectIdEnvironmentsRoute
+  '/(authenticated)/projects/$projectId/members': typeof authenticatedProjectsProjectIdMembersRoute
+  '/(authenticated)/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/home' | '/auth/signin' | '/auth/' | '/home/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/auth/signin'
+    | '/auth/'
+    | '/projects/'
+    | '/projects/$projectId/api-keys'
+    | '/projects/$projectId/environments'
+    | '/projects/$projectId/members'
+    | '/projects/$projectId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/signin' | '/auth' | '/home'
+  to:
+    | '/'
+    | '/auth/signin'
+    | '/auth'
+    | '/projects'
+    | '/projects/$projectId/api-keys'
+    | '/projects/$projectId/environments'
+    | '/projects/$projectId/members'
+    | '/projects/$projectId'
   id:
     | '__root__'
     | '/'
     | '/(authenticated)'
     | '/auth'
-    | '/(authenticated)/home'
     | '/auth/signin'
     | '/auth/'
-    | '/(authenticated)/home/'
+    | '/(authenticated)/projects/'
+    | '/(authenticated)/projects/$projectId/api-keys'
+    | '/(authenticated)/projects/$projectId/environments'
+    | '/(authenticated)/projects/$projectId/members'
+    | '/(authenticated)/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -135,43 +188,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSigninRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/(authenticated)/home': {
-      id: '/(authenticated)/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof authenticatedHomeRouteRouteImport
+    '/(authenticated)/projects/': {
+      id: '/(authenticated)/projects/'
+      path: '/projects'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof authenticatedProjectsIndexRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
-    '/(authenticated)/home/': {
-      id: '/(authenticated)/home/'
-      path: '/'
-      fullPath: '/home/'
-      preLoaderRoute: typeof authenticatedHomeIndexRouteImport
-      parentRoute: typeof authenticatedHomeRouteRoute
+    '/(authenticated)/projects/$projectId/': {
+      id: '/(authenticated)/projects/$projectId/'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId/'
+      preLoaderRoute: typeof authenticatedProjectsProjectIdIndexRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/projects/$projectId/members': {
+      id: '/(authenticated)/projects/$projectId/members'
+      path: '/projects/$projectId/members'
+      fullPath: '/projects/$projectId/members'
+      preLoaderRoute: typeof authenticatedProjectsProjectIdMembersRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/projects/$projectId/environments': {
+      id: '/(authenticated)/projects/$projectId/environments'
+      path: '/projects/$projectId/environments'
+      fullPath: '/projects/$projectId/environments'
+      preLoaderRoute: typeof authenticatedProjectsProjectIdEnvironmentsRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/projects/$projectId/api-keys': {
+      id: '/(authenticated)/projects/$projectId/api-keys'
+      path: '/projects/$projectId/api-keys'
+      fullPath: '/projects/$projectId/api-keys'
+      preLoaderRoute: typeof authenticatedProjectsProjectIdApiKeysRouteImport
+      parentRoute: typeof authenticatedRouteRoute
     }
   }
 }
 
-interface authenticatedHomeRouteRouteChildren {
-  authenticatedHomeIndexRoute: typeof authenticatedHomeIndexRoute
-}
-
-const authenticatedHomeRouteRouteChildren: authenticatedHomeRouteRouteChildren =
-  {
-    authenticatedHomeIndexRoute: authenticatedHomeIndexRoute,
-  }
-
-const authenticatedHomeRouteRouteWithChildren =
-  authenticatedHomeRouteRoute._addFileChildren(
-    authenticatedHomeRouteRouteChildren,
-  )
-
 interface authenticatedRouteRouteChildren {
-  authenticatedHomeRouteRoute: typeof authenticatedHomeRouteRouteWithChildren
+  authenticatedProjectsIndexRoute: typeof authenticatedProjectsIndexRoute
+  authenticatedProjectsProjectIdApiKeysRoute: typeof authenticatedProjectsProjectIdApiKeysRoute
+  authenticatedProjectsProjectIdEnvironmentsRoute: typeof authenticatedProjectsProjectIdEnvironmentsRoute
+  authenticatedProjectsProjectIdMembersRoute: typeof authenticatedProjectsProjectIdMembersRoute
+  authenticatedProjectsProjectIdIndexRoute: typeof authenticatedProjectsProjectIdIndexRoute
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
-  authenticatedHomeRouteRoute: authenticatedHomeRouteRouteWithChildren,
+  authenticatedProjectsIndexRoute: authenticatedProjectsIndexRoute,
+  authenticatedProjectsProjectIdApiKeysRoute:
+    authenticatedProjectsProjectIdApiKeysRoute,
+  authenticatedProjectsProjectIdEnvironmentsRoute:
+    authenticatedProjectsProjectIdEnvironmentsRoute,
+  authenticatedProjectsProjectIdMembersRoute:
+    authenticatedProjectsProjectIdMembersRoute,
+  authenticatedProjectsProjectIdIndexRoute:
+    authenticatedProjectsProjectIdIndexRoute,
 }
 
 const authenticatedRouteRouteWithChildren =

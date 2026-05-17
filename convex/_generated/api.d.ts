@@ -9,8 +9,11 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as errors_index from "../errors/index.js";
 import type * as http from "../http.js";
 import type * as infra_generateKeys from "../infra/generateKeys.js";
+import type * as models_helpers from "../models/helpers.js";
+import type * as models_projects from "../models/projects.js";
 import type * as models_users from "../models/users.js";
 
 import type {
@@ -21,8 +24,11 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "errors/index": typeof errors_index;
   http: typeof http;
   "infra/generateKeys": typeof infra_generateKeys;
+  "models/helpers": typeof models_helpers;
+  "models/projects": typeof models_projects;
   "models/users": typeof models_users;
 }>;
 

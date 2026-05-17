@@ -13,6 +13,13 @@ export default defineSchema({
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
     role: v.union(v.literal('admin'), v.literal('member')),
+    permissions: v.array(
+      v.union(
+        v.literal('project.create'),
+        v.literal('member.invite'),
+        v.literal('member.remove'),
+      ),
+    ),
   }).index('email', ['email']),
 
   projects: defineTable({
@@ -22,24 +29,24 @@ export default defineSchema({
   projectUsers: defineTable({
     projectId: v.id('projects'),
     userId: v.id('users'),
-    user_permissions: v.array(
+    permissions: v.array(
       v.union(
-        v.literal('project.create'),
-        v.literal('project.delete'),
         v.literal('project.update'),
+        v.literal('project.delete'),
         v.literal('flag.create'),
-        v.literal('flag.delete'),
         v.literal('flag.update'),
+        v.literal('flag.delete'),
         v.literal('api_key.create'),
-        v.literal('api_key.delete'),
         v.literal('api_key.update'),
-        v.literal('user.invite'),
-        v.literal('user.delete'),
+        v.literal('api_key.delete'),
+        v.literal('member.invite'),
+        v.literal('member.remove'),
       ),
     ),
   })
     .index('projectId', ['projectId'])
-    .index('userId', ['userId']),
+    .index('userId', ['userId'])
+    .index('projectUser', ['projectId', 'userId']),
 
   flags: defineTable({
     projectId: v.id('projects'),
