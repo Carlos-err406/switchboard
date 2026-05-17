@@ -10,11 +10,8 @@ export const Header: FC = () => {
       <Link to="/">Open Flagger</Link>
       <div className="flex items-center gap-4">
         <Authenticated>
-          <Link
-            to="/projects"
-            className="border-b hover:border-muted-foreground flex items-center gap-2 transition-colors"
-          >
-            Projects <ExternalLink size={16} />
+          <Link to="/projects" className="flex items-center gap-2">
+            <span>Projects</span> <ExternalLink size={16} />
           </Link>
         </Authenticated>
         <HeaderUser />

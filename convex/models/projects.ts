@@ -7,37 +7,36 @@ import {
   notAuthenticated,
   projectNotFound,
 } from '../errors'
-import { getAuthUser } from './helpers'
+import {
+  getAuthUser,
+  getProjectApiKeys,
+  getProjectById,
+  getProjectEnvironments,
+  getProjectFlags,
+  getProjectUser,
+  getProjectUsers,
+  getUserProjects,
+} from './helpers'
 
-export const getUserProjects = query({
+export const getUserProjectsQuery = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
 
-    const memberships = await ctx.db
-      .query('projectUsers')
-      .withIndex('userId', (q) => q.eq('userId', userId))
-      .collect()
+    const userProjects = await getUserProjects(ctx, { id: userId })
 
     const projects = await Promise.all(
-      memberships.map(async (m) => {
-        const project = await ctx.db
-          .query('projects')
-          .withIndex('by_id', (q) => q.eq('_id', m.projectId))
-          .unique()
-        const environments = await ctx.db
-          .query('environments')
-          .withIndex('projectId', (q) => q.eq('projectId', m.projectId))
-          .collect()
-        const flags = await ctx.db
-          .query('flags')
-          .withIndex('projectId', (q) => q.eq('projectId', m.projectId))
-          .collect()
+      userProjects.map(async (userProject) => {
+        const [project, environments, flags] = await Promise.all([
+          getProjectById(ctx, { id: userProject.projectId }),
+          getProjectEnvironments(ctx, { id: userProject.projectId }),
+          getProjectFlags(ctx, { id: userProject.projectId }),
+        ])
 
         return project
           ? {
               ...project,
-              permissions: m.permissions,
+              permissions: userProject.permissions,
               environmentsCount: environments.length,
               flagsCount: flags.length,
             }
@@ -49,7 +48,21 @@ export const getUserProjects = query({
   },
 })
 
-export const createProject = mutation({
+export const getUserProjectQuery = query({
+  args: { id: v.id('projects') },
+  handler: async (ctx, args) => {
+    const user = await getAuthUser(ctx)
+    if (!user) throw notAuthenticated()
+    const projectUser = await getProjectUser(ctx, {
+      projectId: args.id,
+      userId: user._id,
+    })
+    if (!projectUser && user.role !== 'admin') throw notAProjectMember()
+    return await getProjectById(ctx, { id: args.id })
+  },
+})
+
+export const createProjectMutation = mutation({
   args: { name: v.string() },
   handler: async (ctx, args) => {
     const user = await getAuthUser(ctx)
@@ -77,37 +90,33 @@ export const createProject = mutation({
   },
 })
 
-export const deleteProject = mutation({
+export const deleteProjectMutation = mutation({
   args: { id: v.id('projects') },
   handler: async (ctx, args) => {
     const user = await getAuthUser(ctx)
     if (!user) throw notAuthenticated()
-    const project = await ctx.db
-      .query('projects')
-      .withIndex('by_id', (q) => q.eq('_id', args.id))
-      .unique()
+    const project = await getProjectById(ctx, args)
     if (!project) throw projectNotFound()
 
-    const projectUser = await ctx.db
-      .query('projectUsers')
-      .withIndex('projectUser', (q) =>
-        q.eq('projectId', args.id).eq('userId', user._id),
-      )
-      .unique()
+    const projectUser = await getProjectUser(ctx, {
+      projectId: project._id,
+      userId: user._id,
+    })
     if (user.role !== 'admin') {
       if (!projectUser) throw notAProjectMember()
       if (!projectUser.permissions.includes('project.delete'))
         throw noPermission('delete projects')
     }
 
-    const projectUsers = await ctx.db
-      .query('projectUsers')
-      .withIndex('projectId', (q) => q.eq('projectId', args.id))
-      .collect()
-    const projectFlags = await ctx.db
-      .query('flags')
-      .withIndex('projectId', (q) => q.eq('projectId', args.id))
-      .collect()
+    const [projectUsers, projectFlags, projectApiKeys, projectEnvironments] =
+      await Promise.all([
+        getProjectUsers(ctx, { id: project._id }),
+        getProjectFlags(ctx, { id: project._id }),
+        getProjectApiKeys(ctx, { id: project._id }),
+        getProjectEnvironments(ctx, {
+          id: project._id,
+        }),
+      ])
     const projectFlagValues = (
       await Promise.all(
         projectFlags.map((pf) =>
@@ -118,14 +127,7 @@ export const deleteProject = mutation({
         ),
       )
     ).flat()
-    const projectEnvironments = await ctx.db
-      .query('environments')
-      .withIndex('projectId', (q) => q.eq('projectId', args.id))
-      .collect()
-    const projectApiKeys = await ctx.db
-      .query('apiKeys')
-      .withIndex('projectId', (q) => q.eq('projectId', args.id))
-      .collect()
+
     await Promise.all([
       ctx.db.delete(args.id),
       ...projectUsers.map((pu) => ctx.db.delete(pu._id)),
@@ -134,5 +136,23 @@ export const deleteProject = mutation({
       ...projectEnvironments.map((pe) => ctx.db.delete(pe._id)),
       ...projectApiKeys.map((ak) => ctx.db.delete(ak._id)),
     ])
+  },
+})
+
+export const updateProjectNameMutation = mutation({
+  args: { id: v.id('projects'), name: v.string() },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw notAuthenticated()
+    const project = await getProjectById(ctx, args)
+    if (!project) throw projectNotFound()
+    const projectUser = await getProjectUser(ctx, {
+      projectId: project._id,
+      userId,
+    })
+    if (!projectUser) throw notAProjectMember()
+    if (!projectUser.permissions.includes('project.update'))
+      throw noPermission('update projects')
+    await ctx.db.patch('projects', args.id, { name: args.name })
   },
 })

@@ -37,7 +37,7 @@ export const HeaderUser: FC = () => {
 }
 
 export function AvatarDropdown() {
-  const user = useQuery(api.models.users.currentUser)
+  const user = useQuery(api.models.users.currentUserQuery)
   const { signOut } = useAuthActions()
   const navigate = useNavigate()
   if (!user) return null
@@ -64,7 +64,7 @@ export function AvatarDropdown() {
           <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup> 
-        <DropdownMenuSeparator />*/}
+        <DropdownMenuSeparator /> */}
         <DropdownMenuGroup>
           <DropdownMenuItem
             variant="destructive"

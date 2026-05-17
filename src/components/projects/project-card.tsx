@@ -1,54 +1,38 @@
-import { Button } from '#/components/ui/button'
-import { Card, CardFooter, CardHeader } from '#/components/ui/card'
-import { toastMutationError } from '#/lib/utils.ts'
-import { api } from '#convex/_generated/api.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { useMutation } from '@tanstack/react-query'
+import { Card, CardContent, CardFooter, CardHeader } from '#/components/ui/card'
+import type { api } from '#convex/_generated/api.js'
+import { Link } from '@tanstack/react-router'
 import type { FunctionReturnType } from 'convex/server'
-import { Pencil, Trash2 } from 'lucide-react'
 import type { FC } from 'react'
 import { Badge } from '../ui/badge'
+import { DeleteProjectDialog } from './delete-project-dialog'
+import { RenameProjectDialog } from './rename-project-dialog'
 
 type UserProject = FunctionReturnType<
-  typeof api.models.projects.getUserProjects
+  typeof api.models.projects.getUserProjectsQuery
 >[number]
 
 export const ProjectCard: FC<{ project: UserProject }> = ({ project }) => {
-  const deleteMutationFn = useConvexMutation(api.models.projects.deleteProject)
-  const { mutate: deleteProject, isPending } = useMutation({
-    mutationFn: deleteMutationFn,
-    onError: toastMutationError,
-  })
-
   return (
     <Card key={project._id} className="shadow-md">
       <CardHeader>
-        {project.name}
+        <Link
+          to="/projects/$projectId"
+          params={{ projectId: project._id }}
+          className="w-fit"
+        >
+          {project.name}
+        </Link>
+      </CardHeader>
+      <CardContent>
         <Badge variant={'outline'}>
           {project.environmentsCount} environment(s)
         </Badge>
         <Badge variant={'outline'}>{project.flagsCount} flags(s)</Badge>
-      </CardHeader>
+      </CardContent>
 
       <CardFooter className="justify-end">
-        <Button
-          variant={'secondary'}
-          onClick={(e) => {
-            e.preventDefault()
-          }}
-        >
-          <Pencil />
-        </Button>
-        <Button
-          variant={'destructive'}
-          disabled={isPending}
-          onClick={(e) => {
-            e.preventDefault()
-            deleteProject({ id: project._id })
-          }}
-        >
-          <Trash2 />
-        </Button>
+        <RenameProjectDialog projectId={project._id} />
+        <DeleteProjectDialog projectId={project._id} />
       </CardFooter>
     </Card>
   )

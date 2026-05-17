@@ -180,4 +180,8 @@
   html {
     @apply font-mono;
   }
+
+  a {
+    @apply border-b hover:border-muted-foreground transition-colors
+  }
 }

@@ -28,7 +28,7 @@ type CreateProjectInputs = z.infer<typeof createProjectSchema>
 export const CreateProjectDialog: FC = () => {
   const [open, setOpen] = useState(false)
 
-  const mutationFn = useConvexMutation(api.models.projects.createProject)
+  const mutationFn = useConvexMutation(api.models.projects.createProjectMutation)
   const { mutate: createProject, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
