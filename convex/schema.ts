@@ -1,26 +1,76 @@
+import { authTables } from '@convex-dev/auth/server'
 import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
 
 export default defineSchema({
+  ...authTables,
   users: defineTable({
-    auth_id: v.string(),
-    name: v.string(),
     email: v.string(),
-    role: v.union(v.literal('user'), v.literal('admin')),
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    isAnonymous: v.optional(v.boolean()),
+    role: v.union(v.literal('admin'), v.literal('member')),
+  }).index('email', ['email']),
+
+  projects: defineTable({
+    name: v.string(),
+  }).index('name', ['name']),
+
+  projectUsers: defineTable({
+    projectId: v.id('projects'),
+    userId: v.id('users'),
+    user_permissions: v.array(
+      v.union(
+        v.literal('project.create'),
+        v.literal('project.delete'),
+        v.literal('project.update'),
+        v.literal('flag.create'),
+        v.literal('flag.delete'),
+        v.literal('flag.update'),
+        v.literal('api_key.create'),
+        v.literal('api_key.delete'),
+        v.literal('api_key.update'),
+        v.literal('user.invite'),
+        v.literal('user.delete'),
+      ),
+    ),
   })
-    .index('email', ['email'])
-    .index('auth_id', ['auth_id']),
+    .index('projectId', ['projectId'])
+    .index('userId', ['userId']),
+
   flags: defineTable({
-    user_id: v.id('users'),
+    projectId: v.id('projects'),
     name: v.string(),
-    value: v.union(v.string(), v.number(), v.boolean(), v.null()),
     description: v.optional(v.string()),
-  }).index('user_id', ['user_id']),
-  api_keys: defineTable({
-    user_id: v.id('users'),
-    name: v.string(),
-    value: v.string(),
-    expires_at: v.nullable(v.string()),
+  }).index('projectId', ['projectId']),
+
+  flagValues: defineTable({
+    flagId: v.id('flags'),
+    environmentId: v.id('environments'),
+    value: v.union(v.string(), v.number(), v.boolean(), v.null()),
     enabled: v.boolean(),
-  }).index('user_id', ['user_id']),
+  })
+    .index('flagId', ['flagId'])
+    .index('environmentFlag', ['environmentId', 'flagId']),
+
+  environments: defineTable({
+    projectId: v.id('projects'),
+    name: v.string(), // "production", "staging", "development"
+  }).index('projectId', ['projectId']),
+
+  apiKeys: defineTable({
+    projectId: v.id('projects'),
+    environmentId: v.id('environments'),
+    name: v.string(),
+    keyHash: v.string(),
+    keyPrefix: v.string(), // "sk_live_abc..." for display
+    expiresAt: v.optional(v.number()),
+    enabled: v.boolean(),
+    createdBy: v.id('users'),
+  })
+    .index('projectId', ['projectId'])
+    .index('keyHash', ['keyHash']),
 })

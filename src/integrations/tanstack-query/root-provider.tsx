@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query'
-import { createConvexQueryClient } from '../convex/provider'
+import { createConvexQueryClient } from '../convex/client'
 
 export function getContext() {
   const convexQueryClient = createConvexQueryClient()

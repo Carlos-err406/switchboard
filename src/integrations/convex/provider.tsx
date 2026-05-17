@@ -1,14 +1,5 @@
-import { clientEnv } from '#env'
-import { useAuth } from '@clerk/react';
-import { ConvexQueryClient } from '@convex-dev/react-query';
-import { useRouteContext } from '@tanstack/react-router';
-import { ConvexProviderWithClerk } from 'convex/react-clerk';
-
-const CONVEX_URL = clientEnv.VITE_CONVEX_URL
-
-export function createConvexQueryClient() {
-  return new ConvexQueryClient(CONVEX_URL)
-}
+import { ConvexAuthProvider } from '@convex-dev/auth/react'
+import { useRouteContext } from '@tanstack/react-router'
 
 export default function AppConvexProvider({
   children,
@@ -18,11 +9,8 @@ export default function AppConvexProvider({
   const { convexQueryClient } = useRouteContext({ from: '__root__' })
 
   return (
-    <ConvexProviderWithClerk
-      client={convexQueryClient.convexClient}
-      useAuth={useAuth}
-    >
+    <ConvexAuthProvider client={convexQueryClient.convexClient}>
       {children}
-    </ConvexProviderWithClerk>
+    </ConvexAuthProvider>
   )
 }

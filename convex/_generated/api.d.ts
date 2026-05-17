@@ -8,10 +8,10 @@
  * @module
  */
 
-import type * as api_keys from "../api_keys.js";
-import type * as flags from "../flags.js";
-import type * as helpers from "../helpers.js";
-import type * as users from "../users.js";
+import type * as auth from "../auth.js";
+import type * as http from "../http.js";
+import type * as infra_generateKeys from "../infra/generateKeys.js";
+import type * as models_users from "../models/users.js";
 
 import type {
   ApiFromModules,
@@ -20,10 +20,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  api_keys: typeof api_keys;
-  flags: typeof flags;
-  helpers: typeof helpers;
-  users: typeof users;
+  auth: typeof auth;
+  http: typeof http;
+  "infra/generateKeys": typeof infra_generateKeys;
+  "models/users": typeof models_users;
 }>;
 
 /**

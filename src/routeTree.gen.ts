@@ -13,9 +13,7 @@ import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
-import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
-import { Route as ApiClerkRouteImport } from './routes/api/clerk'
 import { Route as authenticatedHomeRouteRouteImport } from './routes/(authenticated)/home/route'
 import { Route as authenticatedHomeIndexRouteImport } from './routes/(authenticated)/home/index'
 
@@ -38,20 +36,10 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthSignupRoute = AuthSignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const AuthSigninRoute = AuthSigninRouteImport.update({
   id: '/signin',
   path: '/signin',
   getParentRoute: () => AuthRouteRoute,
-} as any)
-const ApiClerkRoute = ApiClerkRouteImport.update({
-  id: '/api/clerk',
-  path: '/api/clerk',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const authenticatedHomeRouteRoute = authenticatedHomeRouteRouteImport.update({
   id: '/home',
@@ -68,17 +56,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/home': typeof authenticatedHomeRouteRouteWithChildren
-  '/api/clerk': typeof ApiClerkRoute
   '/auth/signin': typeof AuthSigninRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/auth/': typeof AuthIndexRoute
   '/home/': typeof authenticatedHomeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/api/clerk': typeof ApiClerkRoute
   '/auth/signin': typeof AuthSigninRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/auth': typeof AuthIndexRoute
   '/home': typeof authenticatedHomeIndexRoute
 }
@@ -88,34 +72,22 @@ export interface FileRoutesById {
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/(authenticated)/home': typeof authenticatedHomeRouteRouteWithChildren
-  '/api/clerk': typeof ApiClerkRoute
   '/auth/signin': typeof AuthSigninRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/auth/': typeof AuthIndexRoute
   '/(authenticated)/home/': typeof authenticatedHomeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/auth'
-    | '/home'
-    | '/api/clerk'
-    | '/auth/signin'
-    | '/auth/signup'
-    | '/auth/'
-    | '/home/'
+  fullPaths: '/' | '/auth' | '/home' | '/auth/signin' | '/auth/' | '/home/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/clerk' | '/auth/signin' | '/auth/signup' | '/auth' | '/home'
+  to: '/' | '/auth/signin' | '/auth' | '/home'
   id:
     | '__root__'
     | '/'
     | '/(authenticated)'
     | '/auth'
     | '/(authenticated)/home'
-    | '/api/clerk'
     | '/auth/signin'
-    | '/auth/signup'
     | '/auth/'
     | '/(authenticated)/home/'
   fileRoutesById: FileRoutesById
@@ -124,7 +96,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  ApiClerkRoute: typeof ApiClerkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -157,26 +128,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/auth/signup': {
-      id: '/auth/signup'
-      path: '/signup'
-      fullPath: '/auth/signup'
-      preLoaderRoute: typeof AuthSignupRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     '/auth/signin': {
       id: '/auth/signin'
       path: '/signin'
       fullPath: '/auth/signin'
       preLoaderRoute: typeof AuthSigninRouteImport
       parentRoute: typeof AuthRouteRoute
-    }
-    '/api/clerk': {
-      id: '/api/clerk'
-      path: '/api/clerk'
-      fullPath: '/api/clerk'
-      preLoaderRoute: typeof ApiClerkRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/(authenticated)/home': {
       id: '/(authenticated)/home'
@@ -222,13 +179,11 @@ const authenticatedRouteRouteWithChildren =
 
 interface AuthRouteRouteChildren {
   AuthSigninRoute: typeof AuthSigninRoute
-  AuthSignupRoute: typeof AuthSignupRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthSigninRoute: AuthSigninRoute,
-  AuthSignupRoute: AuthSignupRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
 
@@ -240,7 +195,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authenticatedRouteRoute: authenticatedRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  ApiClerkRoute: ApiClerkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
