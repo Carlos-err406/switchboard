@@ -15,7 +15,6 @@
       "#env": ["./env.ts"],
       "#env/server": ["./env.server.ts"],
       "#convex/*": ["./convex/*"],
-      "@/*": ["./src/*"]
     },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],

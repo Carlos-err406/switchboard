@@ -1,6 +1,7 @@
 import { HeaderUser } from '#/integrations/convex/auth/header-user.tsx'
 import { Link } from '@tanstack/react-router'
 import { Authenticated } from 'convex/react'
+import { ExternalLink } from 'lucide-react'
 import type { FC } from 'react'
 
 export const Header: FC = () => {
@@ -9,7 +10,12 @@ export const Header: FC = () => {
       <Link to="/">Open Flagger</Link>
       <div className="flex items-center gap-4">
         <Authenticated>
-          <Link to="/projects">Projects</Link>
+          <Link
+            to="/projects"
+            className="border-b hover:border-muted-foreground flex items-center gap-2 transition-colors"
+          >
+            Projects <ExternalLink size={16} />
+          </Link>
         </Authenticated>
         <HeaderUser />
       </div>

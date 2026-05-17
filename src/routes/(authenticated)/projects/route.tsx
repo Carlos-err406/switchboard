@@ -1,5 +1,4 @@
-import { CreateProjectButton } from '#/components/projects/create-project-btn.tsx'
-import { CreateProjectDialog } from '#/components/projects/create-project-dialog.tsx';
+import { CreateProjectDialog } from '#/components/projects/create-project-dialog.tsx'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(authenticated)/projects')({
@@ -8,8 +7,11 @@ export const Route = createFileRoute('/(authenticated)/projects')({
 
 function RouteComponent() {
   return (
-    <div>
-      <CreateProjectDialog />
+    <div className="p-4">
+      <div className="flex items-center justify-between">
+        <h1>Projects</h1>
+        <CreateProjectDialog />
+      </div>
       <Outlet />
     </div>
   )
