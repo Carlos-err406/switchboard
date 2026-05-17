@@ -31,7 +31,12 @@ export const ProjectCard: FC<{ project: UserProject }> = ({ project }) => {
       </CardHeader>
 
       <CardFooter className="justify-end">
-        <Button variant={'secondary'}>
+        <Button
+          variant={'secondary'}
+          onClick={(e) => {
+            e.preventDefault()
+          }}
+        >
           <Pencil />
         </Button>
         <Button
