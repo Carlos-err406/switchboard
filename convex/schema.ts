@@ -16,15 +16,15 @@ export default defineSchema({
     permissions: v.array(
       v.union(
         v.literal('project.create'),
-        v.literal('member.invite'),
-        v.literal('member.remove'),
+        v.literal('user.invite'),
+        v.literal('user.delete'),
       ),
     ),
-  }).index('email', ['email']),
+  }).index('by_email', ['email']),
 
   projects: defineTable({
     name: v.string(),
-  }).index('name', ['name']),
+  }).index('by_name', ['name']),
 
   projectUsers: defineTable({
     projectId: v.id('projects'),
@@ -39,34 +39,34 @@ export default defineSchema({
         v.literal('api_key.create'),
         v.literal('api_key.update'),
         v.literal('api_key.delete'),
-        v.literal('member.invite'),
+        v.literal('environment.create'),
+        v.literal('environment.update'),
+        v.literal('environment.delete'),
+        v.literal('member.add'),
         v.literal('member.remove'),
       ),
     ),
   })
-    .index('projectId', ['projectId'])
-    .index('userId', ['userId'])
-    .index('projectUser', ['projectId', 'userId']),
+    .index('by_project_id', ['projectId'])
+    .index('by_user_id', ['userId'])
+    .index('by_project_user', ['projectId', 'userId']),
 
   flags: defineTable({
-    projectId: v.id('projects'),
-    name: v.string(),
-    description: v.optional(v.string()),
-  }).index('projectId', ['projectId']),
-
-  flagValues: defineTable({
-    flagId: v.id('flags'),
+    key: v.string(),
     environmentId: v.id('environments'),
+    projectId: v.id('projects'),
     value: v.union(v.string(), v.number(), v.boolean(), v.null()),
     enabled: v.boolean(),
   })
-    .index('flagId', ['flagId'])
-    .index('environmentFlag', ['environmentId', 'flagId']),
+    .index('by_project_id', ['projectId'])
+    .index('by_environment_id', ['environmentId']),
 
   environments: defineTable({
     projectId: v.id('projects'),
-    name: v.string(), // "production", "staging", "development"
-  }).index('projectId', ['projectId']),
+    name: v.string(),
+  })
+    .index('by_project_id', ['projectId'])
+    .index('by_name', ['name']),
 
   apiKeys: defineTable({
     projectId: v.id('projects'),
@@ -78,6 +78,6 @@ export default defineSchema({
     enabled: v.boolean(),
     createdBy: v.id('users'),
   })
-    .index('projectId', ['projectId'])
-    .index('keyHash', ['keyHash']),
+    .index('by_project_id', ['projectId'])
+    .index('by_key_hash', ['keyHash']),
 })

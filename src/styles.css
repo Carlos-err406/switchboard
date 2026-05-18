@@ -182,6 +182,6 @@
   }
 
   a {
-    @apply border-b hover:border-muted-foreground transition-colors
+    @apply border-b hover:border-muted-foreground transition-colors;
   }
 }

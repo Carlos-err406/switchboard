@@ -11,6 +11,7 @@ import type { ConvexQueryClient } from '@convex-dev/react-query'
 import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '#/components/layout/header.tsx'
 import { Toaster } from '#/components/ui/sonner'
+import { z } from 'zod'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -18,6 +19,7 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  validateSearch: z.object({ q: z.string().optional() }).parse,
   head: () => ({
     meta: [
       {
@@ -28,7 +30,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Open Flagger',
       },
     ],
     links: [

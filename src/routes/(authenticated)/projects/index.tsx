@@ -1,3 +1,4 @@
+import { CreateProjectDialog } from '#/components/projects/create-project-dialog.tsx'
 import { ProjectsGrid } from '#/components/projects/projects-grid.tsx'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -6,5 +7,13 @@ export const Route = createFileRoute('/(authenticated)/projects/')({
 })
 
 function RouteComponent() {
-  return <ProjectsGrid />
+  return (
+    <div className="space-y-4">
+      <div className="flex w-full justify-between items-center">
+        <h1>Projects</h1>
+        <CreateProjectDialog />
+      </div>
+      <ProjectsGrid />
+    </div>
+  )
 }

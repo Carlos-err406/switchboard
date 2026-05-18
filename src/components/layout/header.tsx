@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 import { Authenticated } from 'convex/react'
 import { ExternalLink } from 'lucide-react'
 import type { FC } from 'react'
+import { SearchInput } from './search-input'
 
 export const Header: FC = () => {
   return (
@@ -10,6 +11,7 @@ export const Header: FC = () => {
       <Link to="/">Open Flagger</Link>
       <div className="flex items-center gap-4">
         <Authenticated>
+          <SearchInput />
           <Link to="/projects" className="flex items-center gap-2">
             <span>Projects</span> <ExternalLink size={16} />
           </Link>

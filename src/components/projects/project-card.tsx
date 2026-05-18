@@ -1,17 +1,14 @@
+import { Badge } from '#/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader } from '#/components/ui/card'
-import type { api } from '#convex/_generated/api.js'
+import type { ProjectSummary } from '#/lib/types/inferred.ts'
 import { Link } from '@tanstack/react-router'
-import type { FunctionReturnType } from 'convex/server'
+import { Users2 } from 'lucide-react'
 import type { FC } from 'react'
-import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import { DeleteProjectDialog } from './delete-project-dialog'
 import { RenameProjectDialog } from './rename-project-dialog'
 
-type UserProject = FunctionReturnType<
-  typeof api.models.projects.getUserProjectsQuery
->[number]
-
-export const ProjectCard: FC<{ project: UserProject }> = ({ project }) => {
+export const ProjectCard: FC<{ project: ProjectSummary }> = ({ project }) => {
   return (
     <Card key={project._id} className="shadow-md">
       <CardHeader>
@@ -34,6 +31,9 @@ export const ProjectCard: FC<{ project: UserProject }> = ({ project }) => {
       </CardContent>
 
       <CardFooter className="justify-end">
+        <Button variant="secondary">
+          <Users2 />
+        </Button>
         <RenameProjectDialog projectId={project._id} />
         <DeleteProjectDialog projectId={project._id} />
       </CardFooter>

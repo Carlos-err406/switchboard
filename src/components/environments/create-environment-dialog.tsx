@@ -2,6 +2,7 @@ import { Button, buttonVariants } from '#/components/ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -14,29 +15,26 @@ import type { Id } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
-import { useQuery } from 'convex/react'
-import { Pencil } from 'lucide-react'
+import { Stone } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const renameProjectSchema = z.object({
-  projectName: z.string().min(3, 'Must have at least 3 characters'),
+const createEnvironmentSchema = z.object({
+  environmentName: z.string().min(3, 'Must have at least 3 characters'),
 })
-type RenameProjectInputs = z.infer<typeof renameProjectSchema>
+type CreateEnvironmentInputs = z.infer<typeof createEnvironmentSchema>
 
-export const RenameProjectDialog: FC<{ projectId: Id<'projects'> }> = ({
-  projectId,
-}) => {
+export const CreateEnvironmentDialog: FC<{
+  projectId: Id<'projects'>
+}> = ({ projectId }) => {
   const [open, setOpen] = useState(false)
-  const project = useQuery(api.models.projects.getProjectQuery, {
-    projectId: projectId,
-  })
+
   const mutationFn = useConvexMutation(
-    api.models.projects.updateProjectNameMutation,
+    api.models.environments.createEnvironmentMutation,
   )
-  const { mutate: renameProject, isPending } = useMutation({
+  const { mutate: createEnvironment, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: () => setOpen(false),
@@ -46,35 +44,41 @@ export const RenameProjectDialog: FC<{ projectId: Id<'projects'> }> = ({
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<RenameProjectInputs>({
-    defaultValues: { projectName: project?.name ?? '' },
-    resolver: zodResolver(renameProjectSchema),
+  } = useForm<CreateEnvironmentInputs>({
+    defaultValues: { environmentName: '' },
+    resolver: zodResolver(createEnvironmentSchema),
   })
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className={buttonVariants({ variant: 'secondary' })}>
-        <Pencil />
+      <DialogTrigger className={buttonVariants({ variant: 'default' })}>
+        <Stone /> Create Environment
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Rename project</DialogTitle>
+          <DialogTitle>Environment creation</DialogTitle>
+          <DialogDescription>
+            Use environments to group flags, usual names are{' '}
+            <strong>Production</strong> or <strong>Staging</strong>
+          </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={handleSubmit((data) =>
-            renameProject({ id: projectId, name: data.projectName }),
+            createEnvironment({ name: data.environmentName, projectId }),
           )}
         >
           <FieldSet>
             <Field>
-              <FieldLabel htmlFor="projectName">Project Name (new)</FieldLabel>
+              <FieldLabel htmlFor="environmentName">
+                Environment Name
+              </FieldLabel>
               <Input
-                id="projectName"
-                {...register('projectName')}
-                placeholder="Acme project"
+                id="environmentName"
+                {...register('environmentName')}
+                placeholder="Production"
               />
-              {errors.projectName?.message && (
-                <FieldError>{errors.projectName.message}</FieldError>
+              {errors.environmentName?.message && (
+                <FieldError>{errors.environmentName.message}</FieldError>
               )}
             </Field>
             <Button type="submit" disabled={isPending} className="ml-auto">

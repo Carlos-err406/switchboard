@@ -18,7 +18,7 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Field, FieldError, FieldLabel, FieldSet } from '../ui/field'
+import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
 
 const createProjectSchema = z.object({
   projectName: z.string().min(3, 'Must have at least 3 characters'),
@@ -28,7 +28,9 @@ type CreateProjectInputs = z.infer<typeof createProjectSchema>
 export const CreateProjectDialog: FC = () => {
   const [open, setOpen] = useState(false)
 
-  const mutationFn = useConvexMutation(api.models.projects.createProjectMutation)
+  const mutationFn = useConvexMutation(
+    api.models.projects.createProjectMutation,
+  )
   const { mutate: createProject, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,

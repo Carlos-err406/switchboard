@@ -6,5 +6,12 @@ export const noPermission = (action: string) =>
   new ConvexError(`No permission to ${action}`)
 
 export const projectNotFound = () => new ConvexError('Project not found')
+export const flagNotFound = () => new ConvexError('Flag not found')
+export const environmentNotFound = () =>
+  new ConvexError('Environment not found')
+
 export const notAProjectMember = () =>
   new ConvexError('You are not a project member')
+
+export const environmentAlreadyExist = () =>
+  new ConvexError('Environment already exist')

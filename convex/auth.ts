@@ -37,11 +37,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
                 email,
                 role: 'admin' as const,
                 name: 'Administrator',
-                permissions: [
-                  'project.create',
-                  'member.invite',
-                  'member.remove',
-                ],
+                permissions: ['project.create', 'user.invite', 'user.delete'],
               },
             })
             return { userId: created.user._id }

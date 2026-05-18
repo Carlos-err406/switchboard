@@ -42,7 +42,10 @@ export const DeleteProjectDialog: FC<{ projectId: Id<'projects'> }> = ({
             Are you sure you want to delete this project? All{' '}
             <strong>flags</strong> and <strong>api keys</strong> will be deleted
             and <strong>members</strong> will be unassigned automatically.{' '}
-            <strong className="text-destructive">This action is irreversible.</strong>
+            <br />
+            <strong className="text-destructive">
+              This action is irreversible.
+            </strong>
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
