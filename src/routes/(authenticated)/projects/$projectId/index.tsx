@@ -1,10 +1,19 @@
-import { CreateEnvironmentDialog } from '#/components/environments/create-environment-dialog.tsx'
 import { EnvironmentSelector } from '#/components/environments/environment-selector.tsx'
+import { EnvironmentsGrid } from '#/components/environments/environments-grid.tsx'
+import { FlagsGrid } from '#/components/flags/flags-grid.tsx'
+import { ProjectSelector } from '#/components/projects/project-selector.tsx'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '#/components/ui/tabs.tsx'
 import { api } from '#convex/_generated/api.js'
 import type { Id } from '#convex/_generated/dataModel.js'
 import { convexQuery } from '@convex-dev/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useSearch } from '@tanstack/react-router'
+import { Flag, Key, Stone, Users2 } from 'lucide-react'
 
 export const Route = createFileRoute('/(authenticated)/projects/$projectId/')({
   params: {
@@ -18,7 +27,7 @@ export const Route = createFileRoute('/(authenticated)/projects/$projectId/')({
 function RouteComponent() {
   const { projectId } = Route.useParams()
   const { data: project, isLoading } = useQuery({
-    ...convexQuery(api.models.projects.getProjectQuery, { projectId }),
+    ...convexQuery(api.projects.queries.getProjectQuery, { projectId }),
   })
   const { environment } = useSearch({
     from: '/(authenticated)/projects/$projectId/',
@@ -34,15 +43,38 @@ function RouteComponent() {
     project.environments[0]
 
   return (
-    <div>
+    <Tabs defaultValue="flags" className="space-y-4">
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center gap-4">
-          <h2>Project {project.name}</h2>
-          <EnvironmentSelector project={project} />
+          <ProjectSelector activeProject={project} />
+          <TabsList>
+            <TabsTrigger value="flags">
+              <Flag /> Flags
+            </TabsTrigger>
+            <TabsTrigger value="environments">
+              <Stone /> Environments
+            </TabsTrigger>
+            <TabsTrigger value="members">
+              <Users2 /> Project members
+            </TabsTrigger>
+            <TabsTrigger value="api_keys">
+              <Key /> Api keys
+            </TabsTrigger>
+          </TabsList>
         </div>
-        <CreateEnvironmentDialog projectId={project._id} />
       </div>
-      <pre>{JSON.stringify(activeEnvironment.flags, null, 2)}</pre>
-    </div>
+      <TabsContent value="flags">
+        <div className="space-y-4">
+          <EnvironmentSelector project={project} />
+          <FlagsGrid
+            environmentId={activeEnvironment._id}
+            projectId={activeEnvironment.projectId}
+          />
+        </div>
+      </TabsContent>
+      <TabsContent value="environments">
+        <EnvironmentsGrid />
+      </TabsContent>
+    </Tabs>
   )
 }

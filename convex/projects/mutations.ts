@@ -1,84 +1,23 @@
-import { mutation, query } from '#convex/_generated/server.js'
+import { mutation } from '#convex/_generated/server.js'
+import { getProjectApiKeys } from '#convex/api_keys/helpers.js'
+import { getProjectEnvironments } from '#convex/environments/helpers.js'
+import { getProjectFlags } from '#convex/flags/helpers.js'
+import { getAuthUser } from '#convex/users/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import {
   noPermission,
   notAProjectMember,
   notAuthenticated,
+  projectAlreadyExist,
   projectNotFound,
 } from '../errors'
 import {
-  getAuthUser,
-  getEnvironmentFlags,
   getProject,
-  getProjectApiKeys,
-  getProjectEnvironments,
-  getProjectFlags,
+  getProjectByName,
   getProjectUser,
   getProjectUsers,
-  getUserProjects,
 } from './helpers'
-
-export const getProjectsQuery = query({
-  args: { q: v.optional(v.string()) },
-  handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
-
-    const userProjects = await getUserProjects(ctx, { ...args, id: userId })
-
-    const projects = await Promise.all(
-      userProjects.map(async (userProject) => {
-        const [project, environments, flags, projectMembers] =
-          await Promise.all([
-            getProject(ctx, { id: userProject.projectId }),
-            getProjectEnvironments(ctx, { id: userProject.projectId }),
-            getProjectFlags(ctx, { id: userProject.projectId }),
-            getProjectUsers(ctx, { id: userProject.projectId }),
-          ])
-
-        return project
-          ? {
-              ...project,
-              permissions: userProject.permissions,
-              environmentsCount: environments.length,
-              flagsCount: flags.length,
-              membersCount: projectMembers.length,
-            }
-          : null
-      }),
-    )
-
-    return projects.filter((p): p is NonNullable<typeof p> =>
-      Boolean(p?.name.includes(args.q || '')),
-    )
-  },
-})
-
-export const getProjectQuery = query({
-  args: { projectId: v.id('projects') },
-  handler: async (ctx, args) => {
-    const user = await getAuthUser(ctx)
-    if (!user) throw notAuthenticated()
-    const projectUser = await getProjectUser(ctx, {
-      projectId: args.projectId,
-      userId: user._id,
-    })
-    if (!projectUser && user.role !== 'admin') throw notAProjectMember()
-    const project = await getProject(ctx, { id: args.projectId })
-    if (!project) throw projectNotFound()
-    const environments = await getProjectEnvironments(ctx, {
-      id: args.projectId,
-    })
-    const richEnvironments = await Promise.all(
-      environments.map(async (environment) => {
-        const flags = await getEnvironmentFlags(ctx, { id: environment._id })
-        return { ...environment, flags }
-      }),
-    )
-    return { ...project, environments: richEnvironments }
-  },
-})
 
 export const createProjectMutation = mutation({
   args: { name: v.string() },
@@ -87,6 +26,9 @@ export const createProjectMutation = mutation({
     if (!user) throw notAuthenticated()
     if (!user.permissions.includes('project.create'))
       throw noPermission('create projects')
+    const existing = await getProjectByName(ctx, { name: args.name })
+    if (existing) throw projectAlreadyExist()
+      
     const inserted = await ctx.db.insert('projects', args)
     await Promise.all([
       // insert the creator in to the project users with full permissions
@@ -140,7 +82,7 @@ export const deleteProjectMutation = mutation({
       await Promise.all([
         getProjectUsers(ctx, { id: project._id }),
         getProjectFlags(ctx, { id: project._id }),
-        getProjectApiKeys(ctx, { id: project._id }),
+        getProjectApiKeys(ctx, { projectId: project._id }),
         getProjectEnvironments(ctx, {
           id: project._id,
         }),
@@ -156,7 +98,7 @@ export const deleteProjectMutation = mutation({
   },
 })
 
-export const updateProjectNameMutation = mutation({
+export const renameProjectMutation = mutation({
   args: { id: v.id('projects'), name: v.string() },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)

@@ -9,7 +9,7 @@ import {
 import { FolderXIcon } from 'lucide-react'
 import { CreateProjectDialog } from './create-project-dialog'
 
-export function EmptyProjectsGrid() {
+export function EmptyProjects() {
   return (
     <Empty>
       <EmptyHeader>

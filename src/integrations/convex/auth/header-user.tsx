@@ -37,7 +37,7 @@ export const HeaderUser: FC = () => {
 }
 
 export function AvatarDropdown() {
-  const user = useQuery(api.models.users.currentUserQuery)
+  const user = useQuery(api.users.queries.currentUserQuery)
   const { signOut } = useAuthActions()
   const navigate = useNavigate()
   if (!user) return null

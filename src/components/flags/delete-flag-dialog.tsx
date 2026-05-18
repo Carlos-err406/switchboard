@@ -22,14 +22,10 @@ import { Trash2 } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
 
-export const DeleteProjectDialog: FC<{ project: Doc<'projects'> }> = ({
-  project,
-}) => {
+export const DeleteFlagDialog: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
   const [open, setOpen] = useState(false)
-  const mutationFn = useConvexMutation(
-    api.projects.mutations.deleteProjectMutation,
-  )
-  const { mutate: deleteProject, isPending } = useMutation({
+  const mutationFn = useConvexMutation(api.flags.mutations.deleteFlagMutation)
+  const { mutate: deleteFlag, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: () => setOpen(false),
@@ -43,16 +39,15 @@ export const DeleteProjectDialog: FC<{ project: Doc<'projects'> }> = ({
             <Trash2 />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Delete project</TooltipContent>
+        <TooltipContent side="bottom">Delete flag</TooltipContent>
       </Tooltip>
+
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete project</DialogTitle>
+          <DialogTitle>Delete flag</DialogTitle>
           <DialogDescription className="prose">
-            Are you sure you want to delete this project? All{' '}
-            <strong>flags</strong> and <strong>api keys</strong> will be deleted
-            and <strong>members</strong> will be unassigned automatically.{' '}
-            <br />
+            Are you sure you want to delete this flag? It will only be deleted
+            from the current environment. <br />
             <strong className="text-destructive">
               This action is irreversible.
             </strong>
@@ -60,7 +55,13 @@ export const DeleteProjectDialog: FC<{ project: Doc<'projects'> }> = ({
         </DialogHeader>
         <DialogFooter>
           <Button
-            onClick={() => deleteProject({ id: project._id })}
+            onClick={() =>
+              deleteFlag({
+                environmentId: flag.environmentId,
+                projectId: flag.projectId,
+                flagId: flag._id,
+              })
+            }
             variant={'destructive'}
             disabled={isPending}
             className="ml-auto"

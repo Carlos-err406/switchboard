@@ -1,24 +1,37 @@
 import { Badge } from '#/components/ui/badge'
+import { buttonVariants } from '#/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '#/components/ui/card'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '#/components/ui/tooltip'
 import type { ProjectSummary } from '#/lib/types/inferred.ts'
 import { Link } from '@tanstack/react-router'
-import { Users2 } from 'lucide-react'
+import dayjs from 'dayjs'
+import { ExternalLink } from 'lucide-react'
 import type { FC } from 'react'
-import { Button } from '../ui/button'
 import { DeleteProjectDialog } from './delete-project-dialog'
 import { RenameProjectDialog } from './rename-project-dialog'
 
 export const ProjectCard: FC<{ project: ProjectSummary }> = ({ project }) => {
   return (
-    <Card key={project._id} className="shadow-md">
-      <CardHeader>
-        <Link
-          to="/projects/$projectId"
-          params={{ projectId: project._id }}
-          className="w-fit"
-        >
-          {project.name}
-        </Link>
+    <Card key={project._id}>
+      <CardHeader className="flex items-center justify-between">
+        <Tooltip>
+          <TooltipTrigger>
+            <Link
+              to="/projects/$projectId"
+              params={{ projectId: project._id }}
+              className="w-fit"
+            >
+              {project.name}
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">Open project</TooltipContent>
+        </Tooltip>
+
+        {dayjs(project._creationTime).format('MMM DD, YYYY')}
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-2">
@@ -31,11 +44,20 @@ export const ProjectCard: FC<{ project: ProjectSummary }> = ({ project }) => {
       </CardContent>
 
       <CardFooter className="justify-end">
-        <Button variant="secondary">
-          <Users2 />
-        </Button>
-        <RenameProjectDialog projectId={project._id} />
-        <DeleteProjectDialog projectId={project._id} />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link
+              to="/projects/$projectId"
+              params={{ projectId: project._id }}
+              className={buttonVariants({ variant: 'secondary' })}
+            >
+              <ExternalLink />
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Go to project</TooltipContent>
+        </Tooltip>
+        <RenameProjectDialog project={project} />
+        <DeleteProjectDialog project={project} />
       </CardFooter>
     </Card>
   )

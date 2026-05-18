@@ -2,11 +2,11 @@ import type { api } from '#convex/_generated/api.js'
 import type { FunctionReturnType } from 'convex/server'
 
 export type ProjectSummary = FunctionReturnType<
-  typeof api.models.projects.getProjectsQuery
+  typeof api.projects.queries.getProjectsQuery
 >[number]
 
 export type DetailedProject = FunctionReturnType<
-  typeof api.models.projects.getProjectQuery
+  typeof api.projects.queries.getProjectQuery
 >
 
 export type DetailedEnvironment = DetailedProject['environments'][number]

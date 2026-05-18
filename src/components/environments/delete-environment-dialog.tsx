@@ -22,14 +22,14 @@ import { Trash2 } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
 
-export const DeleteProjectDialog: FC<{ project: Doc<'projects'> }> = ({
-  project,
-}) => {
+export const DeleteEnvironmentDialog: FC<{
+  environment: Doc<'environments'>
+}> = ({ environment }) => {
   const [open, setOpen] = useState(false)
   const mutationFn = useConvexMutation(
-    api.projects.mutations.deleteProjectMutation,
+    api.environments.mutations.deleteEnvironmentMutation,
   )
-  const { mutate: deleteProject, isPending } = useMutation({
+  const { mutate: deleteEnvironment, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: () => setOpen(false),
@@ -43,15 +43,15 @@ export const DeleteProjectDialog: FC<{ project: Doc<'projects'> }> = ({
             <Trash2 />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Delete project</TooltipContent>
+        <TooltipContent side="bottom">Delete environment</TooltipContent>
       </Tooltip>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete project</DialogTitle>
+          <DialogTitle>Delete environment</DialogTitle>
           <DialogDescription className="prose">
-            Are you sure you want to delete this project? All{' '}
-            <strong>flags</strong> and <strong>api keys</strong> will be deleted
-            and <strong>members</strong> will be unassigned automatically.{' '}
+            Are you sure you want to delete this environment? All{' '}
+            <strong>flags</strong> and <strong>api keys</strong> will be
+            deleted.
             <br />
             <strong className="text-destructive">
               This action is irreversible.
@@ -60,7 +60,12 @@ export const DeleteProjectDialog: FC<{ project: Doc<'projects'> }> = ({
         </DialogHeader>
         <DialogFooter>
           <Button
-            onClick={() => deleteProject({ id: project._id })}
+            onClick={() =>
+              deleteEnvironment({
+                projectId: environment.projectId,
+                environmentId: environment._id,
+              })
+            }
             variant={'destructive'}
             disabled={isPending}
             className="ml-auto"

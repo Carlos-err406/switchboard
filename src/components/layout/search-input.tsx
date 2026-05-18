@@ -2,7 +2,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { Input } from '../ui/input'
+import { Input } from '#/components/ui/input'
 
 export const SearchInput: FC = () => {
   const search = useSearch({ from: '__root__' })

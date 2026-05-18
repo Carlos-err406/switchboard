@@ -18,7 +18,6 @@ import { Route as authenticatedProjectsRouteRouteImport } from './routes/(authen
 import { Route as authenticatedProjectsIndexRouteImport } from './routes/(authenticated)/projects/index'
 import { Route as authenticatedProjectsProjectIdIndexRouteImport } from './routes/(authenticated)/projects/$projectId/index'
 import { Route as authenticatedProjectsProjectIdMembersRouteImport } from './routes/(authenticated)/projects/$projectId/members'
-import { Route as authenticatedProjectsProjectIdEnvironmentsRouteImport } from './routes/(authenticated)/projects/$projectId/environments'
 import { Route as authenticatedProjectsProjectIdApiKeysRouteImport } from './routes/(authenticated)/projects/$projectId/api-keys'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -69,12 +68,6 @@ const authenticatedProjectsProjectIdMembersRoute =
     path: '/$projectId/members',
     getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
-const authenticatedProjectsProjectIdEnvironmentsRoute =
-  authenticatedProjectsProjectIdEnvironmentsRouteImport.update({
-    id: '/$projectId/environments',
-    path: '/$projectId/environments',
-    getParentRoute: () => authenticatedProjectsRouteRoute,
-  } as any)
 const authenticatedProjectsProjectIdApiKeysRoute =
   authenticatedProjectsProjectIdApiKeysRouteImport.update({
     id: '/$projectId/api-keys',
@@ -90,7 +83,6 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/projects/': typeof authenticatedProjectsIndexRoute
   '/projects/$projectId/api-keys': typeof authenticatedProjectsProjectIdApiKeysRoute
-  '/projects/$projectId/environments': typeof authenticatedProjectsProjectIdEnvironmentsRoute
   '/projects/$projectId/members': typeof authenticatedProjectsProjectIdMembersRoute
   '/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
@@ -100,7 +92,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/projects': typeof authenticatedProjectsIndexRoute
   '/projects/$projectId/api-keys': typeof authenticatedProjectsProjectIdApiKeysRoute
-  '/projects/$projectId/environments': typeof authenticatedProjectsProjectIdEnvironmentsRoute
   '/projects/$projectId/members': typeof authenticatedProjectsProjectIdMembersRoute
   '/projects/$projectId': typeof authenticatedProjectsProjectIdIndexRoute
 }
@@ -114,7 +105,6 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/(authenticated)/projects/': typeof authenticatedProjectsIndexRoute
   '/(authenticated)/projects/$projectId/api-keys': typeof authenticatedProjectsProjectIdApiKeysRoute
-  '/(authenticated)/projects/$projectId/environments': typeof authenticatedProjectsProjectIdEnvironmentsRoute
   '/(authenticated)/projects/$projectId/members': typeof authenticatedProjectsProjectIdMembersRoute
   '/(authenticated)/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
@@ -128,7 +118,6 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/projects/'
     | '/projects/$projectId/api-keys'
-    | '/projects/$projectId/environments'
     | '/projects/$projectId/members'
     | '/projects/$projectId/'
   fileRoutesByTo: FileRoutesByTo
@@ -138,7 +127,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/projects'
     | '/projects/$projectId/api-keys'
-    | '/projects/$projectId/environments'
     | '/projects/$projectId/members'
     | '/projects/$projectId'
   id:
@@ -151,7 +139,6 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/(authenticated)/projects/'
     | '/(authenticated)/projects/$projectId/api-keys'
-    | '/(authenticated)/projects/$projectId/environments'
     | '/(authenticated)/projects/$projectId/members'
     | '/(authenticated)/projects/$projectId/'
   fileRoutesById: FileRoutesById
@@ -227,13 +214,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedProjectsProjectIdMembersRouteImport
       parentRoute: typeof authenticatedProjectsRouteRoute
     }
-    '/(authenticated)/projects/$projectId/environments': {
-      id: '/(authenticated)/projects/$projectId/environments'
-      path: '/$projectId/environments'
-      fullPath: '/projects/$projectId/environments'
-      preLoaderRoute: typeof authenticatedProjectsProjectIdEnvironmentsRouteImport
-      parentRoute: typeof authenticatedProjectsRouteRoute
-    }
     '/(authenticated)/projects/$projectId/api-keys': {
       id: '/(authenticated)/projects/$projectId/api-keys'
       path: '/$projectId/api-keys'
@@ -247,7 +227,6 @@ declare module '@tanstack/react-router' {
 interface authenticatedProjectsRouteRouteChildren {
   authenticatedProjectsIndexRoute: typeof authenticatedProjectsIndexRoute
   authenticatedProjectsProjectIdApiKeysRoute: typeof authenticatedProjectsProjectIdApiKeysRoute
-  authenticatedProjectsProjectIdEnvironmentsRoute: typeof authenticatedProjectsProjectIdEnvironmentsRoute
   authenticatedProjectsProjectIdMembersRoute: typeof authenticatedProjectsProjectIdMembersRoute
   authenticatedProjectsProjectIdIndexRoute: typeof authenticatedProjectsProjectIdIndexRoute
 }
@@ -257,8 +236,6 @@ const authenticatedProjectsRouteRouteChildren: authenticatedProjectsRouteRouteCh
     authenticatedProjectsIndexRoute: authenticatedProjectsIndexRoute,
     authenticatedProjectsProjectIdApiKeysRoute:
       authenticatedProjectsProjectIdApiKeysRoute,
-    authenticatedProjectsProjectIdEnvironmentsRoute:
-      authenticatedProjectsProjectIdEnvironmentsRoute,
     authenticatedProjectsProjectIdMembersRoute:
       authenticatedProjectsProjectIdMembersRoute,
     authenticatedProjectsProjectIdIndexRoute:

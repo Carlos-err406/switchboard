@@ -56,28 +56,35 @@ export default defineSchema({
     environmentId: v.id('environments'),
     projectId: v.id('projects'),
     value: v.union(v.string(), v.number(), v.boolean(), v.null()),
+    description: v.optional(v.string()),
     enabled: v.boolean(),
   })
     .index('by_project_id', ['projectId'])
-    .index('by_environment_id', ['environmentId']),
+    .index('by_environment_id', ['environmentId'])
+    .index('by_project_environment', ['projectId', 'environmentId'])
+    .index('by_environment_flag_key', ['environmentId', 'key']),
 
   environments: defineTable({
     projectId: v.id('projects'),
     name: v.string(),
   })
     .index('by_project_id', ['projectId'])
-    .index('by_name', ['name']),
+    .index('by_name', ['name'])
+    .index('by_name_in_project', ['projectId', 'name']),
 
   apiKeys: defineTable({
     projectId: v.id('projects'),
     environmentId: v.id('environments'),
     name: v.string(),
     keyHash: v.string(),
-    keyPrefix: v.string(), // "sk_live_abc..." for display
-    expiresAt: v.optional(v.number()),
+    keyPrefix: v.string(), // "sk_abc..." for display
+    expiresAt: v.nullable(v.number()),
     enabled: v.boolean(),
     createdBy: v.id('users'),
   })
+    .index('by_key_hash', ['keyHash'])
+    .index('by_name', ['name'])
+    .index('by_environment_id', ['environmentId'])
     .index('by_project_id', ['projectId'])
-    .index('by_key_hash', ['keyHash']),
+    .index('by_project_environment', ['projectId', 'environmentId']),
 })

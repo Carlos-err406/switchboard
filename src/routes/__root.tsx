@@ -7,10 +7,11 @@ import ConvexProvider from '../integrations/convex/provider'
 
 import appCss from '../styles.css?url'
 
-import type { ConvexQueryClient } from '@convex-dev/react-query'
-import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '#/components/layout/header.tsx'
 import { Toaster } from '#/components/ui/sonner'
+import { TooltipProvider } from '#/components/ui/tooltip.tsx'
+import type { ConvexQueryClient } from '@convex-dev/react-query'
+import type { QueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 
 interface MyRouterContext {
@@ -50,12 +51,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ConvexProvider>
-          <Header />
-          {children}
-          <Toaster />
-        </ConvexProvider>
-        <Scripts />
+        <TooltipProvider>
+          <ConvexProvider>
+            <Header />
+            {children}
+            <Toaster />
+          </ConvexProvider>
+          <Scripts />
+        </TooltipProvider>
       </body>
     </html>
   )

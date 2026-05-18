@@ -25,14 +25,14 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const renameProjectSchema = z.object({
-  projectName: z.string().min(3, 'Must have at least 3 characters'),
+const renameEnvironmentSchema = z.object({
+  environmentName: z.string().min(3, 'Must have at least 3 characters'),
 })
-type RenameProjectInputs = z.infer<typeof renameProjectSchema>
+type RenameEnvironmentInputs = z.infer<typeof renameEnvironmentSchema>
 
-export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
-  project,
-}) => {
+export const RenameEnvironmentDialog: FC<{
+  environment: Doc<'environments'>
+}> = ({ environment }) => {
   const [open, setOpen] = useState(false)
 
   const {
@@ -40,15 +40,15 @@ export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm<RenameProjectInputs>({
-    defaultValues: { projectName: project.name },
-    resolver: zodResolver(renameProjectSchema),
+  } = useForm<RenameEnvironmentInputs>({
+    defaultValues: { environmentName: environment.name },
+    resolver: zodResolver(renameEnvironmentSchema),
   })
 
   const mutationFn = useConvexMutation(
-    api.projects.mutations.renameProjectMutation,
+    api.environments.mutations.renameEnvironmentMutation,
   )
-  const { mutate: renameProject, isPending } = useMutation({
+  const { mutate: renameEnvironment, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: () => {
@@ -65,28 +65,34 @@ export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
             <Pencil />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Rename project</TooltipContent>
+        <TooltipContent side="bottom">Rename environment</TooltipContent>
       </Tooltip>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Rename project</DialogTitle>
+          <DialogTitle>Rename environment</DialogTitle>
         </DialogHeader>
         <form
           onSubmit={handleSubmit((data) =>
-            renameProject({ id: project._id, name: data.projectName }),
+            renameEnvironment({
+              environmentId: environment._id,
+              projectId: environment.projectId,
+              name: data.environmentName,
+            }),
           )}
         >
           <FieldSet>
             <Field>
-              <FieldLabel htmlFor="projectName">Project Name (new)</FieldLabel>
+              <FieldLabel htmlFor="environmentName">
+                Environment Name (new)
+              </FieldLabel>
               <Input
-                id="projectName"
-                {...register('projectName')}
-                placeholder="Acme project"
+                id="environmentName"
+                {...register('environmentName')}
+                placeholder="Acme environment"
               />
-              {errors.projectName?.message && (
-                <FieldError>{errors.projectName.message}</FieldError>
+              {errors.environmentName?.message && (
+                <FieldError>{errors.environmentName.message}</FieldError>
               )}
             </Field>
             <Button type="submit" disabled={isPending} className="ml-auto">
