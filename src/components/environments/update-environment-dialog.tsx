@@ -2,7 +2,6 @@ import { buttonVariants } from '#/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -16,9 +15,11 @@ import type { Doc } from '#convex/_generated/dataModel.js'
 import { Pencil } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { UpdateFlagForm } from './update-flag-form'
+import { UpdateEnvironmentForm } from './update-environment-form'
 
-export const UpdateFlagDialog: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
+export const UpdateEnvironmentDialog: FC<{
+  environment: Doc<'environments'>
+}> = ({ environment }) => {
   const [open, setOpen] = useState(false)
 
   return (
@@ -29,18 +30,17 @@ export const UpdateFlagDialog: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
             <Pencil />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Update flag</TooltipContent>
+        <TooltipContent side="bottom">Rename environment</TooltipContent>
       </Tooltip>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update flag</DialogTitle>
-          <DialogDescription>
-            Update a feature flag for the current environment. Values are
-            inferred to null, boolean, number or "string"
-          </DialogDescription>
+          <DialogTitle>Rename environment</DialogTitle>
         </DialogHeader>
-        <UpdateFlagForm flag={flag} onSuccess={() => setOpen(false)} />
+        <UpdateEnvironmentForm
+          environment={environment}
+          onSuccess={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   )

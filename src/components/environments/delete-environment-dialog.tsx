@@ -62,7 +62,6 @@ export const DeleteEnvironmentDialog: FC<{
           <Button
             onClick={() =>
               deleteEnvironment({
-                projectId: environment.projectId,
                 environmentId: environment._id,
               })
             }

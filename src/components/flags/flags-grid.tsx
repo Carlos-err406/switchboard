@@ -8,24 +8,18 @@ import { CreateFlagCard } from './create-flag-card'
 import { FlagCard } from './flag-card'
 
 export const FlagsGrid: FC<{
-  projectId: Id<'projects'>
   environmentId: Id<'environments'>
-}> = ({ projectId, environmentId }) => {
+}> = ({ environmentId }) => {
   const search = useSearch({ from: '__root__' })
-  const { data: flags, error } = useQuery({
+  const { data: flags } = useQuery({
     ...convexQuery(api.flags.queries.getFlagsQuery, {
       q: search.q,
-      projectId,
       environmentId,
     }),
   })
-  if (error) {
-    return error.message
-  }
-
   return (
-    <div className="grid grid-cols-5 gap-3 w-full">
-      <CreateFlagCard projectId={projectId} environmentId={environmentId} />
+    <div className="gap-3 w-full auto-grid [--min-col-size:250px]">
+      <CreateFlagCard environmentId={environmentId} />
       {flags?.map((flag) => (
         <FlagCard flag={flag} key={flag._id} />
       ))}

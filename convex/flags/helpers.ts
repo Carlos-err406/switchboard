@@ -3,12 +3,12 @@ import type { GenericQueryCtx } from 'convex/server'
 
 export const getFlags = async (
   ctx: GenericQueryCtx<DataModel>,
-  args: { projectId: Id<'projects'>; environmentId: Id<'environments'> },
+  args: { environmentId: Id<'environments'> },
 ) => {
   return await ctx.db
     .query('flags')
-    .withIndex('by_project_environment', (q) =>
-      q.eq('projectId', args.projectId).eq('environmentId', args.environmentId),
+    .withIndex('by_environment_id', (q) =>
+      q.eq('environmentId', args.environmentId),
     )
     .order('desc')
     .collect()

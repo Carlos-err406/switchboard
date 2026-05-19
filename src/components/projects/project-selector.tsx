@@ -23,7 +23,7 @@ export const ProjectSelector: FC<{
   const navigate = useNavigate()
   return (
     <>
-      <DropdownMenu >
+      <DropdownMenu>
         <DropdownMenuTrigger className={buttonVariants({ variant: 'outline' })}>
           <Folder /> {activeProject.name}
         </DropdownMenuTrigger>
@@ -44,7 +44,10 @@ export const ProjectSelector: FC<{
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator></DropdownMenuSeparator>
-          <DropdownMenuItem onClick={() => setOpenCreateProject(true)} className="text-nowrap">
+          <DropdownMenuItem
+            onClick={() => setOpenCreateProject(true)}
+            className="text-nowrap"
+          >
             <Folder />
             Create Project
           </DropdownMenuItem>

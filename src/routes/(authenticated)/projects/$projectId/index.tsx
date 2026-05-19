@@ -10,9 +10,8 @@ import {
 } from '#/components/ui/tabs.tsx'
 import { api } from '#convex/_generated/api.js'
 import type { Id } from '#convex/_generated/dataModel.js'
-import { convexQuery } from '@convex-dev/react-query'
-import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, useSearch } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useQuery } from 'convex/react'
 import { Flag, Key, Stone, Users2 } from 'lucide-react'
 
 export const Route = createFileRoute('/(authenticated)/projects/$projectId/')({
@@ -26,24 +25,30 @@ export const Route = createFileRoute('/(authenticated)/projects/$projectId/')({
 
 function RouteComponent() {
   const { projectId } = Route.useParams()
-  const { data: project, isLoading } = useQuery({
-    ...convexQuery(api.projects.queries.getProjectQuery, { projectId }),
-  })
-  const { environment } = useSearch({
-    from: '/(authenticated)/projects/$projectId/',
-  })
+  const search = Route.useSearch()
+  const { environment } = search
+  const navigate = useNavigate()
+  const project = useQuery(api.projects.queries.getProjectQuery, { projectId })
 
-  if (isLoading) return 'loading...'
-
-  if (!project || project.environments.length == 0)
-    return 'no envs create empty state'
+  if (!project) return null
 
   const activeEnvironment =
     project.environments.find((e) => e._id == environment) ??
     project.environments[0]
 
+  const activeTab = search.tab ?? 'flags'
+
   return (
-    <Tabs defaultValue="flags" className="space-y-4">
+    <Tabs
+      value={activeTab}
+      onValueChange={(tab) =>
+        navigate({
+          to: '.',
+          search: { ...search, tab: tab as typeof search.tab },
+        })
+      }
+      className="space-y-4"
+    >
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center gap-4">
           <ProjectSelector activeProject={project} />
@@ -66,10 +71,7 @@ function RouteComponent() {
       <TabsContent value="flags">
         <div className="space-y-4">
           <EnvironmentSelector project={project} />
-          <FlagsGrid
-            environmentId={activeEnvironment._id}
-            projectId={activeEnvironment.projectId}
-          />
+          <FlagsGrid environmentId={activeEnvironment._id} />
         </div>
       </TabsContent>
       <TabsContent value="environments">

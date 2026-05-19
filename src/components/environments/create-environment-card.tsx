@@ -10,7 +10,6 @@ import {
   PopoverTrigger,
 } from '#/components/ui/popover'
 import type { Id } from '#convex/_generated/dataModel.js'
-import { useNavigate } from '@tanstack/react-router'
 import { Stone } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
@@ -21,7 +20,6 @@ type Props = {
 }
 export const CreateEnvironmentCard: FC<Props> = ({ projectId }) => {
   const [open, setOpen] = useState(false)
-  const navigate = useNavigate()
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
@@ -45,9 +43,8 @@ export const CreateEnvironmentCard: FC<Props> = ({ projectId }) => {
       >
         <CreateEnvironmentForm
           projectId={projectId}
-          onSuccess={(environmentId) => {
+          onSuccess={() => {
             setOpen(false)
-            navigate({ to: '.', search: { environment: environmentId } })
           }}
         />
       </PopoverContent>

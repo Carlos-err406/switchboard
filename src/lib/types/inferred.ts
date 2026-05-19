@@ -9,4 +9,6 @@ export type DetailedProject = FunctionReturnType<
   typeof api.projects.queries.getProjectQuery
 >
 
-export type DetailedEnvironment = DetailedProject['environments'][number]
+export type DetailedEnvironment = FunctionReturnType<
+  typeof api.environments.queries.getEnvironmentsQuery
+>[number]

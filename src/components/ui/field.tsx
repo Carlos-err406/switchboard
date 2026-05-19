@@ -1,6 +1,6 @@
 import type { VariantProps } from 'class-variance-authority'
 import { cva } from 'class-variance-authority'
-import { useMemo } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 
 import { Label } from '#/components/ui/label.tsx'
 import { Separator } from '#/components/ui/separator.tsx'
@@ -68,19 +68,30 @@ const fieldVariants = cva(
   },
 )
 
+const FieldContext = createContext<{ required?: boolean }>({})
+
+export function useField() {
+  return useContext(FieldContext)
+}
+
 function Field({
   className,
   orientation = 'vertical',
+  required = false,
   ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof fieldVariants>) {
+}: React.ComponentProps<'div'> &
+  VariantProps<typeof fieldVariants> & { required?: boolean }) {
   return (
-    <div
-      role="group"
-      data-slot="field"
-      data-orientation={orientation}
-      className={cn(fieldVariants({ orientation }), className)}
-      {...props}
-    />
+    <FieldContext.Provider value={{ required }}>
+      <div
+        role="group"
+        data-slot="field"
+        {...(required ? { 'data-required': '' } : {})}
+        data-orientation={orientation}
+        className={cn(fieldVariants({ orientation }), className)}
+        {...props}
+      />
+    </FieldContext.Provider>
   )
 }
 

@@ -66,6 +66,7 @@ export default defineSchema({
 
   environments: defineTable({
     projectId: v.id('projects'),
+    description: v.optional(v.string()),
     name: v.string(),
   })
     .index('by_project_id', ['projectId'])

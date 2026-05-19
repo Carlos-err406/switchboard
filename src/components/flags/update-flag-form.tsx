@@ -3,7 +3,7 @@ import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
 import { Input } from '#/components/ui/input'
 import { toastMutationError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
-import type { Id } from '#convex/_generated/dataModel.js'
+import type { Doc } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
@@ -11,37 +11,45 @@ import type { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const createFlagSchema = z.object({
+const updateFlagSchema = z.object({
   key: z.string().min(3, 'Must have at least 3 characters'),
   description: z.string().optional(),
   value: z
     .union([z.string(), z.number(), z.boolean(), z.null()])
-    .transform((arg) => {
-      if (arg == null || arg === 'null' || arg === '') return null
-      if (arg === 'true') return true
-      if (arg === 'false') return false
-      if (/^\d+$/.test(String(arg))) return Number(arg)
-      return String(arg)
-    }),
+    .transform((arg) =>
+      arg === 'null'
+        ? null
+        : arg === 'true'
+          ? true
+          : arg === 'false'
+            ? false
+            : isNaN(Number(arg))
+              ? arg
+              : Number(arg),
+    ),
 })
-type CreateFlagInputs = z.infer<typeof createFlagSchema>
+type UpdateFlagInputs = z.infer<typeof updateFlagSchema>
 type Props = {
-  environmentId: Id<'environments'>
+  flag: Doc<'flags'>
   onSuccess?: () => void
 }
-export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
+export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm<CreateFlagInputs>({
-    defaultValues: { key: '', description: '', value: '' },
-    resolver: zodResolver(createFlagSchema),
+  } = useForm<UpdateFlagInputs>({
+    defaultValues: {
+      key: flag.key,
+      description: flag.description,
+      value: flag.value,
+    },
+    resolver: zodResolver(updateFlagSchema),
   })
 
-  const mutationFn = useConvexMutation(api.flags.mutations.createFlagMutation)
-  const { mutate: createFlag, isPending } = useMutation({
+  const mutationFn = useConvexMutation(api.flags.mutations.updateFlagMutation)
+  const { mutate: updateFlag, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: () => {
@@ -53,16 +61,16 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        createFlag({
+        updateFlag({
+          flagId: flag._id,
           key: data.key,
           value: data.value,
           description: data.description,
-          environmentId,
         }),
       )}
     >
       <FieldSet>
-        <Field required>
+        <Field>
           <FieldLabel htmlFor="key">Flag Key</FieldLabel>
           <Input id="key" {...register('key')} placeholder="logs.enable" />
           {errors.key?.message && <FieldError>{errors.key.message}</FieldError>}

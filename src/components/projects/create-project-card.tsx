@@ -1,8 +1,17 @@
 import { Folder } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Card, CardDescription, CardHeader, CardTitle } from '#/components/ui/card'
-import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui/card'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '#/components/ui/popover'
 import { CreateProjectForm } from './create-project-form'
 
 export const CreateProjectCard: FC = () => {

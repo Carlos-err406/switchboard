@@ -19,12 +19,8 @@ export const ProjectCard: FC<{ project: ProjectSummary }> = ({ project }) => {
     <Card key={project._id}>
       <CardHeader className="flex items-center justify-between">
         <Tooltip>
-          <TooltipTrigger>
-            <Link
-              to="/projects/$projectId"
-              params={{ projectId: project._id }}
-              className="w-fit"
-            >
+          <TooltipTrigger className="text-start max-w-[calc(var(--min-col-size)-80px)] truncate line-clamp-1">
+            <Link to="/projects/$projectId" params={{ projectId: project._id }}>
               {project.name}
             </Link>
           </TooltipTrigger>

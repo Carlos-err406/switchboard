@@ -28,9 +28,9 @@ export const CreateEnvironmentDialog: FC<{
         </DialogHeader>
         <CreateEnvironmentForm
           projectId={projectId}
-          onSuccess={(id) => {
+          onSuccess={(environmentId) => {
             setOpen(false)
-            navigate({ to: '.', search: { environment: id } })
+            navigate({ to: '.', search: { environment: environmentId } })
           }}
         />
       </DialogContent>

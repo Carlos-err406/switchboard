@@ -2,14 +2,22 @@ import type { Id } from '#convex/_generated/dataModel.js'
 import { Flag } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { Card, CardDescription, CardHeader, CardTitle } from '#/components/ui/card'
-import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui/card'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '#/components/ui/popover'
 import { CreateFlagForm } from './create-flag-form'
 
 export const CreateFlagCard: FC<{
-  projectId: Id<'projects'>
   environmentId: Id<'environments'>
-}> = ({ projectId, environmentId }) => {
+}> = ({ environmentId }) => {
   const [open, setOpen] = useState(false)
 
   return (
@@ -35,7 +43,6 @@ export const CreateFlagCard: FC<{
         align="end"
       >
         <CreateFlagForm
-          projectId={projectId}
           environmentId={environmentId}
           onSuccess={() => setOpen(false)}
         />

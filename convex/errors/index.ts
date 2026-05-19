@@ -15,6 +15,9 @@ export const flagNotFound = () => new ConvexError('Flag not found')
 export const environmentNotFound = () =>
   new ConvexError('Environment not found')
 
+export const cantDeleteTheLastEnvironment = () =>
+  new ConvexError('Can not delete the last environment')
+
 export const notAProjectMember = () =>
   new ConvexError('You are not a project member')
 

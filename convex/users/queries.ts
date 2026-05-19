@@ -1,5 +1,5 @@
-import { query } from '#convex/_generated/server.js';
-import { getAuthUser } from './helpers';
+import { query } from '#convex/_generated/server.js'
+import { getAuthUser } from './helpers'
 
 export const currentUserQuery = query({
   args: {},

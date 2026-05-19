@@ -55,13 +55,7 @@ export const DeleteFlagDialog: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
         </DialogHeader>
         <DialogFooter>
           <Button
-            onClick={() =>
-              deleteFlag({
-                environmentId: flag.environmentId,
-                projectId: flag.projectId,
-                flagId: flag._id,
-              })
-            }
+            onClick={() => deleteFlag({ flagId: flag._id })}
             variant={'destructive'}
             disabled={isPending}
             className="ml-auto"

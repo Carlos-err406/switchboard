@@ -28,7 +28,7 @@ export const createProjectMutation = mutation({
       throw noPermission('create projects')
     const existing = await getProjectByName(ctx, { name: args.name })
     if (existing) throw projectAlreadyExist()
-      
+
     const inserted = await ctx.db.insert('projects', args)
     await Promise.all([
       // insert the creator in to the project users with full permissions
@@ -51,12 +51,13 @@ export const createProjectMutation = mutation({
           'environment.update',
         ],
       }),
-      // create the default environment
+
       ctx.db.insert('environments', {
         projectId: inserted,
-        name: 'Default',
+        name: 'Production',
       }),
     ])
+    return inserted
   },
 })
 

@@ -16,7 +16,6 @@ import { getFlag, getFlagByKey } from './helpers'
 
 export const createFlagMutation = mutation({
   args: {
-    projectId: v.id('projects'),
     environmentId: v.id('environments'),
     key: v.string(),
     value: v.union(v.string(), v.number(), v.boolean(), v.null()),
@@ -26,23 +25,21 @@ export const createFlagMutation = mutation({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
 
-    const [project, environment, projectUser, existingFlag] = await Promise.all(
-      [
-        getProject(ctx, { id: args.projectId }),
-        getEnvironment(ctx, { id: args.environmentId }),
-        getProjectUser(ctx, {
-          projectId: args.projectId,
-          userId: userId,
-        }),
-        getFlagByKey(ctx, { environmentId: args.environmentId, key: args.key }),
-      ],
-    )
+    const environment = await getEnvironment(ctx, { id: args.environmentId })
+    if (!environment) throw environmentNotFound()
+    const [project, projectUser, existingFlag] = await Promise.all([
+      getProject(ctx, { id: environment.projectId }),
+      getProjectUser(ctx, {
+        projectId: environment.projectId,
+        userId: userId,
+      }),
+      getFlagByKey(ctx, { environmentId: args.environmentId, key: args.key }),
+    ])
 
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
     if (!projectUser.permissions.includes('flag.create'))
       throw noPermission('create flags')
-    if (!environment) throw environmentNotFound()
     if (existingFlag) throw flagAlreadyExistInEnvironment()
 
     await ctx.db.insert('flags', {
@@ -58,8 +55,6 @@ export const createFlagMutation = mutation({
 
 export const updateFlagMutation = mutation({
   args: {
-    projectId: v.id('projects'),
-    environmentId: v.id('environments'),
     flagId: v.id('flags'),
     key: v.optional(v.string()),
     value: v.optional(v.union(v.string(), v.number(), v.boolean(), v.null())),
@@ -70,22 +65,23 @@ export const updateFlagMutation = mutation({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
 
-    const [project, environment, projectUser, flag] = await Promise.all([
-      getProject(ctx, { id: args.projectId }),
-      getEnvironment(ctx, { id: args.environmentId }),
+    const flag = await getFlag(ctx, { id: args.flagId })
+    if (!flag) throw flagNotFound()
+
+    const [project, projectUser, environment] = await Promise.all([
+      getProject(ctx, { id: flag.projectId }),
       getProjectUser(ctx, {
-        projectId: args.projectId,
+        projectId: flag.projectId,
         userId: userId,
       }),
-      getFlag(ctx, { id: args.flagId }),
+      getEnvironment(ctx, { id: flag.environmentId }),
     ])
 
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
+    if (!environment) throw environmentNotFound()
     if (!projectUser.permissions.includes('flag.update'))
       throw noPermission('update flags')
-    if (!environment) throw environmentNotFound()
-    if (!flag) throw flagNotFound()
 
     const updatedFlag: typeof flag = {
       ...flag,
@@ -101,23 +97,20 @@ export const updateFlagMutation = mutation({
 })
 
 export const deleteFlagMutation = mutation({
-  args: {
-    projectId: v.id('projects'),
-    environmentId: v.id('environments'),
-    flagId: v.id('flags'),
-  },
+  args: { flagId: v.id('flags') },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
 
-    const [project, environment, projectUser, flag] = await Promise.all([
-      getProject(ctx, { id: args.projectId }),
-      getEnvironment(ctx, { id: args.environmentId }),
+    const flag = await getFlag(ctx, { id: args.flagId })
+    if (!flag) throw flagNotFound()
+    const [project, environment, projectUser] = await Promise.all([
+      getProject(ctx, { id: flag.projectId }),
+      getEnvironment(ctx, { id: flag.environmentId }),
       getProjectUser(ctx, {
-        projectId: args.projectId,
+        projectId: flag.projectId,
         userId: userId,
       }),
-      getFlag(ctx, { id: args.flagId }),
     ])
 
     if (!project) throw projectNotFound()
@@ -125,7 +118,6 @@ export const deleteFlagMutation = mutation({
     if (!projectUser.permissions.includes('flag.delete'))
       throw noPermission('delete flags')
     if (!environment) throw environmentNotFound()
-    if (!flag) throw flagNotFound()
 
     await ctx.db.delete('flags', flag._id)
   },

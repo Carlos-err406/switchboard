@@ -73,14 +73,16 @@ export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
           <DialogTitle>Rename project</DialogTitle>
         </DialogHeader>
         <form
+          noValidate
           onSubmit={handleSubmit((data) =>
             renameProject({ id: project._id, name: data.projectName }),
           )}
         >
           <FieldSet>
-            <Field>
+            <Field required>
               <FieldLabel htmlFor="projectName">Project Name (new)</FieldLabel>
               <Input
+                required
                 id="projectName"
                 {...register('projectName')}
                 placeholder="Acme project"

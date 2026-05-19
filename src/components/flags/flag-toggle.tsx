@@ -27,8 +27,6 @@ export const FlagToggle: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
             checked={flag.enabled}
             onCheckedChange={(checked) =>
               updateFlag({
-                environmentId: flag.environmentId,
-                projectId: flag.projectId,
                 flagId: flag._id,
                 enabled: checked,
               })

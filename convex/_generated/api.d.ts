@@ -18,7 +18,7 @@ import type * as errors_index from "../errors/index.js";
 import type * as flags_helpers from "../flags/helpers.js";
 import type * as flags_mutations from "../flags/mutations.js";
 import type * as flags_queries from "../flags/queries.js";
-import type * as helpers from "../helpers.js";
+import type * as global from "../global.js";
 import type * as http from "../http.js";
 import type * as infra_generateKeys from "../infra/generateKeys.js";
 import type * as projects_helpers from "../projects/helpers.js";
@@ -44,7 +44,7 @@ declare const fullApi: ApiFromModules<{
   "flags/helpers": typeof flags_helpers;
   "flags/mutations": typeof flags_mutations;
   "flags/queries": typeof flags_queries;
-  helpers: typeof helpers;
+  global: typeof global;
   http: typeof http;
   "infra/generateKeys": typeof infra_generateKeys;
   "projects/helpers": typeof projects_helpers;

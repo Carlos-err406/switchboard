@@ -53,22 +53,32 @@ export const getProjectQuery = query({
   handler: async (ctx, args) => {
     const user = await getAuthUser(ctx)
     if (!user) throw notAuthenticated()
-    const projectUser = await getProjectUser(ctx, {
-      projectId: args.projectId,
-      userId: user._id,
-    })
+    const [projectUser, project, environments] = await Promise.all([
+      getProjectUser(ctx, {
+        projectId: args.projectId,
+        userId: user._id,
+      }),
+      getProject(ctx, { id: args.projectId }),
+      getProjectEnvironments(ctx, {
+        id: args.projectId,
+      }),
+    ])
+
     if (!projectUser && user.role !== 'admin') throw notAProjectMember()
-    const project = await getProject(ctx, { id: args.projectId })
     if (!project) throw projectNotFound()
-    const environments = await getProjectEnvironments(ctx, {
-      id: args.projectId,
-    })
+
     const richEnvironments = await Promise.all(
       environments.map(async (environment) => {
         const flags = await getEnvironmentFlags(ctx, { id: environment._id })
         return { ...environment, flags }
       }),
     )
-    return { ...project, environments: richEnvironments }
+    return {
+      ...project,
+      environments: richEnvironments as [
+        (typeof richEnvironments)[number],
+        ...typeof richEnvironments,
+      ],
+    }
   },
 })

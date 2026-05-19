@@ -1,41 +1,44 @@
 import { buttonVariants } from '#/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '#/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui/card'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '#/components/ui/tooltip'
+import type { DetailedEnvironment } from '#/lib/types/inferred.ts'
 import { cn } from '#/lib/utils.ts'
-import type { Doc } from '#convex/_generated/dataModel.js'
-import { Link } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { ExternalLink } from 'lucide-react'
 import type { ComponentProps, FC, PropsWithChildren } from 'react'
 import { DeleteEnvironmentDialog } from './delete-environment-dialog'
-import { RenameEnvironmentDialog } from './rename-environment-dialog'
+import { UpdateEnvironmentDialog } from './update-environment-dialog'
+import { Badge } from '../ui/badge'
 
-export const EnvironmentCard: FC<{ environment: Doc<'environments'> }> = ({
+export const EnvironmentCard: FC<{ environment: DetailedEnvironment }> = ({
   environment,
 }) => {
   return (
     <Card key={environment._id}>
-      <CardHeader className="flex items-center justify-between">
+      <CardHeader>
         <GoToEnvironment
           environment={environment}
           className="w-fit"
           tooltipSide="right"
         >
-          {environment.name}
+          <CardTitle>{environment.name}</CardTitle>
         </GoToEnvironment>
+        <CardDescription>{environment.description}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 flex h-full items-end">
         <div className="flex flex-wrap gap-2">
-          {/* <Badge variant={'outline'}>
-            {environment.environmentsCount} environment(s)
-          </Badge>
-          <Badge variant={'outline'}>{environment.flagsCount} flags(s)</Badge>
-          <Badge variant={'outline'}>
-            {environment.membersCount} member(s)
-          </Badge> */}
+          <Badge variant={'outline'}>{environment.flags.length} flag(s)</Badge>
         </div>
       </CardContent>
 
@@ -47,7 +50,7 @@ export const EnvironmentCard: FC<{ environment: Doc<'environments'> }> = ({
         >
           <ExternalLink />
         </GoToEnvironment>
-        <RenameEnvironmentDialog environment={environment} />
+        <UpdateEnvironmentDialog environment={environment} />
         <DeleteEnvironmentDialog environment={environment} />
       </CardFooter>
     </Card>
@@ -56,22 +59,25 @@ export const EnvironmentCard: FC<{ environment: Doc<'environments'> }> = ({
 
 const GoToEnvironment: FC<
   {
-    environment: Doc<'environments'>
+    environment: DetailedEnvironment
     className?: string
     tooltipSide?: ComponentProps<typeof TooltipContent>['side']
   } & PropsWithChildren
 > = ({ environment, children, className, tooltipSide }) => {
+  const navigate = useNavigate()
   return (
     <Tooltip>
-      <TooltipTrigger>
-        <Link
-          to="/projects/$projectId"
-          params={{ projectId: environment.projectId }}
-          search={{ environment: environment._id }}
-          className={cn(className)}
-        >
-          {children}
-        </Link>
+      <TooltipTrigger
+        className={cn(className)}
+        onClick={() =>
+          navigate({
+            to: '/projects/$projectId',
+            params: { projectId: environment.projectId },
+            search: { environment: environment._id, tab: 'flags' },
+          })
+        }
+      >
+        {children}
       </TooltipTrigger>
       <TooltipContent side={tooltipSide}>Go to environment</TooltipContent>
     </Tooltip>

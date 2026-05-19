@@ -8,6 +8,7 @@ export const getProjectEnvironments = async (
   return await ctx.db
     .query('environments')
     .withIndex('by_project_id', (q) => q.eq('projectId', args.id))
+    .order('desc')
     .collect()
 }
 

@@ -1,79 +1,85 @@
+import { Button } from '#/components/ui/button'
+import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
+import { Input } from '#/components/ui/input'
 import { toastMutationError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
+import type { Doc } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
+import type { FunctionReturnType } from 'convex/server'
 import type { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button } from '../ui/button'
-import { Field, FieldError, FieldLabel, FieldSet } from '../ui/field'
-import { Input } from '../ui/input'
-import type { Id } from '#convex/_generated/dataModel.js'
-import { toast } from 'sonner'
-import type { FunctionReturnType } from 'convex/server'
 
-const createEnvironmentSchema = z.object({
+const updateEnvironmentSchema = z.object({
   name: z.string().min(3, 'Must have at least 3 characters'),
   description: z.string().optional(),
 })
-type CreateEnvironmentInputs = z.infer<typeof createEnvironmentSchema>
+type UpdateEnvironmentInputs = z.infer<typeof updateEnvironmentSchema>
+
 type Props = {
+  environment: Doc<'environments'>
   onSuccess?: (
     result: FunctionReturnType<
-      typeof api.environments.mutations.createEnvironmentMutation
+      typeof api.environments.mutations.updateEnvironmentMutation
     >,
   ) => void
-  projectId: Id<'projects'>
 }
-export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
+export const UpdateEnvironmentForm: FC<Props> = ({
+  environment,
+  onSuccess,
+}) => {
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm<CreateEnvironmentInputs>({
-    defaultValues: { name: '', description: '' },
-    resolver: zodResolver(createEnvironmentSchema),
+  } = useForm<UpdateEnvironmentInputs>({
+    defaultValues: {
+      name: environment.name,
+      description: environment.description,
+    },
+    resolver: zodResolver(updateEnvironmentSchema),
   })
 
   const mutationFn = useConvexMutation(
-    api.environments.mutations.createEnvironmentMutation,
+    api.environments.mutations.updateEnvironmentMutation,
   )
-  const { mutate: createEnvironment, isPending } = useMutation({
+  const { mutate: updateEnvironment, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: (result) => {
-      reset()
-      toast.success('New environment created')
       onSuccess?.(result)
+      reset()
     },
   })
+
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        createEnvironment({
+        updateEnvironment({
+          environmentId: environment._id,
           name: data.name,
           description: data.description,
-          projectId,
         }),
       )}
     >
       <FieldSet>
         <Field>
-          <FieldLabel htmlFor="name">Environment description</FieldLabel>
-          <Input id="name" {...register('name')} placeholder="CI" />
+          <FieldLabel htmlFor="name">Name</FieldLabel>
+          <Input
+            id="name"
+            {...register('name')}
+            placeholder="Acme environment"
+          />
           {errors.name?.message && (
             <FieldError>{errors.name.message}</FieldError>
           )}
         </Field>
         <Field>
-          <FieldLabel htmlFor="description">Environment description</FieldLabel>
-          <Input
-            id="description"
-            {...register('description')}
-            placeholder="to use in CI/CD pipelines"
-          />
+          <FieldLabel htmlFor="description">Description</FieldLabel>
+          <Input id="description" {...register('description')} />
           {errors.description?.message && (
             <FieldError>{errors.description.message}</FieldError>
           )}

@@ -1,9 +1,11 @@
 import { mutation } from '#convex/_generated/server.js'
-import { getEnvironmentFlags } from '#convex/flags/helpers.js'
 import { getProject, getProjectUser } from '#convex/projects/helpers.js'
+
+import { getEnvironmentFlags } from '#convex/flags/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import {
+  cantDeleteTheLastEnvironment,
   environmentAlreadyExist,
   environmentNotFound,
   noPermission,
@@ -11,10 +13,18 @@ import {
   notAuthenticated,
   projectNotFound,
 } from '../errors'
-import { getEnvironment, getEnvironmentByName } from './helpers'
+import {
+  getEnvironment,
+  getEnvironmentByName,
+  getProjectEnvironments,
+} from './helpers'
 
 export const createEnvironmentMutation = mutation({
-  args: { projectId: v.id('projects'), name: v.string() },
+  args: {
+    projectId: v.id('projects'),
+    name: v.string(),
+    description: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
@@ -38,29 +48,35 @@ export const createEnvironmentMutation = mutation({
     return await ctx.db.insert('environments', {
       projectId: args.projectId,
       name: args.name,
+      description: args.description,
     })
   },
 })
 
 export const deleteEnvironmentMutation = mutation({
-  args: { projectId: v.id('projects'), environmentId: v.id('environments') },
+  args: { environmentId: v.id('environments') },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
+    const environment = await getEnvironment(ctx, { id: args.environmentId })
+    if (!environment) throw environmentNotFound()
 
-    const [projectUser, project, flags] = await Promise.all([
-      getProjectUser(ctx, {
-        projectId: args.projectId,
-        userId: userId,
-      }),
-      getProject(ctx, { id: args.projectId }),
-      getEnvironmentFlags(ctx, { id: args.environmentId }),
-    ])
+    const [projectUser, projectEnvironments, project, flags] =
+      await Promise.all([
+        getProjectUser(ctx, {
+          projectId: environment.projectId,
+          userId: userId,
+        }),
+        getProjectEnvironments(ctx, { id: environment.projectId }),
+        getProject(ctx, { id: environment.projectId }),
+        getEnvironmentFlags(ctx, { id: environment._id }),
+      ])
 
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
     if (!projectUser.permissions.includes('environment.delete'))
       throw noPermission('delete environments')
+    if (projectEnvironments.length === 1) throw cantDeleteTheLastEnvironment()
 
     await Promise.all([
       ctx.db.delete('environments', args.environmentId),
@@ -69,30 +85,38 @@ export const deleteEnvironmentMutation = mutation({
   },
 })
 
-export const renameEnvironmentMutation = mutation({
+export const updateEnvironmentMutation = mutation({
   args: {
     environmentId: v.id('environments'),
-    projectId: v.id('projects'),
-    name: v.string(),
+    name: v.optional(v.string()),
+    description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
-    const [projectUser, project, environment] = await Promise.all([
+    const environment = await getEnvironment(ctx, { id: args.environmentId })
+    if (!environment) throw environmentNotFound()
+
+    const [projectUser, project] = await Promise.all([
       getProjectUser(ctx, {
-        projectId: args.projectId,
+        projectId: environment.projectId,
         userId: userId,
       }),
-      getProject(ctx, { id: args.projectId }),
-      getEnvironment(ctx, { id: args.environmentId }),
+      getProject(ctx, { id: environment.projectId }),
     ])
 
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
     if (!projectUser.permissions.includes('environment.update'))
       throw noPermission('update environments')
-    if (!environment) throw environmentNotFound()
-
-    await ctx.db.patch('environments', environment._id, { name: args.name })
+    const updatedEnv: typeof environment = {
+      ...environment,
+      name: args.name !== undefined ? args.name : environment.name,
+      description:
+        args.description !== undefined
+          ? args.description
+          : environment.description,
+    }
+    await ctx.db.replace('environments', environment._id, updatedEnv)
   },
 })

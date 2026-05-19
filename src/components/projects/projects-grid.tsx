@@ -13,7 +13,7 @@ export const ProjectsGrid: FC = () => {
   })
 
   return (
-    <div className="grid grid-cols-6 gap-3 w-full">
+    <div className="gap-3 w-full auto-grid [--min-col-size:250px]">
       <CreateProjectCard />
       {data?.map((project) => (
         <ProjectCard project={project} key={project._id} />

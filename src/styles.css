@@ -58,6 +58,7 @@
   --chart-4: oklch(0.37 0.013 285.805);
   --chart-5: oklch(0.274 0.006 286.033);
   --radius: 0.625rem;
+  --min-col-size: 250px;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.21 0.006 285.885);
@@ -167,7 +168,13 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
-
+@utility auto-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(var(--min-col-size), 100%), 1fr)
+  );
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -183,5 +190,10 @@
 
   a {
     @apply border-b hover:border-muted-foreground transition-colors;
+  }
+
+  [data-slot='field'][data-required] > label::after {
+    content: '*';
+    color: red;
   }
 }

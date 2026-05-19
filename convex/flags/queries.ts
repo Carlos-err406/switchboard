@@ -14,7 +14,6 @@ import { getFlag, getFlags } from './helpers'
 
 export const getFlagsQuery = query({
   args: {
-    projectId: v.id('projects'),
     environmentId: v.id('environments'),
     q: v.optional(v.string()),
   },
@@ -22,24 +21,29 @@ export const getFlagsQuery = query({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
 
-    const [project, environment, projectUser] = await Promise.all([
-      getProject(ctx, { id: args.projectId }),
-      getEnvironment(ctx, { id: args.environmentId }),
+    const environment = await getEnvironment(ctx, { id: args.environmentId })
+    if (!environment) throw environmentNotFound()
+    const [project, projectUser] = await Promise.all([
+      getProject(ctx, { id: environment.projectId }),
       getProjectUser(ctx, {
-        projectId: args.projectId,
+        projectId: environment.projectId,
         userId: userId,
       }),
     ])
 
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
-    if (!environment) throw environmentNotFound()
 
     const flags = await getFlags(ctx, {
-      projectId: project._id,
       environmentId: environment._id,
     })
-    return flags.filter((flag) => flag.key.includes(args.q ?? ''))
+    const searchQuery = args.q?.toLowerCase() ?? ''
+    return flags.filter(
+      (flag) =>
+        flag.key.toLowerCase().includes(searchQuery) ||
+        flag.description?.toLowerCase().includes(searchQuery) ||
+        String(flag.value).toLowerCase().includes(searchQuery),
+    )
   },
 })
 

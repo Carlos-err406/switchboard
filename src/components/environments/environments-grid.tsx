@@ -9,7 +9,7 @@ import { EnvironmentCard } from './environment-card'
 export const EnvironmentsGrid: FC = () => {
   const search = useSearch({ from: '__root__' })
   const params = useParams({ from: '/(authenticated)/projects/$projectId/' })
-  const { data } = useQuery({
+  const { data: environments } = useQuery({
     ...convexQuery(api.environments.queries.getEnvironmentsQuery, {
       projectId: params.projectId,
       q: search.q,
@@ -17,9 +17,9 @@ export const EnvironmentsGrid: FC = () => {
   })
 
   return (
-    <div className="grid grid-cols-6 gap-3 w-full">
+    <div className="auto-grid [--min-col-width:150px] gap-3 w-full">
       <CreateEnvironmentCard projectId={params.projectId} />
-      {data?.map((environment) => (
+      {environments?.map((environment) => (
         <EnvironmentCard environment={environment} key={environment._id} />
       ))}
     </div>
