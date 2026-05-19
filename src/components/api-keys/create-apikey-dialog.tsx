@@ -8,12 +8,12 @@ import {
   DialogTrigger,
 } from '#/components/ui/dialog'
 import type { Id } from '#convex/_generated/dataModel.js'
-import { Flag } from 'lucide-react'
+import { Key } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
-import { CreateFlagForm } from './create-flag-form'
+import { CreateApiKeyForm } from './create-apikey-form'
 
-export const CreateFlagDialog: FC<{
+export const CreateApiKeyDialog: FC<{
   environmentId: Id<'environments'>
 }> = ({ environmentId }) => {
   const [open, setOpen] = useState(false)
@@ -21,17 +21,17 @@ export const CreateFlagDialog: FC<{
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className={buttonVariants({ variant: 'default' })}>
-        <Flag /> Create Flag
+        <Key /> Create ApiKey
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Flag creation</DialogTitle>
+          <DialogTitle>Api Key creation</DialogTitle>
           <DialogDescription>
-            Create a feature flag for the current environment. Values are
-            inferred to null, boolean, number or "string"
+            Create an api key so you can query this environment's feature flags
+            securely
           </DialogDescription>
         </DialogHeader>
-        <CreateFlagForm
+        <CreateApiKeyForm
           environmentId={environmentId}
           onSuccess={() => setOpen(false)}
         />

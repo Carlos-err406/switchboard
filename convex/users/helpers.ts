@@ -10,3 +10,13 @@ export const getAuthUser = async (ctx: GenericQueryCtx<DataModel>) => {
     .withIndex('by_id', (q) => q.eq('_id', identity))
     .unique()
 }
+
+export const getUserById = async (
+  ctx: GenericQueryCtx<DataModel>,
+  args: { id: Id<'users'> },
+) => {
+  return await ctx.db
+    .query('users')
+    .withIndex('by_id', (q) => q.eq('_id', args.id))
+    .unique()
+}

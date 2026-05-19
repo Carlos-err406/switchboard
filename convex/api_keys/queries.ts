@@ -9,10 +9,11 @@ import {
 } from '../errors'
 import { getEnvironment } from '#convex/environments/helpers.js'
 import { getProject, getProjectUser } from '#convex/projects/helpers.js'
+import { getApiKeyByValue, getEnvironmentApiKeys } from './helpers'
+import { getUserById } from '#convex/users/helpers.js'
 
 export const getApiKeysQuery = query({
   args: {
-    projectId: v.id('projects'),
     environmentId: v.id('environments'),
     q: v.optional(v.string()),
   },
@@ -20,17 +21,35 @@ export const getApiKeysQuery = query({
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
 
-    const [project, environment, projectUser] = await Promise.all([
-      getProject(ctx, { id: args.projectId }),
-      getEnvironment(ctx, { id: args.environmentId }),
+    const environment = await getEnvironment(ctx, { id: args.environmentId })
+    if (!environment) throw environmentNotFound()
+
+    const [project, projectUser] = await Promise.all([
+      getProject(ctx, { id: environment.projectId }),
       getProjectUser(ctx, {
-        projectId: args.projectId,
+        projectId: environment.projectId,
         userId: userId,
       }),
     ])
 
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
-    if (!environment) throw environmentNotFound()
+
+    const apiKeys = await getEnvironmentApiKeys(ctx, { id: args.environmentId })
+    return await Promise.all(
+      apiKeys.map(async (apiKey) => ({
+        ...apiKey,
+        creatorEmail: await getUserById(ctx, { id: apiKey.createdBy }).then(
+          (user) => user?.email,
+        ),
+      })),
+    )
+  },
+})
+
+export const getApiKeyByValueQuery = query({
+  args: { value: v.string() },
+  handler: async (ctx, args) => {
+    return getApiKeyByValue(ctx, args)
   },
 })

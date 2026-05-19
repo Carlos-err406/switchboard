@@ -70,7 +70,7 @@ export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
       )}
     >
       <FieldSet>
-        <Field>
+        <Field required>
           <FieldLabel htmlFor="key">Flag Key</FieldLabel>
           <Input id="key" {...register('key')} placeholder="logs.enable" />
           {errors.key?.message && <FieldError>{errors.key.message}</FieldError>}

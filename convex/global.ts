@@ -18,3 +18,9 @@ export const cleanupFlags = internalMutation({
     await Promise.all([flags.map((flag) => ctx.db.delete(flag._id))])
   },
 })
+export const cleanupApiKeys = internalMutation({
+  handler: async (ctx) => {
+    const apiKeys = await ctx.db.query('apiKeys').collect()
+    await Promise.all([apiKeys.map((apiKey) => ctx.db.delete(apiKey._id))])
+  },
+})

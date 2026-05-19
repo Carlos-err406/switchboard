@@ -48,7 +48,7 @@ export const createFlagMutation = mutation({
       key: args.key,
       value: args.value,
       description: args.description,
-      enabled: false,
+      enabled: true,
     })
   },
 })
@@ -68,15 +68,23 @@ export const updateFlagMutation = mutation({
     const flag = await getFlag(ctx, { id: args.flagId })
     if (!flag) throw flagNotFound()
 
-    const [project, projectUser, environment] = await Promise.all([
-      getProject(ctx, { id: flag.projectId }),
-      getProjectUser(ctx, {
-        projectId: flag.projectId,
-        userId: userId,
-      }),
-      getEnvironment(ctx, { id: flag.environmentId }),
-    ])
-
+    const [project, projectUser, environment, existingName] = await Promise.all(
+      [
+        getProject(ctx, { id: flag.projectId }),
+        getProjectUser(ctx, {
+          projectId: flag.projectId,
+          userId: userId,
+        }),
+        getEnvironment(ctx, { id: flag.environmentId }),
+        args.key !== undefined
+          ? getFlagByKey(ctx, {
+              environmentId: flag.environmentId,
+              key: args.key,
+            }).then(Boolean)
+          : Promise.resolve(false),
+      ],
+    )
+    if (existingName) throw flagAlreadyExistInEnvironment()
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
     if (!environment) throw environmentNotFound()

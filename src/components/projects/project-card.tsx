@@ -16,7 +16,7 @@ import { RenameProjectDialog } from './rename-project-dialog'
 
 export const ProjectCard: FC<{ project: ProjectSummary }> = ({ project }) => {
   return (
-    <Card key={project._id}>
+    <Card>
       <CardHeader className="flex items-center justify-between">
         <Tooltip>
           <TooltipTrigger className="text-start max-w-[calc(var(--min-col-size)-80px)] truncate line-clamp-1">

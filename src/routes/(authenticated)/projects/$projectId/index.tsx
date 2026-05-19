@@ -1,3 +1,4 @@
+import { ApiKeysGrid } from '#/components/api-keys/apikeys-grid.tsx'
 import { EnvironmentSelector } from '#/components/environments/environment-selector.tsx'
 import { EnvironmentsGrid } from '#/components/environments/environments-grid.tsx'
 import { FlagsGrid } from '#/components/flags/flags-grid.tsx'
@@ -75,7 +76,13 @@ function RouteComponent() {
         </div>
       </TabsContent>
       <TabsContent value="environments">
-        <EnvironmentsGrid />
+        <EnvironmentsGrid active={activeEnvironment._id}/>
+      </TabsContent>
+      <TabsContent value="api_keys">
+        <div className="space-y-4">
+          <EnvironmentSelector project={project} />
+          <ApiKeysGrid environmentId={activeEnvironment._id} />
+        </div>
       </TabsContent>
     </Tabs>
   )

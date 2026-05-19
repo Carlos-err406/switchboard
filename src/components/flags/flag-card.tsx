@@ -13,10 +13,10 @@ import type { FC } from 'react'
 import { DeleteFlagDialog } from './delete-flag-dialog'
 import { FlagToggle } from './flag-toggle'
 import { UpdateFlagDialog } from './update-flag-dialog'
-import _ from 'lodash'
+
 
 export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
-  const t = () => {
+  const valueType = () => {
     const arg = flag.value
     if (arg == null) return 'null'
     if (arg === true || arg === false) return 'boolean'
@@ -24,7 +24,7 @@ export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
     return 'string'
   }
   return (
-    <Card key={flag._id}>
+    <Card>
       <CardHeader>
         <div className="flex items-center w-full justify-between">
           <CardTitle>{flag.key}</CardTitle>
@@ -37,7 +37,7 @@ export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
           <pre>{flag.value?.toString() ?? 'null'}</pre>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge variant={'outline'}>type: {t()}</Badge>
+          <Badge variant={'outline'}>type: {valueType()}</Badge>
         </div>
       </CardContent>
 

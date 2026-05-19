@@ -8,7 +8,7 @@ export const noPermission = (action: string) =>
 export const projectNotFound = () => new ConvexError('Project not found')
 
 export const projectAlreadyExist = () =>
-  new ConvexError('Project already exist')
+  new ConvexError('A project with that name already exist')
 
 export const flagNotFound = () => new ConvexError('Flag not found')
 
@@ -22,7 +22,12 @@ export const notAProjectMember = () =>
   new ConvexError('You are not a project member')
 
 export const environmentAlreadyExist = () =>
-  new ConvexError('Environment already exist')
+  new ConvexError('An environment with that name already exist in this project')
 
 export const flagAlreadyExistInEnvironment = () =>
-  new ConvexError('Flag already exist in this environment')
+  new ConvexError('A flag with that name already exist in this environment')
+
+export const apikeyAlreadyExist = () =>
+  new ConvexError('An api key with that name already exist in this environment')
+
+export const apiKeyNotFound = () => new ConvexError('Api Key not found')

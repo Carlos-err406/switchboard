@@ -1,42 +1,147 @@
-// export const createApiKeyMutation = mutation({
-//   args: { projectId: v.id('projects'), name: v.string() },
-//   handler: async (ctx, args) => {
-//     const userId = await getAuthUserId(ctx)
-//     if (!userId) throw notAuthenticated()
-//     const projectUser = await getProjectUser(ctx, {
-//       projectId: args.projectId,
-//       userId: userId,
-//     })
-//     if (!projectUser) throw notAProjectMember()
-//     if (!projectUser.permissions.includes('environment.create'))
-//       throw noPermission('create environments')
-//     const project = await getProject(ctx, { id: args.projectId })
-//     if (!project) throw projectNotFound()
-//     const existing = await getApiKeyByName(ctx, { name: args.name })
-//     if (existing) throw environmentAlreadyExist()
-//     return await ctx.db.insert('environments', {
-//       projectId: args.projectId,
-//       name: args.name,
-//     })
-//   },
-// })
+import { mutation } from '#convex/_generated/server.js'
+import { getEnvironment } from '#convex/environments/helpers.js'
+import { getProject, getProjectUser } from '#convex/projects/helpers.js'
+import { getAuthUserId } from '@convex-dev/auth/server'
+import { v } from 'convex/values'
+import {
+  apikeyAlreadyExist,
+  apiKeyNotFound,
+  environmentAlreadyExist,
+  environmentNotFound,
+  noPermission,
+  notAProjectMember,
+  notAuthenticated,
+  projectNotFound,
+} from '../errors'
+import {
+  API_KEY_PREFIX,
+  generateApiKey,
+  getApiKey,
+  getApiKeyByName,
+  hashApiKey,
+} from './helpers'
+import dayjs from 'dayjs'
 
-// export const deleteApiKeyMutation = mutation({
-//   args: { projectId: v.id('projects'), environmentId: v.id('environments') },
-//   handler: async (ctx, args) => {
-//     const userId = await getAuthUserId(ctx)
-//     if (!userId) throw notAuthenticated()
-//     const projectUser = await getProjectUser(ctx, {
-//       projectId: args.projectId,
-//       userId: userId,
-//     })
-//     if (!projectUser) throw notAProjectMember()
-//     if (!projectUser.permissions.includes('environment.delete'))
-//       throw noPermission('delete environments')
-//     const flags = await getApiKeyFlags(ctx, { id: args.environmentId })
-//     await Promise.all([
-//       ctx.db.delete('environments', args.environmentId),
-//       ...flags.map((f) => ctx.db.delete('flags', f._id)),
-//     ])
-//   },
-// })
+export const createApiKeyMutation = mutation({
+  args: {
+    environmentId: v.id('environments'),
+    name: v.string(),
+    description: v.optional(v.string()),
+    expiresAt: v.nullable(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw notAuthenticated()
+    const environment = await getEnvironment(ctx, { id: args.environmentId })
+    if (!environment) throw environmentNotFound()
+
+    const [projectUser, existing, project] = await Promise.all([
+      getProjectUser(ctx, {
+        projectId: environment.projectId,
+        userId: userId,
+      }),
+      getApiKeyByName(ctx, {
+        environmentId: environment._id,
+        name: args.name,
+      }),
+      getProject(ctx, { id: environment.projectId }),
+    ])
+
+    if (!projectUser) throw notAProjectMember()
+    if (!projectUser.permissions.includes('api_key.create'))
+      throw noPermission('create api keys')
+    if (!project) throw projectNotFound()
+    if (existing) throw apikeyAlreadyExist()
+    const apikey = generateApiKey()
+    const hash = await hashApiKey(apikey)
+    await ctx.db.insert('apiKeys', {
+      enabled: true,
+      createdBy: userId,
+      environmentId: environment._id,
+      expiresAt: args.expiresAt,
+      name: args.name,
+      keyPrefix: API_KEY_PREFIX,
+      projectId: environment.projectId,
+      keyHash: hash,
+      description: args.description,
+      lastUsedAt: null,
+    })
+    return apikey
+  },
+})
+
+export const updateApiKeyMutation = mutation({
+  args: {
+    apiKeyId: v.id('apiKeys'),
+    name: v.optional(v.string()),
+    description: v.optional(v.string()),
+    expiresAt: v.optional(v.nullable(v.number())),
+    enabled: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw notAuthenticated()
+    const apiKey = await getApiKey(ctx, { id: args.apiKeyId })
+    if (!apiKey) throw apiKeyNotFound()
+
+    const [environment, projectUser, project, existingName] = await Promise.all(
+      [
+        getEnvironment(ctx, { id: apiKey.environmentId }),
+        getProjectUser(ctx, {
+          projectId: apiKey.projectId,
+          userId: userId,
+        }),
+        getProject(ctx, { id: apiKey.projectId }),
+        args.name !== undefined
+          ? getApiKeyByName(ctx, {
+              environmentId: apiKey.environmentId,
+              name: args.name,
+            }).then(Boolean)
+          : Promise.resolve(false),
+      ],
+    )
+
+    if (existingName) throw apikeyAlreadyExist()
+    if (!environment) throw environmentNotFound()
+    if (!projectUser) throw notAProjectMember()
+    if (!projectUser.permissions.includes('api_key.update'))
+      throw noPermission('update api keys')
+    if (!project) throw projectNotFound()
+
+    const updated: typeof apiKey = {
+      ...apiKey,
+      name: args.name !== undefined ? args.name : apiKey.name,
+      description:
+        args.description !== undefined ? args.description : apiKey.description,
+      expiresAt:
+        args.expiresAt !== undefined ? args.expiresAt : apiKey.expiresAt,
+      enabled: args.enabled !== undefined ? args.enabled : apiKey.enabled,
+    }
+    await ctx.db.replace('apiKeys', apiKey._id, updated)
+  },
+})
+
+export const deleteApiKeyMutation = mutation({
+  args: { apiKeyId: v.id('apiKeys') },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw notAuthenticated()
+    const apiKey = await getApiKey(ctx, { id: args.apiKeyId })
+    if (!apiKey) throw apiKeyNotFound()
+    const [projectUser, project, environment] = await Promise.all([
+      getProjectUser(ctx, {
+        projectId: apiKey.projectId,
+        userId: userId,
+      }),
+      getProject(ctx, { id: apiKey.projectId }),
+      getEnvironment(ctx, { id: apiKey.environmentId }),
+    ])
+    if (!environment) throw environmentNotFound()
+    if (!projectUser) throw notAProjectMember()
+    if (!projectUser.permissions.includes('api_key.delete'))
+      throw noPermission('delete api keys')
+    if (!project) throw projectNotFound()
+
+    await ctx.db.delete('apiKeys', apiKey._id)
+  },
+})

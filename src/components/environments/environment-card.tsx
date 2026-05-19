@@ -21,18 +21,21 @@ import { DeleteEnvironmentDialog } from './delete-environment-dialog'
 import { UpdateEnvironmentDialog } from './update-environment-dialog'
 import { Badge } from '../ui/badge'
 
-export const EnvironmentCard: FC<{ environment: DetailedEnvironment }> = ({
-  environment,
-}) => {
+export const EnvironmentCard: FC<{
+  environment: DetailedEnvironment
+  active?: boolean
+}> = ({ environment, active }) => {
   return (
-    <Card key={environment._id}>
+    <Card>
       <CardHeader>
         <GoToEnvironment
           environment={environment}
           className="w-fit"
           tooltipSide="right"
         >
-          <CardTitle>{environment.name}</CardTitle>
+          <CardTitle>
+            {active && '*'} {environment.name}
+          </CardTitle>
         </GoToEnvironment>
         <CardDescription>{environment.description}</CardDescription>
       </CardHeader>

@@ -1,7 +1,6 @@
 import { mutation } from '#convex/_generated/server.js'
-import { getProject, getProjectUser } from '#convex/projects/helpers.js'
-
 import { getEnvironmentFlags } from '#convex/flags/helpers.js'
+import { getProject, getProjectUser } from '#convex/projects/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import {
@@ -97,14 +96,21 @@ export const updateEnvironmentMutation = mutation({
     const environment = await getEnvironment(ctx, { id: args.environmentId })
     if (!environment) throw environmentNotFound()
 
-    const [projectUser, project] = await Promise.all([
+    const [projectUser, project, existingName] = await Promise.all([
       getProjectUser(ctx, {
         projectId: environment.projectId,
         userId: userId,
       }),
       getProject(ctx, { id: environment.projectId }),
+      args.name !== undefined
+        ? getEnvironmentByName(ctx, {
+            projectId: environment.projectId,
+            name: args.name,
+          }).then(Boolean)
+        : Promise.resolve(false),
     ])
 
+    if (existingName) throw environmentAlreadyExist()
     if (!project) throw projectNotFound()
     if (!projectUser) throw notAProjectMember()
     if (!projectUser.permissions.includes('environment.update'))

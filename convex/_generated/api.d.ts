@@ -9,6 +9,7 @@
  */
 
 import type * as api_keys_helpers from "../api_keys/helpers.js";
+import type * as api_keys_mutations from "../api_keys/mutations.js";
 import type * as api_keys_queries from "../api_keys/queries.js";
 import type * as auth from "../auth.js";
 import type * as environments_helpers from "../environments/helpers.js";
@@ -35,6 +36,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   "api_keys/helpers": typeof api_keys_helpers;
+  "api_keys/mutations": typeof api_keys_mutations;
   "api_keys/queries": typeof api_keys_queries;
   auth: typeof auth;
   "environments/helpers": typeof environments_helpers;

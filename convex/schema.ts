@@ -77,15 +77,16 @@ export default defineSchema({
     projectId: v.id('projects'),
     environmentId: v.id('environments'),
     name: v.string(),
+    description: v.optional(v.string()),
     keyHash: v.string(),
     keyPrefix: v.string(), // "sk_abc..." for display
     expiresAt: v.nullable(v.number()),
     enabled: v.boolean(),
     createdBy: v.id('users'),
+    lastUsedAt: v.nullable(v.number()),
   })
     .index('by_key_hash', ['keyHash'])
-    .index('by_name', ['name'])
     .index('by_environment_id', ['environmentId'])
     .index('by_project_id', ['projectId'])
-    .index('by_project_environment', ['projectId', 'environmentId']),
+    .index('by_name_in_environment', ['environmentId', 'name']),
 })

@@ -20,6 +20,7 @@ export const EnvironmentSelector: FC<{
   const { environment } = useSearch({
     from: '/(authenticated)/projects/$projectId/',
   })
+  const search = useSearch({ from: '/(authenticated)/projects/$projectId/' })
   const active =
     project.environments.find((e) => e._id == environment) ??
     project.environments[0]
@@ -36,7 +37,7 @@ export const EnvironmentSelector: FC<{
             <DropdownMenuItem
               key={`env-selector-${e._id}`}
               onClick={() =>
-                navigate({ to: '.', search: { environment: e._id } })
+                navigate({ to: '.', search: { ...search, environment: e._id } })
               }
               className="flex items-center gap-2"
             >

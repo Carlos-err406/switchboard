@@ -12,3 +12,7 @@ export type DetailedProject = FunctionReturnType<
 export type DetailedEnvironment = FunctionReturnType<
   typeof api.environments.queries.getEnvironmentsQuery
 >[number]
+
+export type DetailedApiKey = FunctionReturnType<
+  typeof api.api_keys.queries.getApiKeysQuery
+>[number]
