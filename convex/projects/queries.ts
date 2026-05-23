@@ -1,16 +1,16 @@
 import { query } from '#convex/_generated/server.js'
 import { getProjectEnvironments } from '#convex/environments/helpers.js'
 import { getEnvironmentFlags, getProjectFlags } from '#convex/flags/helpers.js'
+import {
+  getProjectUser,
+  getProjectUsers,
+  getUserProjects,
+} from '#convex/project_users/helpers.js'
 import { getAuthUser } from '#convex/users/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import { notAProjectMember, notAuthenticated, projectNotFound } from '../errors'
-import {
-  getProject,
-  getProjectUser,
-  getProjectUsers,
-  getUserProjects,
-} from './helpers'
+import { getProject } from './helpers'
 
 export const getProjectsQuery = query({
   args: { q: v.optional(v.string()) },
@@ -80,5 +80,20 @@ export const getProjectQuery = query({
         ...typeof richEnvironments,
       ],
     }
+  },
+})
+
+export const getProjectUserQuery = query({
+  args: { projectId: v.id('projects') },
+  handler: async (ctx, args) => {
+    const user = await getAuthUser(ctx)
+    if (!user) throw notAuthenticated()
+    const [project, projectUser] = await Promise.all([
+      getProject(ctx, { id: args.projectId }),
+      getProjectUser(ctx, { projectId: args.projectId, userId: user._id }),
+    ])
+    if (!project) throw projectNotFound()
+    if (!projectUser) throw notAProjectMember()
+    return projectUser
   },
 })

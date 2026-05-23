@@ -1,12 +1,13 @@
 import { mutation } from '#convex/_generated/server.js'
 import { getEnvironment } from '#convex/environments/helpers.js'
-import { getProject, getProjectUser } from '#convex/projects/helpers.js'
+import { generateToken, hashString } from '#convex/helpers.js'
+import { getProjectUser } from '#convex/project_users/helpers.js'
+import { getProject } from '#convex/projects/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import {
   apikeyAlreadyExist,
   apiKeyNotFound,
-  environmentAlreadyExist,
   environmentNotFound,
   noPermission,
   notAProjectMember,
@@ -15,12 +16,10 @@ import {
 } from '../errors'
 import {
   API_KEY_PREFIX,
-  generateApiKey,
   getApiKey,
   getApiKeyByName,
-  hashApiKey,
+  getApiKeyPreview,
 } from './helpers'
-import dayjs from 'dayjs'
 
 export const createApiKeyMutation = mutation({
   args: {
@@ -52,21 +51,23 @@ export const createApiKeyMutation = mutation({
       throw noPermission('create api keys')
     if (!project) throw projectNotFound()
     if (existing) throw apikeyAlreadyExist()
-    const apikey = generateApiKey()
-    const hash = await hashApiKey(apikey)
+    const apiKey = generateToken(API_KEY_PREFIX)
+    const hash = await hashString(apiKey)
+    const preview =
+      apiKey.slice(0, 10) + '*'.repeat(apiKey.length - 15) + apiKey.slice(-5)
     await ctx.db.insert('apiKeys', {
       enabled: true,
       createdBy: userId,
       environmentId: environment._id,
       expiresAt: args.expiresAt,
       name: args.name,
-      keyPrefix: API_KEY_PREFIX,
+      keyPreview: preview,
       projectId: environment.projectId,
       keyHash: hash,
       description: args.description,
       lastUsedAt: null,
     })
-    return apikey
+    return { apiKey, preview }
   },
 })
 
@@ -143,5 +144,36 @@ export const deleteApiKeyMutation = mutation({
     if (!project) throw projectNotFound()
 
     await ctx.db.delete('apiKeys', apiKey._id)
+  },
+})
+
+export const rotateApiKeyMutation = mutation({
+  args: { apiKeyId: v.id('apiKeys') },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) throw notAuthenticated()
+    const apiKey = await getApiKey(ctx, { id: args.apiKeyId })
+    if (!apiKey) throw apiKeyNotFound()
+    const [projectUser, project, environment] = await Promise.all([
+      getProjectUser(ctx, {
+        projectId: apiKey.projectId,
+        userId: userId,
+      }),
+      getProject(ctx, { id: apiKey.projectId }),
+      getEnvironment(ctx, { id: apiKey.environmentId }),
+    ])
+    if (!environment) throw environmentNotFound()
+    if (!projectUser) throw notAProjectMember()
+    if (!projectUser.permissions.includes('api_key.delete'))
+      throw noPermission('delete api keys')
+    if (!project) throw projectNotFound()
+    const newKey = generateToken(API_KEY_PREFIX)
+    const newHash = await hashString(newKey)
+    const preview = getApiKeyPreview(newKey)
+    await ctx.db.patch('apiKeys', apiKey._id, {
+      keyHash: newHash,
+      keyPreview: preview,
+    })
+    return { apiKey: newKey, preview }
   },
 })

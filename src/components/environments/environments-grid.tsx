@@ -1,11 +1,11 @@
 import { api } from '#convex/_generated/api.js'
+import type { Id } from '#convex/_generated/dataModel.js'
 import { convexQuery } from '@convex-dev/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useSearch } from '@tanstack/react-router'
 import type { FC } from 'react'
-import { CreateEnvironmentCard } from './create-environment-card'
+import { EmptyEnvironments } from './empty-environments'
 import { EnvironmentCard } from './environment-card'
-import type { Id } from '#convex/_generated/dataModel.js'
 
 export const EnvironmentsGrid: FC<{ active?: Id<'environments'> }> = ({
   active,
@@ -19,9 +19,11 @@ export const EnvironmentsGrid: FC<{ active?: Id<'environments'> }> = ({
     }),
   })
 
+  if (environments?.length === 0)
+    return <EmptyEnvironments projectId={params.projectId} />
+
   return (
     <div className="auto-grid [--min-col-width:250px] gap-3 w-full">
-      <CreateEnvironmentCard projectId={params.projectId} />
       {environments?.map((environment) => (
         <EnvironmentCard
           environment={environment}

@@ -189,11 +189,15 @@
   }
 
   a {
-    @apply border-b hover:border-muted-foreground transition-colors;
+    @apply border-b hover:border-muted-foreground transition-colors [.active]:border-muted-foreground;
   }
 
   [data-slot='field'][data-required] > label::after {
     content: '*';
     color: red;
+  }
+
+  [data-slot='field-set'][data-disabled] > label {
+    @apply text-muted-foreground;
   }
 }

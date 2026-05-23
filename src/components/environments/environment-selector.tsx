@@ -8,7 +8,7 @@ import {
 } from '#/components/ui/dropdown-menu'
 import type { DetailedProject } from '#/lib/types/inferred.ts'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { Stone } from 'lucide-react'
+import { Asterisk, ChevronDown, Stone } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { CreateEnvironmentDialog } from './create-environment-dialog'
@@ -31,6 +31,7 @@ export const EnvironmentSelector: FC<{
       <DropdownMenu>
         <DropdownMenuTrigger className={buttonVariants({ variant: 'outline' })}>
           Environment: <Stone /> {active.name}
+          <ChevronDown className="in-data-[state=open]:rotate-180 transition-transform" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {project.environments.map((e) => (
@@ -41,7 +42,7 @@ export const EnvironmentSelector: FC<{
               }
               className="flex items-center gap-2"
             >
-              <span>{active._id == e._id && '*'}</span>
+              {active._id == e._id && <Asterisk className="size-3" />}
               <span>{e.name}</span>
             </DropdownMenuItem>
           ))}

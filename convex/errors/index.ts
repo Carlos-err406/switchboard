@@ -1,33 +1,64 @@
-import { ConvexError } from 'convex/values'
+import {
+  genericError,
+  mutationError,
+  queryError,
+  QueryErrorCode,
+} from './helpers'
 
-export const notAuthenticated = () => new ConvexError('Not authenticated')
+export const notAuthenticated = () => genericError('Not authenticated')
 
 export const noPermission = (action: string) =>
-  new ConvexError(`No permission to ${action}`)
+  genericError(`No permission to ${action}`)
 
-export const projectNotFound = () => new ConvexError('Project not found')
+export const projectNotFound = () =>
+  queryError(QueryErrorCode.PROJECT_NOT_FOUND, 'Project not found')
 
 export const projectAlreadyExist = () =>
-  new ConvexError('A project with that name already exist')
+  mutationError({
+    name: ['A project with that name already exists'],
+  })
 
-export const flagNotFound = () => new ConvexError('Flag not found')
+export const flagNotFound = () =>
+  queryError(QueryErrorCode.FLAG_NOT_FOUND, 'Flag not found')
 
 export const environmentNotFound = () =>
-  new ConvexError('Environment not found')
+  queryError(QueryErrorCode.ENVIRONMENT_NOT_FOUND, 'Environment not found')
 
 export const cantDeleteTheLastEnvironment = () =>
-  new ConvexError('Can not delete the last environment')
+  genericError('Can not delete the last environment')
 
 export const notAProjectMember = () =>
-  new ConvexError('You are not a project member')
+  genericError('You are not a project member')
+
+export const userNotAProjectMember = () =>
+  genericError('User is not a project member')
 
 export const environmentAlreadyExist = () =>
-  new ConvexError('An environment with that name already exist in this project')
+  mutationError({
+    name: ['An environment with that name already exist in this project'],
+  })
 
 export const flagAlreadyExistInEnvironment = () =>
-  new ConvexError('A flag with that name already exist in this environment')
+  mutationError({
+    name: ['A flag with that name already exist in this environment'],
+  })
 
 export const apikeyAlreadyExist = () =>
-  new ConvexError('An api key with that name already exist in this environment')
+  mutationError({
+    name: ['An api key with that name already exist in this environment'],
+  })
 
-export const apiKeyNotFound = () => new ConvexError('Api Key not found')
+export const apiKeyNotFound = () =>
+  queryError(QueryErrorCode.API_KEY_NOT_FOUND, 'Api key not found')
+
+export const inviteNotFound = () =>
+  queryError(QueryErrorCode.INVITE_NOT_FOUND, 'Invitation not found')
+
+export const inviteExpired = () =>
+  queryError(QueryErrorCode.INVITE_EXPIRED, 'Invitation expired')
+
+export const inviteAlreadyUsed = () =>
+  queryError(QueryErrorCode.INVITE_ALREADY_USED, 'Invitation already used')
+
+export const userNotFound = () =>
+  queryError(QueryErrorCode.USER_NOT_FOUND, 'User not found')

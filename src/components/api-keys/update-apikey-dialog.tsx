@@ -18,7 +18,9 @@ import type { FC } from 'react'
 import { useState } from 'react'
 import { UpdateApiKeyForm } from './update-apikey-form'
 
-export const UpdateApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({ apiKey }) => {
+export const UpdateApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
+  apiKey,
+}) => {
   const [open, setOpen] = useState(false)
 
   return (
@@ -29,15 +31,14 @@ export const UpdateApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({ apiKey }) =
             <Pencil />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Update Api Key</TooltipContent>
+        <TooltipContent side="bottom">Update Api key</TooltipContent>
       </Tooltip>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update apiKey</DialogTitle>
+          <DialogTitle>Update Api key</DialogTitle>
           <DialogDescription>
-            Update a feature apiKey for the current environment. Values are
-            inferred to null, boolean, number or "string"
+            Update the api key for the current environment.
           </DialogDescription>
         </DialogHeader>
         <UpdateApiKeyForm apiKey={apiKey} onSuccess={() => setOpen(false)} />

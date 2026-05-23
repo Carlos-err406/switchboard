@@ -1,46 +1,20 @@
 import type { DataModel, Id } from '#convex/_generated/dataModel.js'
+import { internalQuery } from '#convex/_generated/server.js'
+import { hashString } from '#convex/helpers.js'
 import type { GenericQueryCtx } from 'convex/server'
+import { v } from 'convex/values'
 
-export const API_KEY_PREFIX = 'sk_live'
+export const API_KEY_PREFIX = 'sk'
 
-const base64url = (bytes: Uint8Array) => {
-  return btoa(String.fromCharCode(...bytes))
-    .replaceAll('+', '-')
-    .replaceAll('/', '_')
-    .replaceAll('=', '')
-}
-
-const bytesToHex = (bytes: Uint8Array) => {
-  return Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
-}
-
-export const hashApiKey = async (apiKey: string) => {
-  const data = new TextEncoder().encode(apiKey)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-  return bytesToHex(new Uint8Array(hashBuffer))
-}
-
-export const generateApiKey = () => {
-  const bytes = crypto.getRandomValues(new Uint8Array(32))
-  return `${API_KEY_PREFIX}_${base64url(bytes)}`
-}
-
-export const validateApiKey = async (apiKey: string, hash: string) => {
-  const hash2 = await hashApiKey(apiKey)
-  return hash2 === hash
-}
-
-export const getProjectApiKeys = async (
-  ctx: GenericQueryCtx<DataModel>,
-  args: { projectId: Id<'projects'> },
-) => {
-  return await ctx.db
-    .query('apiKeys')
-    .withIndex('by_project_id', (q) => q.eq('projectId', args.projectId))
-    .collect()
-}
+export const getProjectApiKeys = internalQuery({
+  args: { projectId: v.id('projects') },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query('apiKeys')
+      .withIndex('by_project_id', (q) => q.eq('projectId', args.projectId))
+      .collect()
+  },
+})
 
 export const getApiKeyByName = async (
   ctx: GenericQueryCtx<DataModel>,
@@ -88,9 +62,12 @@ export const getApiKeyByValue = async (
   ctx: GenericQueryCtx<DataModel>,
   args: { value: string },
 ) => {
-  const hash = await hashApiKey(args.value)
+  const hash = await hashString(args.value)
   return ctx.db
     .query('apiKeys')
     .withIndex('by_key_hash', (q) => q.eq('keyHash', hash))
     .unique()
 }
+
+export const getApiKeyPreview = (apiKey: string) =>
+  apiKey.slice(0, 10) + '*'.repeat(apiKey.length - 15) + apiKey.slice(-5)

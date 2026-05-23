@@ -1,7 +1,11 @@
+import { internal } from '#convex/_generated/api.js'
 import { mutation } from '#convex/_generated/server.js'
-import { getProjectApiKeys } from '#convex/api_keys/helpers.js'
 import { getProjectEnvironments } from '#convex/environments/helpers.js'
 import { getProjectFlags } from '#convex/flags/helpers.js'
+import {
+  getProjectUser,
+  getProjectUsers,
+} from '#convex/project_users/helpers.js'
 import { getAuthUser } from '#convex/users/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
@@ -12,19 +16,14 @@ import {
   projectAlreadyExist,
   projectNotFound,
 } from '../errors'
-import {
-  getProject,
-  getProjectByName,
-  getProjectUser,
-  getProjectUsers,
-} from './helpers'
+import { getProject, getProjectByName } from './helpers'
 
 export const createProjectMutation = mutation({
   args: { name: v.string() },
   handler: async (ctx, args) => {
     const user = await getAuthUser(ctx)
     if (!user) throw notAuthenticated()
-    if (!user.permissions.includes('project.create'))
+    if (!user.permissions.includes('projects.create'))
       throw noPermission('create projects')
     const existing = await getProjectByName(ctx, { name: args.name })
     if (existing) throw projectAlreadyExist()
@@ -83,7 +82,9 @@ export const deleteProjectMutation = mutation({
       await Promise.all([
         getProjectUsers(ctx, { id: project._id }),
         getProjectFlags(ctx, { id: project._id }),
-        getProjectApiKeys(ctx, { projectId: project._id }),
+        ctx.runQuery(internal.api_keys.helpers.getProjectApiKeys, {
+          projectId: project._id,
+        }),
         getProjectEnvironments(ctx, {
           id: project._id,
         }),
@@ -104,15 +105,21 @@ export const renameProjectMutation = mutation({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)
     if (!userId) throw notAuthenticated()
-    const project = await getProject(ctx, args)
+
+    const [project, existing, projectUser] = await Promise.all([
+      getProject(ctx, args),
+      getProjectByName(ctx, { name: args.name }),
+      getProjectUser(ctx, {
+        projectId: args.id,
+        userId,
+      }),
+    ])
+
     if (!project) throw projectNotFound()
-    const projectUser = await getProjectUser(ctx, {
-      projectId: project._id,
-      userId,
-    })
     if (!projectUser) throw notAProjectMember()
     if (!projectUser.permissions.includes('project.update'))
       throw noPermission('update projects')
+    if (existing) throw projectAlreadyExist()
     await ctx.db.patch('projects', args.id, { name: args.name })
   },
 })

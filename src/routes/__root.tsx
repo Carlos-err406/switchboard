@@ -8,13 +8,13 @@ import ConvexProvider from '../integrations/convex/provider'
 
 import appCss from '../styles.css?url'
 
-import { Header } from '#/components/layout/header.tsx'
 import { Toaster } from '#/components/ui/sonner'
 import { TooltipProvider } from '#/components/ui/tooltip.tsx'
 import type { ConvexQueryClient } from '@convex-dev/react-query'
 import type { QueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { z } from 'zod'
+import { Header } from '#/components/layout/header.tsx'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -33,7 +33,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Open Flagger',
+        title: 'Switchboard',
       },
     ],
     links: [

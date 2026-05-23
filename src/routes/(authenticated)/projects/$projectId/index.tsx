@@ -1,6 +1,9 @@
 import { ApiKeysGrid } from '#/components/api-keys/apikeys-grid.tsx'
+import { CreateApiKeyDialog } from '#/components/api-keys/create-apikey-dialog.tsx'
+import { CreateEnvironmentDialog } from '#/components/environments/create-environment-dialog.tsx'
 import { EnvironmentSelector } from '#/components/environments/environment-selector.tsx'
 import { EnvironmentsGrid } from '#/components/environments/environments-grid.tsx'
+import { CreateFlagDialog } from '#/components/flags/create-flag-dialog.tsx'
 import { FlagsGrid } from '#/components/flags/flags-grid.tsx'
 import { ProjectSelector } from '#/components/projects/project-selector.tsx'
 import {
@@ -61,7 +64,7 @@ function RouteComponent() {
               <Stone /> Environments
             </TabsTrigger>
             <TabsTrigger value="members">
-              <Users2 /> Project members
+              <Users2 /> Members
             </TabsTrigger>
             <TabsTrigger value="api_keys">
               <Key /> Api keys
@@ -71,16 +74,28 @@ function RouteComponent() {
       </div>
       <TabsContent value="flags">
         <div className="space-y-4">
-          <EnvironmentSelector project={project} />
+          <div className="flex items-center gap-2">
+            <EnvironmentSelector project={project} />
+            <CreateFlagDialog environmentId={activeEnvironment._id} />
+          </div>
           <FlagsGrid environmentId={activeEnvironment._id} />
         </div>
       </TabsContent>
       <TabsContent value="environments">
-        <EnvironmentsGrid active={activeEnvironment._id}/>
+        <div className="space-y-4">
+          <CreateEnvironmentDialog projectId={project._id} />
+          <EnvironmentsGrid active={activeEnvironment._id} />
+        </div>
+      </TabsContent>
+      <TabsContent value="members">
+        {/* <UsersGrid project={project} /> */}
       </TabsContent>
       <TabsContent value="api_keys">
         <div className="space-y-4">
-          <EnvironmentSelector project={project} />
+          <div className="flex items-center gap-2">
+            <EnvironmentSelector project={project} />
+            <CreateApiKeyDialog environmentId={activeEnvironment._id} />
+          </div>
           <ApiKeysGrid environmentId={activeEnvironment._id} />
         </div>
       </TabsContent>

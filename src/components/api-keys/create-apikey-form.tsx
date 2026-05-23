@@ -1,7 +1,7 @@
 import { Button } from '#/components/ui/button'
 import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
 import { Input } from '#/components/ui/input'
-import { toastMutationError } from '#/lib/utils.ts'
+import { onFormError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
 import type { Id } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
@@ -11,15 +11,17 @@ import type { FunctionReturnType } from 'convex/server'
 import type { FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { DatePickerInput } from '../ui/date-picker-input'
-import { toast } from 'sonner'
+import { DatePickerInput } from '#/components/ui/date-picker-input'
+import dayjs from 'dayjs'
 
-const createApiKeySchema = z.object({
-  name: z.string().min(3, 'Must have at least 3 characters'),
-  description: z.string().optional(),
-  expiresAt: z.number().nullable(),
-})
-type CreateApiKeyInputs = z.infer<typeof createApiKeySchema>
+const createApiKeySchema = () =>
+  z.object({
+    name: z.string().min(3, 'Must have at least 3 characters'),
+    description: z.string().optional(),
+    expiresAt: z.number().gt(dayjs().add(1, 'day').unix()).nullable(),
+  })
+type CreateApiKeyInputs = z.infer<ReturnType<typeof createApiKeySchema>>
+
 type Props = {
   environmentId: Id<'environments'>
   onSuccess?: (
@@ -35,9 +37,10 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
     handleSubmit,
     reset,
     control,
+    setError,
   } = useForm<CreateApiKeyInputs>({
     defaultValues: { name: '', description: '', expiresAt: null },
-    resolver: zodResolver(createApiKeySchema),
+    resolver: zodResolver(createApiKeySchema()),
   })
 
   const mutationFn = useConvexMutation(
@@ -45,18 +48,8 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
   )
   const { mutate: createApiKey, isPending } = useMutation({
     mutationFn,
-    onError: toastMutationError,
+    onError: onFormError(setError),
     onSuccess: (apiKey) => {
-      toast.info('Copy your api key here', {
-        description: 'You will not be able to get it from anywhere else',
-        duration: Infinity,
-        action: {
-          label: 'Copy',
-          onClick: () => {
-            navigator.clipboard.writeText(apiKey)
-          },
-        },
-      })
       onSuccess?.(apiKey)
       reset()
     },
@@ -64,6 +57,7 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
 
   return (
     <form
+      noValidate
       onSubmit={handleSubmit((data) =>
         createApiKey({
           name: data.name,
@@ -75,22 +69,18 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
     >
       <FieldSet>
         <Field required>
-          <FieldLabel htmlFor="name">ApiKey Name</FieldLabel>
-          <Input id="name" {...register('name')} placeholder="main" />
-          {errors.name?.message && (
-            <FieldError>{errors.name.message}</FieldError>
-          )}
+          <FieldLabel htmlFor="name">Api key Name</FieldLabel>
+          <Input id="name" {...register('name')} placeholder="local" />
+          <FieldError>{errors.name?.message}</FieldError>
         </Field>
         <Field>
           <FieldLabel htmlFor="description">Description</FieldLabel>
           <Input
             id="description"
             {...register('description')}
-            placeholder="main"
+            placeholder="to use for local development only"
           />
-          {errors.description?.message && (
-            <FieldError>{errors.description.message}</FieldError>
-          )}
+          <FieldError>{errors.description?.message}</FieldError>
         </Field>
         <Field>
           <FieldLabel htmlFor="key">Expiry date</FieldLabel>
@@ -98,7 +88,7 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
             control={control}
             name="expiresAt"
             render={({ field }) => {
-              return <DatePickerInput {...field} />
+              return <DatePickerInput {...field} placeholder="never" />
             }}
           />
 

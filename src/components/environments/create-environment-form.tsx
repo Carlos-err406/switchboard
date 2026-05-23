@@ -1,4 +1,4 @@
-import { toastMutationError } from '#/lib/utils.ts'
+import { onFormError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
 import { useConvexMutation } from '@convex-dev/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -6,9 +6,9 @@ import { useMutation } from '@tanstack/react-query'
 import type { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button } from '../ui/button'
-import { Field, FieldError, FieldLabel, FieldSet } from '../ui/field'
-import { Input } from '../ui/input'
+import { Button } from '#/components/ui/button'
+import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
+import { Input } from '#/components/ui/input'
 import type { Id } from '#convex/_generated/dataModel.js'
 import { toast } from 'sonner'
 import type { FunctionReturnType } from 'convex/server'
@@ -32,6 +32,7 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
     formState: { errors },
     handleSubmit,
     reset,
+    setError,
   } = useForm<CreateEnvironmentInputs>({
     defaultValues: { name: '', description: '' },
     resolver: zodResolver(createEnvironmentSchema),
@@ -42,7 +43,7 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
   )
   const { mutate: createEnvironment, isPending } = useMutation({
     mutationFn,
-    onError: toastMutationError,
+    onError: onFormError(setError),
     onSuccess: (result) => {
       reset()
       toast.success('New environment created')
@@ -51,6 +52,7 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
   })
   return (
     <form
+      noValidate
       onSubmit={handleSubmit((data) =>
         createEnvironment({
           name: data.name,
@@ -60,9 +62,9 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
       )}
     >
       <FieldSet>
-        <Field>
-          <FieldLabel htmlFor="name">Environment description</FieldLabel>
-          <Input id="name" {...register('name')} placeholder="CI" />
+        <Field required>
+          <FieldLabel htmlFor="name">Environment name</FieldLabel>
+          <Input id="name" {...register('name')} placeholder="CI/CID" />
           {errors.name?.message && (
             <FieldError>{errors.name.message}</FieldError>
           )}

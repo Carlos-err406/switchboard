@@ -14,7 +14,10 @@ import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
+import { Route as authenticatedUsersRouteRouteImport } from './routes/(authenticated)/users/route'
 import { Route as authenticatedProjectsRouteRouteImport } from './routes/(authenticated)/projects/route'
+import { Route as InviteTokenIndexRouteImport } from './routes/invite/$token/index'
+import { Route as authenticatedUsersIndexRouteImport } from './routes/(authenticated)/users/index'
 import { Route as authenticatedProjectsIndexRouteImport } from './routes/(authenticated)/projects/index'
 import { Route as authenticatedProjectsProjectIdIndexRouteImport } from './routes/(authenticated)/projects/$projectId/index'
 
@@ -42,12 +45,27 @@ const AuthSigninRoute = AuthSigninRouteImport.update({
   path: '/signin',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const authenticatedUsersRouteRoute = authenticatedUsersRouteRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => authenticatedRouteRoute,
+} as any)
 const authenticatedProjectsRouteRoute =
   authenticatedProjectsRouteRouteImport.update({
     id: '/projects',
     path: '/projects',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const InviteTokenIndexRoute = InviteTokenIndexRouteImport.update({
+  id: '/invite/$token/',
+  path: '/invite/$token/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authenticatedUsersIndexRoute = authenticatedUsersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authenticatedUsersRouteRoute,
+} as any)
 const authenticatedProjectsIndexRoute =
   authenticatedProjectsIndexRouteImport.update({
     id: '/',
@@ -65,9 +83,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/projects': typeof authenticatedProjectsRouteRouteWithChildren
+  '/users': typeof authenticatedUsersRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
   '/projects/': typeof authenticatedProjectsIndexRoute
+  '/users/': typeof authenticatedUsersIndexRoute
+  '/invite/$token/': typeof InviteTokenIndexRoute
   '/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -75,6 +96,8 @@ export interface FileRoutesByTo {
   '/auth/signin': typeof AuthSigninRoute
   '/auth': typeof AuthIndexRoute
   '/projects': typeof authenticatedProjectsIndexRoute
+  '/users': typeof authenticatedUsersIndexRoute
+  '/invite/$token': typeof InviteTokenIndexRoute
   '/projects/$projectId': typeof authenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRoutesById {
@@ -83,9 +106,12 @@ export interface FileRoutesById {
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/(authenticated)/projects': typeof authenticatedProjectsRouteRouteWithChildren
+  '/(authenticated)/users': typeof authenticatedUsersRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
   '/(authenticated)/projects/': typeof authenticatedProjectsIndexRoute
+  '/(authenticated)/users/': typeof authenticatedUsersIndexRoute
+  '/invite/$token/': typeof InviteTokenIndexRoute
   '/(authenticated)/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -94,21 +120,34 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/projects'
+    | '/users'
     | '/auth/signin'
     | '/auth/'
     | '/projects/'
+    | '/users/'
+    | '/invite/$token/'
     | '/projects/$projectId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/signin' | '/auth' | '/projects' | '/projects/$projectId'
+  to:
+    | '/'
+    | '/auth/signin'
+    | '/auth'
+    | '/projects'
+    | '/users'
+    | '/invite/$token'
+    | '/projects/$projectId'
   id:
     | '__root__'
     | '/'
     | '/(authenticated)'
     | '/auth'
     | '/(authenticated)/projects'
+    | '/(authenticated)/users'
     | '/auth/signin'
     | '/auth/'
     | '/(authenticated)/projects/'
+    | '/(authenticated)/users/'
+    | '/invite/$token/'
     | '/(authenticated)/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
@@ -116,6 +155,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  InviteTokenIndexRoute: typeof InviteTokenIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -155,12 +195,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSigninRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/(authenticated)/users': {
+      id: '/(authenticated)/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof authenticatedUsersRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
     '/(authenticated)/projects': {
       id: '/(authenticated)/projects'
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof authenticatedProjectsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/invite/$token/': {
+      id: '/invite/$token/'
+      path: '/invite/$token'
+      fullPath: '/invite/$token/'
+      preLoaderRoute: typeof InviteTokenIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(authenticated)/users/': {
+      id: '/(authenticated)/users/'
+      path: '/'
+      fullPath: '/users/'
+      preLoaderRoute: typeof authenticatedUsersIndexRouteImport
+      parentRoute: typeof authenticatedUsersRouteRoute
     }
     '/(authenticated)/projects/': {
       id: '/(authenticated)/projects/'
@@ -196,12 +257,28 @@ const authenticatedProjectsRouteRouteWithChildren =
     authenticatedProjectsRouteRouteChildren,
   )
 
+interface authenticatedUsersRouteRouteChildren {
+  authenticatedUsersIndexRoute: typeof authenticatedUsersIndexRoute
+}
+
+const authenticatedUsersRouteRouteChildren: authenticatedUsersRouteRouteChildren =
+  {
+    authenticatedUsersIndexRoute: authenticatedUsersIndexRoute,
+  }
+
+const authenticatedUsersRouteRouteWithChildren =
+  authenticatedUsersRouteRoute._addFileChildren(
+    authenticatedUsersRouteRouteChildren,
+  )
+
 interface authenticatedRouteRouteChildren {
   authenticatedProjectsRouteRoute: typeof authenticatedProjectsRouteRouteWithChildren
+  authenticatedUsersRouteRoute: typeof authenticatedUsersRouteRouteWithChildren
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
   authenticatedProjectsRouteRoute: authenticatedProjectsRouteRouteWithChildren,
+  authenticatedUsersRouteRoute: authenticatedUsersRouteRouteWithChildren,
 }
 
 const authenticatedRouteRouteWithChildren =
@@ -225,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authenticatedRouteRoute: authenticatedRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  InviteTokenIndexRoute: InviteTokenIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

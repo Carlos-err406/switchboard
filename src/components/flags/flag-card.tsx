@@ -13,7 +13,7 @@ import type { FC } from 'react'
 import { DeleteFlagDialog } from './delete-flag-dialog'
 import { FlagToggle } from './flag-toggle'
 import { UpdateFlagDialog } from './update-flag-dialog'
-
+import { Flag } from 'lucide-react'
 
 export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
   const valueType = () => {
@@ -27,7 +27,9 @@ export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
     <Card>
       <CardHeader>
         <div className="flex items-center w-full justify-between">
-          <CardTitle>{flag.key}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Flag className="size-4" /> {flag.key}
+          </CardTitle>
           <FlagToggle flag={flag} />
         </div>
         <CardDescription>{flag.description}</CardDescription>

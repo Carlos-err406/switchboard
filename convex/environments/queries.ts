@@ -1,10 +1,12 @@
 import { query } from '#convex/_generated/server.js'
-import { getProject, getProjectUser } from '#convex/projects/helpers.js'
+import { getEnvironmentApiKeys } from '#convex/api_keys/helpers.js'
+import { getEnvironmentFlags } from '#convex/flags/helpers.js'
+import { getProjectUser } from '#convex/project_users/helpers.js'
+import { getProject } from '#convex/projects/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import { notAProjectMember, notAuthenticated, projectNotFound } from '../errors'
 import { getProjectEnvironments } from './helpers'
-import { getEnvironmentFlags } from '#convex/flags/helpers.js'
 
 export const getEnvironmentsQuery = query({
   args: { projectId: v.id('projects'), q: v.optional(v.string()) },
@@ -34,7 +36,14 @@ export const getEnvironmentsQuery = query({
         const environmentFlags = await getEnvironmentFlags(ctx, {
           id: environment._id,
         })
-        return { ...environment, flags: environmentFlags }
+        const environmentApiKeys = await getEnvironmentApiKeys(ctx, {
+          id: environment._id,
+        })
+        return {
+          ...environment,
+          flagsCount: environmentFlags.length,
+          apiKeysCount: environmentApiKeys.length,
+        }
       }),
     )
   },

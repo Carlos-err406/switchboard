@@ -13,7 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '#/components/ui/tooltip'
-import { toastMutationError } from '#/lib/utils.ts'
+import { onFormError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
 import type { Doc } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
@@ -26,7 +26,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const renameProjectSchema = z.object({
-  projectName: z.string().min(3, 'Must have at least 3 characters'),
+  name: z.string().min(3, 'Must have at least 3 characters'),
 })
 type RenameProjectInputs = z.infer<typeof renameProjectSchema>
 
@@ -40,8 +40,9 @@ export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
     formState: { errors },
     handleSubmit,
     reset,
+    setError,
   } = useForm<RenameProjectInputs>({
-    defaultValues: { projectName: project.name },
+    defaultValues: { name: project.name },
     resolver: zodResolver(renameProjectSchema),
   })
 
@@ -50,7 +51,7 @@ export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
   )
   const { mutate: renameProject, isPending } = useMutation({
     mutationFn,
-    onError: toastMutationError,
+    onError: onFormError(setError),
     onSuccess: () => {
       setOpen(false)
       reset()
@@ -75,20 +76,20 @@ export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
         <form
           noValidate
           onSubmit={handleSubmit((data) =>
-            renameProject({ id: project._id, name: data.projectName }),
+            renameProject({ id: project._id, name: data.name }),
           )}
         >
           <FieldSet>
             <Field required>
-              <FieldLabel htmlFor="projectName">Project Name (new)</FieldLabel>
+              <FieldLabel htmlFor="name">Project Name (new)</FieldLabel>
               <Input
                 required
-                id="projectName"
-                {...register('projectName')}
+                id="name"
+                {...register('name')}
                 placeholder="Acme project"
               />
-              {errors.projectName?.message && (
-                <FieldError>{errors.projectName.message}</FieldError>
+              {errors.name?.message && (
+                <FieldError>{errors.name.message}</FieldError>
               )}
             </Field>
             <Button type="submit" disabled={isPending} className="ml-auto">

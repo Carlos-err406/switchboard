@@ -3,7 +3,7 @@ import { convexQuery } from '@convex-dev/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { useSearch } from '@tanstack/react-router'
 import type { FC } from 'react'
-import { CreateProjectCard } from './create-project-card'
+import { EmptyProjects } from './empty-projects'
 import { ProjectCard } from './project-card'
 
 export const ProjectsGrid: FC = () => {
@@ -12,9 +12,10 @@ export const ProjectsGrid: FC = () => {
     ...convexQuery(api.projects.queries.getProjectsQuery, { ...search }),
   })
 
+  if (data?.length === 0) return <EmptyProjects />
+
   return (
     <div className="gap-3 w-full auto-grid [--min-col-size:250px]">
-      <CreateProjectCard />
       {data?.map((project) => (
         <ProjectCard project={project} key={project._id} />
       ))}

@@ -1,6 +1,7 @@
 import { mutation } from '#convex/_generated/server.js'
 import { getEnvironment } from '#convex/environments/helpers.js'
-import { getProject, getProjectUser } from '#convex/projects/helpers.js'
+import { getProjectUser } from '#convex/project_users/helpers.js'
+import { getProject } from '#convex/projects/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import {

@@ -4,7 +4,8 @@ import { convexQuery } from '@convex-dev/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { useSearch } from '@tanstack/react-router'
 import type { FC } from 'react'
-import { CreateFlagCard } from './create-flag-card'
+import { CreateFlagDialog } from './create-flag-dialog'
+import { EmptyFlags } from './empty-flags'
 import { FlagCard } from './flag-card'
 
 export const FlagsGrid: FC<{
@@ -17,9 +18,11 @@ export const FlagsGrid: FC<{
       environmentId,
     }),
   })
+
+  if (flags?.length === 0) return <EmptyFlags environmentId={environmentId} />
+
   return (
     <div className="gap-3 w-full auto-grid [--min-col-size:250px]">
-      <CreateFlagCard environmentId={environmentId} />
       {flags?.map((flag) => (
         <FlagCard flag={flag} key={flag._id} />
       ))}

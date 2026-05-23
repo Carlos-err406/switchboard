@@ -1,6 +1,6 @@
 import { query } from '#convex/_generated/server.js'
 import { getEnvironment } from '#convex/environments/helpers.js'
-import { getProject, getProjectUser } from '#convex/projects/helpers.js'
+import { getProject } from '#convex/projects/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import {
@@ -11,6 +11,7 @@ import {
   projectNotFound,
 } from '../errors'
 import { getFlag, getFlags } from './helpers'
+import { getProjectUser } from '#convex/project_users/helpers.js'
 
 export const getFlagsQuery = query({
   args: {

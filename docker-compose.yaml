@@ -1,2 +1,14 @@
 include:
   - convex/infra/docker-compose.yml
+
+services:
+  maildev:
+    image: maildev/maildev
+    ports:
+      - '1080:1080'
+      - '1025:1025'
+    volumes:
+      - maildev_data:/data
+
+volumes:
+  maildev_data:

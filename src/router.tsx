@@ -2,6 +2,7 @@ import { createRouter as createTanStackRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
 import { getContext } from './integrations/tanstack-query/root-provider'
 import { routeTree } from './routeTree.gen'
+import { NotFoundState, QueryErrorState } from './components/ui/error-state'
 
 export function getRouter() {
   const context = getContext()
@@ -9,7 +10,8 @@ export function getRouter() {
   const router = createTanStackRouter({
     routeTree,
     context,
-    defaultNotFoundComponent: () => <div>Page not found</div>,
+    defaultErrorComponent: ({ error }) => <QueryErrorState error={error} />,
+    defaultNotFoundComponent: () => <NotFoundState />,
     scrollRestoration: true,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,

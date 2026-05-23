@@ -1,7 +1,7 @@
 import { Button } from '#/components/ui/button'
 import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
 import { Input } from '#/components/ui/input'
-import { toastMutationError } from '#/lib/utils.ts'
+import { onFormError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
 import type { Doc } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
@@ -35,6 +35,7 @@ export const UpdateEnvironmentForm: FC<Props> = ({
     formState: { errors },
     handleSubmit,
     reset,
+    setError,
   } = useForm<UpdateEnvironmentInputs>({
     defaultValues: {
       name: environment.name,
@@ -48,7 +49,7 @@ export const UpdateEnvironmentForm: FC<Props> = ({
   )
   const { mutate: updateEnvironment, isPending } = useMutation({
     mutationFn,
-    onError: toastMutationError,
+    onError: onFormError(setError),
     onSuccess: (result) => {
       onSuccess?.(result)
       reset()
@@ -57,6 +58,7 @@ export const UpdateEnvironmentForm: FC<Props> = ({
 
   return (
     <form
+      noValidate
       onSubmit={handleSubmit((data) =>
         updateEnvironment({
           environmentId: environment._id,

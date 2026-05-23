@@ -6,16 +6,29 @@ import { Label } from '#/components/ui/label.tsx'
 import { Separator } from '#/components/ui/separator.tsx'
 import { cn } from '#/lib/utils.ts'
 
-function FieldSet({ className, ...props }: React.ComponentProps<'fieldset'>) {
+const FieldSetContext = createContext<{ disabled?: boolean }>({})
+
+export function useFieldSet() {
+  return useContext(FieldSetContext)
+}
+
+function FieldSet({
+  className,
+  disabled,
+  ...props
+}: React.ComponentProps<'fieldset'> & { disabled?: boolean }) {
   return (
-    <fieldset
-      data-slot="field-set"
-      className={cn(
-        'flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3',
-        className,
-      )}
-      {...props}
-    />
+    <FieldSetContext.Provider value={{ disabled }}>
+      <fieldset
+        data-slot="field-set"
+        {...(disabled ? { 'data-disabled': '' } : {})}
+        className={cn(
+          'flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3',
+          className,
+        )}
+        {...props}
+      />
+    </FieldSetContext.Provider>
   )
 }
 
@@ -80,7 +93,9 @@ function Field({
   required = false,
   ...props
 }: React.ComponentProps<'div'> &
-  VariantProps<typeof fieldVariants> & { required?: boolean }) {
+  VariantProps<typeof fieldVariants> & {
+    required?: boolean
+  }) {
   return (
     <FieldContext.Provider value={{ required }}>
       <div

@@ -1,7 +1,8 @@
 import { Button } from '#/components/ui/button'
 import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
 import { Input } from '#/components/ui/input'
-import { toastMutationError } from '#/lib/utils.ts'
+import { useHasPermissions } from '#/hooks/use-has-permission.ts'
+import { onFormError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
 import { useConvexMutation } from '@convex-dev/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -23,13 +24,16 @@ type Props = {
   ) => void
 }
 export const CreateProjectForm: FC<Props> = ({ onSuccess }) => {
+  const canCreateProjects = useHasPermissions(['projects.create'])
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
+    setError,
   } = useForm<CreateProjectInputs>({
     defaultValues: { name: '' },
+    disabled: !canCreateProjects,
     resolver: zodResolver(createProjectSchema),
   })
 
@@ -38,21 +42,22 @@ export const CreateProjectForm: FC<Props> = ({ onSuccess }) => {
   )
   const { mutate: createProject, isPending } = useMutation({
     mutationFn,
-    onError: toastMutationError,
+    onError: onFormError(setError),
     onSuccess: (result) => {
       reset()
       onSuccess?.(result)
     },
   })
   return (
-    <form onSubmit={handleSubmit((data) => createProject({ name: data.name }))}>
-      <FieldSet>
+    <form
+      noValidate
+      onSubmit={handleSubmit((data) => createProject({ name: data.name }))}
+    >
+      <FieldSet disabled={!canCreateProjects}>
         <Field required>
           <FieldLabel htmlFor="name">Project Name</FieldLabel>
           <Input id="name" {...register('name')} placeholder="Acme project" />
-          {errors.name?.message && (
-            <FieldError>{errors.name.message}</FieldError>
-          )}
+          <FieldError>{errors.name?.message}</FieldError>
         </Field>
         <Button type="submit" disabled={isPending} className="ml-auto">
           Submit

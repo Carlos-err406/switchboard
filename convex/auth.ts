@@ -1,11 +1,12 @@
+import { ConvexCredentials } from '@convex-dev/auth/providers/ConvexCredentials'
 import {
   convexAuth,
   createAccount,
   retrieveAccount,
 } from '@convex-dev/auth/server'
-import { ConvexCredentials } from '@convex-dev/auth/providers/ConvexCredentials'
 import { Scrypt } from 'lucia'
-import type { Id } from './_generated/dataModel'
+import { internal } from './_generated/api'
+import { env } from './env'
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
@@ -14,12 +15,46 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       authorize: async (params, ctx) => {
         const email = params.email as string
         const password = params.password as string
-        if (!email || !password) {
-          throw new Error('Email and password are required')
+        const inviteToken = params.inviteToken as string | undefined
+
+        if (!password) {
+          throw new Error('Password is required')
         }
 
-        if (email === process.env.ADMIN_EMAIL) {
-          if (password !== process.env.ADMIN_PASSWORD) {
+        if (inviteToken) {
+          const invite = await ctx.runQuery(
+            internal.invites.queries.getInviteByTokenInternal,
+            { token: inviteToken },
+          )
+          if (!invite) throw new Error('Invitation not found')
+          if (invite.used) throw new Error('Invitation has already been used')
+          if (Date.now() > invite.expiresAt)
+            throw new Error('Invitation has expired')
+
+          const created = await createAccount(ctx, {
+            provider: 'password',
+            shouldLinkViaEmail: true,
+            account: { id: invite.toEmail, secret: password },
+            profile: {
+              email: invite.toEmail,
+              locked: false,
+              role: 'member' as const,
+              permissions: invite.permissions,
+            },
+          })
+
+          await ctx.runMutation(internal.invites.mutations.markInviteAsUsed, {
+            id: invite._id,
+          })
+          return { userId: created.user._id }
+        }
+
+        if (!email) {
+          throw new Error('Email is required')
+        }
+
+        if (email === env.ADMIN_EMAIL) {
+          if (password !== env.ADMIN_PASSWORD) {
             throw new Error('Invalid credentials')
           }
 
@@ -32,12 +67,19 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           } catch {
             const created = await createAccount(ctx, {
               provider: 'password',
+              shouldLinkViaEmail: true,
               account: { id: email, secret: password },
               profile: {
                 email,
+                locked: false,
                 role: 'admin' as const,
-                name: 'Administrator',
-                permissions: ['project.create', 'user.invite', 'user.delete'],
+                permissions: [
+                  'projects.create',
+                  'users.list',
+                  'users.invite',
+                  'users.delete',
+                  'users.update',
+                ],
               },
             })
             return { userId: created.user._id }

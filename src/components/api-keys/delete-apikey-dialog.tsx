@@ -22,9 +22,13 @@ import { Trash2 } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
 
-export const DeleteApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({ apiKey }) => {
+export const DeleteApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
+  apiKey,
+}) => {
   const [open, setOpen] = useState(false)
-  const mutationFn = useConvexMutation(api.api_keys.mutations.deleteApiKeyMutation)
+  const mutationFn = useConvexMutation(
+    api.api_keys.mutations.deleteApiKeyMutation,
+  )
   const { mutate: deleteApiKey, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
@@ -39,7 +43,7 @@ export const DeleteApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({ apiKey }) =
             <Trash2 />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Delete Api Key</TooltipContent>
+        <TooltipContent side="bottom">Delete Api key</TooltipContent>
       </Tooltip>
 
       <DialogContent>

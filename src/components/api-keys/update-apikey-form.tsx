@@ -1,7 +1,7 @@
 import { Button } from '#/components/ui/button'
 import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
 import { Input } from '#/components/ui/input'
-import { toastMutationError } from '#/lib/utils.ts'
+import { onFormError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
 import type { Doc } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
@@ -10,7 +10,7 @@ import { useMutation } from '@tanstack/react-query'
 import type { FC } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { DatePickerInput } from '../ui/date-picker-input'
+import { DatePickerInput } from '#/components/ui/date-picker-input'
 
 const updateApiKeySchema = z.object({
   name: z.string().min(3, 'Must have at least 3 characters'),
@@ -29,6 +29,7 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
     handleSubmit,
     control,
     reset,
+    setError,
   } = useForm<UpdateApiKeyInputs>({
     defaultValues: {
       name: apiKey.name,
@@ -43,7 +44,7 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
   )
   const { mutate: updateApiKey, isPending } = useMutation({
     mutationFn,
-    onError: toastMutationError,
+    onError: onFormError(setError),
     onSuccess: () => {
       onSuccess?.()
       reset()
@@ -52,6 +53,7 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
 
   return (
     <form
+      noValidate
       onSubmit={handleSubmit((data) =>
         updateApiKey({
           apiKeyId: apiKey._id,

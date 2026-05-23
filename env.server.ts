@@ -6,6 +6,6 @@ if (typeof window !== 'undefined')
 export const serverEnv = z
   .object({
     NODE_ENV: z.enum(['development', 'production']).default('development'),
-    PORT: z.coerce.number().optional(),
+    PORT: z.number({ coerce: true }).optional(),
   })
   .parse(process.env)

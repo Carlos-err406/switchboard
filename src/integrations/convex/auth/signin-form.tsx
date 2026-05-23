@@ -38,7 +38,7 @@ export function SignInForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <FieldSet className="w-full min-w-xs max-w-xs">
         <FieldGroup>
           <Field>

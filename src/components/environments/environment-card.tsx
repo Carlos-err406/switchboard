@@ -12,17 +12,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '#/components/ui/tooltip'
-import type { DetailedEnvironment } from '#/lib/types/inferred.ts'
+import type { EnvironmentSummary } from '#/lib/types/inferred.ts'
 import { cn } from '#/lib/utils.ts'
 import { useNavigate } from '@tanstack/react-router'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Stone } from 'lucide-react'
 import type { ComponentProps, FC, PropsWithChildren } from 'react'
 import { DeleteEnvironmentDialog } from './delete-environment-dialog'
 import { UpdateEnvironmentDialog } from './update-environment-dialog'
-import { Badge } from '../ui/badge'
+import { Badge } from '#/components/ui/badge'
 
 export const EnvironmentCard: FC<{
-  environment: DetailedEnvironment
+  environment: EnvironmentSummary
   active?: boolean
 }> = ({ environment, active }) => {
   return (
@@ -33,15 +33,18 @@ export const EnvironmentCard: FC<{
           className="w-fit"
           tooltipSide="right"
         >
-          <CardTitle>
-            {active && '*'} {environment.name}
+          <CardTitle className="flex items-center gap-2">
+            <Stone className="size-4" /> {environment.name} {active && '*'}
           </CardTitle>
         </GoToEnvironment>
         <CardDescription>{environment.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex h-full items-end">
         <div className="flex flex-wrap gap-2">
-          <Badge variant={'outline'}>{environment.flags.length} flag(s)</Badge>
+          <Badge variant={'outline'}>{environment.flagsCount} flag(s)</Badge>
+          <Badge variant={'outline'}>
+            {environment.apiKeysCount} api key(s)
+          </Badge>
         </div>
       </CardContent>
 
@@ -62,7 +65,7 @@ export const EnvironmentCard: FC<{
 
 const GoToEnvironment: FC<
   {
-    environment: DetailedEnvironment
+    environment: EnvironmentSummary
     className?: string
     tooltipSide?: ComponentProps<typeof TooltipContent>['side']
   } & PropsWithChildren

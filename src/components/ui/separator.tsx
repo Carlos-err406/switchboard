@@ -23,4 +23,14 @@ function Separator({
   )
 }
 
-export { Separator }
+function SeparatorContent({ children }: React.PropsWithChildren) {
+  return (
+    <div className="grid grid-cols-[1fr_1fr_1fr] place-items-center gap-1">
+      <Separator />
+      {children}
+      <Separator />
+    </div>
+  )
+}
+
+export { Separator, SeparatorContent }

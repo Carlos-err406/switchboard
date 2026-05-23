@@ -1,18 +1,21 @@
+import { Badge } from '#/components/ui/badge'
+import { Button } from '#/components/ui/button'
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '#/components/ui/card';
-import type { DetailedApiKey } from '#/lib/types/inferred.ts';
-import dayjs from 'dayjs';
-import type { FC } from 'react';
-import { Badge } from '../ui/badge';
-import { ApiKeyToggle } from './apikey-toggle';
-import { DeleteApiKeyDialog } from './delete-apikey-dialog';
-import { UpdateApiKeyDialog } from './update-apikey-dialog';
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui/card'
+import type { DetailedApiKey } from '#/lib/types/inferred.ts'
+import dayjs from 'dayjs'
+import { Key } from 'lucide-react'
+import type { FC } from 'react'
+import { ApiKeyToggle } from './apikey-toggle'
+import { DeleteApiKeyDialog } from './delete-apikey-dialog'
+import { RotateApiKeyDialog } from './rotate-apikey-dialog'
+import { UpdateApiKeyDialog } from './update-apikey-dialog'
 
 export const ApiKeyCard: FC<{ apiKey: DetailedApiKey }> = ({ apiKey }) => {
   const formatExpiresAt = () => {
@@ -32,20 +35,23 @@ export const ApiKeyCard: FC<{ apiKey: DetailedApiKey }> = ({ apiKey }) => {
     <Card>
       <CardHeader>
         <div className="flex items-center w-full justify-between">
-          <CardTitle>{apiKey.name}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Key className="size-4" /> {apiKey.name}
+          </CardTitle>
           <ApiKeyToggle apiKey={apiKey} />
         </div>
-        <CardDescription>{apiKey.description}</CardDescription>
+        <CardDescription>
+          {dayjs(apiKey._creationTime).format('MMM DD, YYYY')}
+          {apiKey.description && ' · ' + apiKey.description}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 gap-2 flex flex-col">
-        <div className="flex flex-wrap gap-2">
-          <Badge variant={'outline'}>Expires: {formatExpiresAt()}</Badge>
-          <Badge variant={'outline'}>Last used: {formatLastUsed()}</Badge>
-          <Badge variant={'outline'}>Created by: {apiKey.creatorEmail}</Badge>
-        </div>
+      <CardContent className="flex justify-end flex-col gap-2">
+        <Badge variant={'outline'}>Expires: {formatExpiresAt()}</Badge>
+        <Badge variant={'outline'}>Last used: {formatLastUsed()}</Badge>
+        <Badge variant={'outline'}>Created by: {apiKey.creatorEmail}</Badge>
       </CardContent>
-
       <CardFooter className="justify-end">
+        <RotateApiKeyDialog apiKey={apiKey} />
         <UpdateApiKeyDialog apiKey={apiKey} />
         <DeleteApiKeyDialog apiKey={apiKey} />
       </CardFooter>

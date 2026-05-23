@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSearch } from '@tanstack/react-router'
 import type { FC } from 'react'
 import { ApiKeyCard } from './apikey-card'
-import { CreateApiKeyCard } from './create-apikey-card'
+import { EmptyApiKeys } from './empty-apikeys'
 
 export const ApiKeysGrid: FC<{
   environmentId: Id<'environments'>
@@ -17,9 +17,12 @@ export const ApiKeysGrid: FC<{
       environmentId,
     }),
   })
+
+  if (apiKeys?.length === 0)
+    return <EmptyApiKeys environmentId={environmentId} />
+
   return (
     <div className="gap-3 w-full auto-grid [--min-col-size:250px]">
-      <CreateApiKeyCard environmentId={environmentId} />
       {apiKeys?.map((apiKey) => (
         <ApiKeyCard apiKey={apiKey} key={apiKey._id} />
       ))}

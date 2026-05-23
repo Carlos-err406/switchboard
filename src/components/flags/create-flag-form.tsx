@@ -1,7 +1,7 @@
 import { Button } from '#/components/ui/button'
 import { Field, FieldError, FieldLabel, FieldSet } from '#/components/ui/field'
 import { Input } from '#/components/ui/input'
-import { toastMutationError } from '#/lib/utils.ts'
+import { onFormError } from '#/lib/utils.ts'
 import { api } from '#convex/_generated/api.js'
 import type { Id } from '#convex/_generated/dataModel.js'
 import { useConvexMutation } from '@convex-dev/react-query'
@@ -35,6 +35,7 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
     formState: { errors },
     handleSubmit,
     reset,
+    setError,
   } = useForm<CreateFlagInputs>({
     defaultValues: { key: '', description: '', value: '' },
     resolver: zodResolver(createFlagSchema),
@@ -43,7 +44,7 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
   const mutationFn = useConvexMutation(api.flags.mutations.createFlagMutation)
   const { mutate: createFlag, isPending } = useMutation({
     mutationFn,
-    onError: toastMutationError,
+    onError: onFormError(setError),
     onSuccess: () => {
       onSuccess?.()
       reset()
@@ -52,6 +53,7 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
 
   return (
     <form
+      noValidate
       onSubmit={handleSubmit((data) =>
         createFlag({
           key: data.key,

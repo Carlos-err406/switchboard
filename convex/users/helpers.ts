@@ -20,3 +20,11 @@ export const getUserById = async (
     .withIndex('by_id', (q) => q.eq('_id', args.id))
     .unique()
 }
+
+export const getUsers = async (ctx: GenericQueryCtx<DataModel>) => {
+  return await ctx.db
+    .query('users')
+    .withIndex('by_creation_time')
+    .order('desc')
+    .collect()
+}
