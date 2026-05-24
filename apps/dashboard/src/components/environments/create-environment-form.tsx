@@ -7,7 +7,12 @@ import type { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '@switchboard/ui/components/button'
-import { Field, FieldError, FieldLabel, FieldSet } from '@switchboard/ui/components/field'
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldSet,
+} from '@switchboard/ui/components/field'
 import { Input } from '@switchboard/ui/components/input'
 import type { Id } from '@convex/_generated/dataModel.js'
 import { toast } from 'sonner'

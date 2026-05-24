@@ -15,9 +15,10 @@ export function ContributeSection() {
             MIT licensed. Contributors deeply appreciated.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Switchboard is a small open project run by a small group of humans. Bug reports,
-            docs fixes, new client SDKs, design polish, translations &mdash; all welcome. Open an
-            issue before you start anything big and we&rsquo;ll figure it out together.
+            Switchboard is a small open project run by a small group of humans.
+            Bug reports, docs fixes, new client SDKs, design polish,
+            translations &mdash; all welcome. Open an issue before you start
+            anything big and we&rsquo;ll figure it out together.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             <Badge variant="outline">MIT License</Badge>
@@ -33,13 +34,21 @@ export function ContributeSection() {
             </a>
           </Button>
           <Button variant="outline" asChild>
-            <a href={`${GITHUB_URL}/issues`} target="_blank" rel="noopener noreferrer">
+            <a
+              href={`${GITHUB_URL}/issues`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <CircleAlert className="size-3.5" />
               Browse issues
             </a>
           </Button>
           <Button variant="outline" asChild>
-            <a href={`${GITHUB_URL}/blob/main/README.md`} target="_blank" rel="noopener noreferrer">
+            <a
+              href={`${GITHUB_URL}/blob/main/README.md`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <FileText className="size-3.5" />
               Read the README
             </a>

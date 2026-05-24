@@ -23,7 +23,9 @@ export function CodeBlock({
   }, [code])
 
   return (
-    <pre className={`overflow-auto p-6 text-[12.5px] leading-relaxed whitespace-pre ${className}`}>
+    <pre
+      className={`overflow-auto p-6 text-[12.5px] leading-relaxed whitespace-pre ${className}`}
+    >
       <code ref={ref} className={`language-${language}`}>
         {code}
       </code>

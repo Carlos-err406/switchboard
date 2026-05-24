@@ -1,6 +1,6 @@
 import { internal } from '../_generated/api.js'
 import { action, internalAction } from '../_generated/server.js'
-import { invalidateSessions, getAuthUserId  } from '@convex-dev/auth/server'
+import { invalidateSessions, getAuthUserId } from '@convex-dev/auth/server'
 import { Scrypt } from 'lucia'
 import { v } from 'convex/values'
 import { noPermission, notAuthenticated, userNotFound } from '../errors'

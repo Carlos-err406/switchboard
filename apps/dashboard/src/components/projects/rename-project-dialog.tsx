@@ -6,7 +6,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@switchboard/ui/components/dialog'
-import { Field, FieldError, FieldLabel, FieldSet } from '@switchboard/ui/components/field'
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldSet,
+} from '@switchboard/ui/components/field'
 import { Input } from '@switchboard/ui/components/input'
 import {
   Tooltip,

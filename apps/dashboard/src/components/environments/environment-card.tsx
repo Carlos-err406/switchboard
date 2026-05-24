@@ -1,3 +1,6 @@
+import type { EnvironmentSummary } from '#/lib/types/inferred.ts'
+import { cn } from '@switchboard/ui'
+import { Badge } from '@switchboard/ui/components/badge'
 import { buttonVariants } from '@switchboard/ui/components/button'
 import {
   Card,
@@ -12,14 +15,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@switchboard/ui/components/tooltip'
-import type { EnvironmentSummary } from '#/lib/types/inferred.ts'
-import { cn } from '#/lib/utils.ts'
 import { useNavigate } from '@tanstack/react-router'
 import { ExternalLink, Stone } from 'lucide-react'
 import type { ComponentProps, FC, PropsWithChildren } from 'react'
 import { DeleteEnvironmentDialog } from './delete-environment-dialog'
 import { UpdateEnvironmentDialog } from './update-environment-dialog'
-import { Badge } from '@switchboard/ui/components/badge'
 
 export const EnvironmentCard: FC<{
   environment: EnvironmentSummary

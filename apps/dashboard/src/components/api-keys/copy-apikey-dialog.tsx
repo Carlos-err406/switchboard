@@ -1,7 +1,4 @@
-import { cn } from '#/lib/utils.ts'
-import { Check, Clipboard } from 'lucide-react'
-import type { FC } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { cn } from '@switchboard/ui'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -16,6 +13,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@switchboard/ui/components/tooltip'
+import { Check, Clipboard } from 'lucide-react'
+import type { FC } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Props = {
   title: string

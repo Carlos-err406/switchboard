@@ -2,8 +2,6 @@ import { ErrorTypes, isAppError } from '@convex/errors/helpers'
 import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
 import { toast } from 'sonner'
 
-export { cn } from '@switchboard/ui/utils'
-
 export function setMutationFormErrors<T extends FieldValues>(
   setError: UseFormSetError<T>,
   error: unknown,

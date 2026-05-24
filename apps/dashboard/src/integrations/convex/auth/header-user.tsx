@@ -1,4 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@switchboard/ui/components/avatar'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@switchboard/ui/components/avatar'
 import { Button } from '@switchboard/ui/components/button'
 import {
   DropdownMenu,

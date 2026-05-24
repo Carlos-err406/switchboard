@@ -2,10 +2,7 @@ import { internal } from '../_generated/api.js'
 import { mutation } from '../_generated/server.js'
 import { getProjectEnvironments } from '../environments/helpers.js'
 import { getProjectFlags } from '../flags/helpers.js'
-import {
-  getProjectUser,
-  getProjectUsers,
-} from '../project_users/helpers.js'
+import { getProjectUser, getProjectUsers } from '../project_users/helpers.js'
 import { getAuthUser } from '../users/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'

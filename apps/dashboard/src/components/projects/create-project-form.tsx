@@ -1,5 +1,10 @@
 import { Button } from '@switchboard/ui/components/button'
-import { Field, FieldError, FieldLabel, FieldSet } from '@switchboard/ui/components/field'
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldSet,
+} from '@switchboard/ui/components/field'
 import { Input } from '@switchboard/ui/components/input'
 import { useHasPermissions } from '#/hooks/use-has-permission.ts'
 import { onFormError } from '#/lib/utils.ts'

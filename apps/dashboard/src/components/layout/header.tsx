@@ -1,10 +1,11 @@
-import { env } from '#env'
 import { HeaderUser } from '#/integrations/convex/auth/header-user.tsx'
+import { env } from '#env'
+import { Switch } from '@switchboard/ui'
 import { Link } from '@tanstack/react-router'
 import { Authenticated } from 'convex/react'
-import { useEffect, useState, type FC } from 'react'
+import type { FC } from 'react'
+import { useEffect, useState } from 'react'
 import { SearchInput } from './search-input'
-import { Switch } from '@switchboard/ui'
 
 export const Header: FC = () => {
   const [status, setStatus] = useState(false)

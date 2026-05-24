@@ -1,3 +1,5 @@
+import type React from 'react'
+
 export function useFlag(_name: string): boolean {
   throw new Error('@switchboard/react is not yet implemented')
 }

@@ -3,9 +3,17 @@ import { useState } from 'react'
 import { CodeBlock } from './code-block'
 
 const CLIENT_TABS = [
-  { key: 'react-ws', label: 'React · realtime', install: 'pnpm add @switchboard/react' },
+  {
+    key: 'react-ws',
+    label: 'React · realtime',
+    install: 'pnpm add @switchboard/react',
+  },
   { key: 'node', label: 'Node.js', install: 'pnpm add @switchboard/node' },
-  { key: 'vanilla', label: 'Vanilla JS', install: 'pnpm add @switchboard/js   # or via esm.sh' },
+  {
+    key: 'vanilla',
+    label: 'Vanilla JS',
+    install: 'pnpm add @switchboard/js   # or via esm.sh',
+  },
 ] as const
 
 const REACT_WS_LEFT = `// 1. wrap your tree once
@@ -94,10 +102,13 @@ if (sb.get("ai_assistant")) {
 
 // reconnects automatically. ~2kb gzipped.`
 
-const CODE_PANELS: Record<string, { left: string; right: string; lang: string }> = {
+const CODE_PANELS: Record<
+  string,
+  { left: string; right: string; lang: string }
+> = {
   'react-ws': { left: REACT_WS_LEFT, right: REACT_WS_RIGHT, lang: 'tsx' },
-  'node': { left: NODE_LEFT, right: NODE_RIGHT, lang: 'typescript' },
-  'vanilla': { left: VANILLA_LEFT, right: VANILLA_RIGHT, lang: 'javascript' },
+  node: { left: NODE_LEFT, right: NODE_RIGHT, lang: 'typescript' },
+  vanilla: { left: VANILLA_LEFT, right: VANILLA_RIGHT, lang: 'javascript' },
 }
 
 export function ClientTabs() {
@@ -120,7 +131,10 @@ export function ClientTabs() {
     <>
       <div className="border border-foreground bg-white">
         {/* tab bar */}
-        <div className="flex border-b border-foreground bg-secondary" role="tablist">
+        <div
+          className="flex border-b border-foreground bg-secondary"
+          role="tablist"
+        >
           {CLIENT_TABS.map((t) => (
             <button
               key={t.key}
@@ -141,12 +155,15 @@ export function ClientTabs() {
         </div>
 
         {/* code panels — fixed height prevents layout shift between tabs */}
-        {panel && (
-          <div className="grid h-[380px] lg:grid-cols-2">
-            <CodeBlock code={panel.left} language={panel.lang} />
-            <CodeBlock code={panel.right} language={panel.lang} className="border-t border-foreground lg:border-t-0 lg:border-l" />
-          </div>
-        )}
+
+        <div className="grid h-[380px] lg:grid-cols-2">
+          <CodeBlock code={panel.left} language={panel.lang} />
+          <CodeBlock
+            code={panel.right}
+            language={panel.lang}
+            className="border-t border-foreground lg:border-t-0 lg:border-l"
+          />
+        </div>
       </div>
 
       <div className="mt-3.5 flex items-center justify-between border border-foreground bg-white px-3.5 py-2.5 text-xs">
