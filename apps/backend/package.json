@@ -1,0 +1,24 @@
+{
+  "name": "@switchboard/backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy"
+  },
+  "dependencies": {
+    "@auth/core": "0.37.0",
+    "@convex-dev/auth": "^0.0.92",
+    "convex": "^1.39.1",
+    "dayjs": "^1.11.20",
+    "lucia": "^3.2.2",
+    "nodemailer": "^8.0.7",
+    "svix": "^1.93.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/nodemailer": "^8.0.0",
+    "jose": "^6.2.3"
+  }
+}

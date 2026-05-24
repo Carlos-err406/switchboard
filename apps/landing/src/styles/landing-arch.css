@@ -1,0 +1,598 @@
+/* Architecture diagram — animated tree layout
+   Dashboard → Core → React / Vanilla JS (WS)
+   with HTTP/SSR aside connected by GET/200 rails */
+
+/* ── A. container grid ── */
+.arch-diagram {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px) minmax(0, 1fr);
+  grid-template-rows: auto 64px auto 90px auto;
+  column-gap: 0;
+  align-items: stretch;
+}
+
+.arch-tier-top,
+.arch-trunk,
+.arch-tier-mid {
+  grid-column: 2;
+}
+.arch-tier-top {
+  grid-row: 1;
+}
+.arch-trunk {
+  grid-row: 2;
+}
+.arch-tier-mid {
+  grid-row: 3;
+}
+.arch-fanout,
+.arch-tier-bot {
+  grid-column: 1 / -1;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+.arch-fanout {
+  grid-row: 4;
+}
+.arch-tier-bot {
+  grid-row: 5;
+}
+
+/* ── B. trunk (vertical connector + label + arrow) ── */
+.arch-trunk {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arch-trunk::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--foreground);
+  z-index: 0;
+}
+.arch-trunk::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid var(--foreground);
+  z-index: 0;
+}
+.arch-trunk-label {
+  position: relative;
+  z-index: 3;
+  background: #fff;
+  padding: 2px 10px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+}
+
+/* ── C. fanout (core → bus → 2 client drops) ── */
+.arch-fanout {
+  position: relative;
+}
+.arch-fanout::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 32px;
+  width: 1px;
+  background: var(--foreground);
+  z-index: 0;
+}
+.arch-fanout::after {
+  content: '';
+  position: absolute;
+  top: 32px;
+  left: calc((100% - 24px) / 4);
+  right: calc((100% - 24px) / 4);
+  height: 1px;
+  background: var(--foreground);
+  z-index: 0;
+}
+.arch-fanout-drops {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.arch-fanout-drop {
+  position: relative;
+}
+.arch-fanout-drop::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--foreground);
+  transform: translateX(-50%);
+  z-index: 0;
+}
+.arch-fanout-drop::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid var(--foreground);
+}
+.arch-fanout-tag {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  padding: 2px 8px;
+  font-size: 10.5px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  z-index: 3;
+}
+
+/* ── D. animated dots ── */
+.arch-trunk-dot {
+  position: absolute;
+  left: calc(50% - 3px);
+  top: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--foreground);
+  opacity: 0;
+  transform-origin: center;
+  animation: arch-trunk-flow 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1 forwards;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.arch-fanout-master {
+  position: absolute;
+  left: calc(50% - 3px);
+  top: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--foreground);
+  transform-origin: center;
+  opacity: 0;
+  animation: arch-master-flow 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1 forwards;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.arch-child-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--foreground);
+  top: -3px;
+  left: calc(50% - 3px);
+  transform-origin: center;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.arch-child-dot.left {
+  animation: arch-child-left 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1 forwards;
+}
+.arch-child-dot.right {
+  animation: arch-child-right 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 1 forwards;
+}
+
+/* ── E. keyframes ── */
+@keyframes arch-trunk-flow {
+  0% {
+    top: 0;
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  0.4% {
+    top: 0;
+    opacity: 1;
+    transform: scale(1);
+  }
+  4% {
+    top: calc(100% - 6px);
+    opacity: 1;
+    transform: scale(1);
+  }
+  4.5% {
+    top: calc(100% - 6px);
+    opacity: 1;
+    transform: scale(1.9);
+  }
+  6% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes arch-master-flow {
+  0%,
+  4% {
+    top: 0;
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  4.4% {
+    top: 0;
+    opacity: 1;
+    transform: scale(1);
+  }
+  6.2% {
+    top: 26px;
+    opacity: 1;
+    transform: scale(1);
+  }
+  6.7% {
+    top: 26px;
+    opacity: 1;
+    transform: scale(2.1);
+  }
+  8.2% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes arch-child-left {
+  0%,
+  6.4% {
+    left: calc(50% - 3px);
+    top: -3px;
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  6.8% {
+    left: calc(50% - 3px);
+    top: -3px;
+    transform: scale(1);
+    opacity: 1;
+  }
+  14% {
+    left: calc((100% - 24px) / 4 - 3px);
+    top: -3px;
+    transform: scale(1);
+    opacity: 1;
+  }
+  18% {
+    left: calc((100% - 24px) / 4 - 3px);
+    top: calc(100% - 6px);
+    transform: scale(1);
+    opacity: 1;
+  }
+  18.7% {
+    left: calc((100% - 24px) / 4 - 3px);
+    top: calc(100% - 6px);
+    transform: scale(2);
+    opacity: 1;
+  }
+  20.5% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes arch-child-right {
+  0%,
+  6.4% {
+    left: calc(50% - 3px);
+    top: -3px;
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  6.8% {
+    left: calc(50% - 3px);
+    top: -3px;
+    transform: scale(1);
+    opacity: 1;
+  }
+  14% {
+    left: calc(100% - (100% - 24px) / 4 - 3px);
+    top: -3px;
+    transform: scale(1);
+    opacity: 1;
+  }
+  18% {
+    left: calc(100% - (100% - 24px) / 4 - 3px);
+    top: calc(100% - 6px);
+    transform: scale(1);
+    opacity: 1;
+  }
+  18.7% {
+    left: calc(100% - (100% - 24px) / 4 - 3px);
+    top: calc(100% - 6px);
+    transform: scale(2);
+    opacity: 1;
+  }
+  20.5% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ── F. receive/send pulses ── */
+.arch-pulse-send {
+  animation: arch-sender-pulse 4.5s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+@keyframes arch-sender-pulse {
+  0% {
+    box-shadow: inset 0 0 0 2px var(--foreground);
+  }
+  8% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+}
+
+.arch-pulse-core {
+  animation: arch-core-receive 4.5s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+@keyframes arch-core-receive {
+  0%,
+  3% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  4% {
+    box-shadow: inset 0 0 0 2px var(--foreground);
+  }
+  12% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+}
+
+.arch-pulse-client {
+  animation: arch-client-receive 4.5s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+@keyframes arch-client-receive {
+  0%,
+  17.5% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  18.7% {
+    box-shadow: inset 0 0 0 2px var(--foreground);
+  }
+  27% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 transparent;
+  }
+}
+
+/* ── G. HTTP/SSR aside ── */
+.arch-aside {
+  grid-column: 3;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: minmax(96px, 1fr) minmax(0, 200px);
+  align-items: center;
+  gap: 0;
+  padding-left: 8px;
+}
+.arch-aside-link {
+  position: relative;
+  height: 64px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+.arch-aside-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arch-aside-line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--foreground);
+  z-index: 0;
+}
+.arch-aside-get::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 6px solid var(--foreground);
+}
+.arch-aside-res::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid var(--foreground);
+}
+.arch-aside-tag {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  padding: 2px 8px;
+  font-size: 10.5px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.06em;
+}
+
+/* ── H. interactive sample card ── */
+.arch-sample {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+}
+.sample-link {
+  position: relative;
+  width: 64px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+.sample-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px dashed var(--foreground);
+}
+.sample-link::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid var(--foreground);
+}
+
+/* ── I. a11y ── */
+@media (prefers-reduced-motion: reduce) {
+  .arch-trunk-dot,
+  .arch-fanout-master,
+  .arch-child-dot {
+    animation: none;
+    opacity: 0;
+  }
+  .arch-pulse-send,
+  .arch-pulse-core,
+  .arch-pulse-client {
+    animation: none;
+  }
+}
+
+/* ── I. responsive ── */
+@media (max-width: 820px) {
+  .arch-diagram {
+    padding: 32px 20px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .arch-tier-top,
+  .arch-trunk,
+  .arch-tier-mid,
+  .arch-fanout,
+  .arch-tier-bot,
+  .arch-aside,
+  .arch-sample {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .arch-sample {
+    justify-content: center;
+    flex-direction: column;
+  }
+  .sample-link {
+    width: 1px;
+    height: 32px;
+  }
+  .sample-link::before {
+    left: 50%;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    border-top: none;
+    border-left: 1px dashed var(--foreground);
+  }
+  .sample-link::after {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: -1px;
+    transform: translateX(-50%);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid var(--foreground);
+    border-bottom: none;
+  }
+  .arch-tier-bot {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .arch-tier-bot > * {
+    border-top: none;
+  }
+  .arch-tier-bot > *:first-child {
+    border-top: 1px solid var(--foreground);
+  }
+  .arch-fanout::after {
+    display: none;
+  }
+  .arch-fanout-drops {
+    display: none;
+  }
+  .arch-fanout-master {
+    display: none;
+  }
+  .arch-fanout::before {
+    height: 100%;
+  }
+  .arch-aside {
+    grid-template-columns: 1fr;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px dashed var(--border);
+    position: relative;
+  }
+  .arch-aside::before {
+    content: 'or pull via http';
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 0 10px;
+    font-size: 10.5px;
+    color: var(--muted-foreground);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .arch-aside-link {
+    display: none;
+  }
+}
