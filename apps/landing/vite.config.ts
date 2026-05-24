@@ -4,5 +4,9 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
-  server: { port: 5174 },
+  server: {
+    host: '127.0.0.1',
+    port: Number(process.env.PORT) || 5174,
+  },
+  logLevel: 'warn',
 })

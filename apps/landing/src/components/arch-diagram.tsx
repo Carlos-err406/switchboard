@@ -1,3 +1,4 @@
+import { Switch } from '@switchboard/ui/components/switch'
 import { Flag } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -55,6 +56,7 @@ function NodeCard({
 export function ArchDiagram() {
   const [sampleOn, setSampleOn] = useState(true)
   const diagramRef = useRef<HTMLDivElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const restartAnim = useCallback(() => {
     const diagram = diagramRef.current
@@ -72,22 +74,32 @@ export function ArchDiagram() {
     restartAnim()
   }, [restartAnim])
 
+  const scheduleFlip = useCallback(() => {
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      if (!document.hidden) {
+        flipSample()
+      }
+      scheduleFlip()
+    }, 3000 + Math.random() * 2000)
+  }, [flipSample])
+
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>
-    function schedule() {
-      timer = setTimeout(() => {
-        if (!document.hidden) flipSample()
-        else schedule()
-      }, 3000 + Math.random() * 2000)
+    scheduleFlip()
+    const onVisibility = () => {
+      if (!document.hidden) scheduleFlip()
     }
-    schedule()
-    const onVisibility = () => { if (!document.hidden) schedule() }
     document.addEventListener('visibilitychange', onVisibility)
     return () => {
-      clearTimeout(timer)
+      clearTimeout(timerRef.current)
       document.removeEventListener('visibilitychange', onVisibility)
     }
-  }, [flipSample])
+  }, [scheduleFlip])
+
+  const handleManualFlip = () => {
+    flipSample()
+    scheduleFlip()
+  }
 
   return (
     <div className="grid gap-8">
@@ -106,15 +118,10 @@ export function ArchDiagram() {
                 <Flag className="size-3.5" />
                 new_checkout
               </div>
-              <button
-                type="button"
-                onClick={flipSample}
+              <Switch
+                checked={sampleOn}
+                onCheckedChange={handleManualFlip}
                 aria-label="Toggle new_checkout"
-                className={`relative h-5 w-9 shrink-0 cursor-pointer border border-foreground bg-white after:absolute after:top-px after:left-px after:size-4 after:transition-transform after:duration-150 ${
-                  sampleOn
-                    ? 'after:translate-x-4 after:bg-foreground'
-                    : 'after:translate-x-0 after:bg-border'
-                }`}
               />
             </div>
             <div className="mt-2 text-[11px] tracking-wider text-muted-foreground">
@@ -124,7 +131,6 @@ export function ArchDiagram() {
           <div className="sample-link" aria-hidden="true" />
         </aside>
 
-        {/* tier 1: dashboard */}
         <div className="arch-tier-top">
           <NodeCard className="arch-pulse-send" title="Dashboard" kind="admin" items={['Flip flags & rollouts', 'Environments & keys', 'Members & audit log']} footLeft="web" footRight=":5173" />
         </div>

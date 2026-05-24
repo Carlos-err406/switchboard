@@ -1,5 +1,13 @@
 import { Button } from '@switchboard/ui/components/button'
-import { Code2, Globe, Grid3X3, Monitor, RefreshCw, Shield, Zap } from 'lucide-react'
+import {
+  Code2,
+  Globe,
+  Grid3X3,
+  Monitor,
+  RefreshCw,
+  Shield,
+  Zap,
+} from 'lucide-react'
 import { ArchDiagram } from '../components/arch-diagram'
 import { ClientTabs } from '../components/client-tabs'
 import { ContributeSection } from '../components/contribute-section'
@@ -61,14 +69,25 @@ export function Home() {
       {/* nav */}
       <nav className="sticky top-0 z-30 border-b border-foreground bg-white/92 backdrop-blur-md backdrop-saturate-[1.4]">
         <div className="mx-auto flex max-w-310 items-center gap-8 px-5 py-4.5 sm:px-8">
-          <a href="#" className="font-bold tracking-tight underline decoration-1 underline-offset-[3px]">
+          <a
+            href="#"
+            className="font-bold tracking-tight underline decoration-1 underline-offset-[3px]"
+          >
             Switchboard
           </a>
           <div className="ml-6 hidden gap-6 text-muted-foreground sm:flex">
-            <a href="#features" className="hover:text-foreground">Features</a>
-            <a href="#clients" className="hover:text-foreground">Clients</a>
-            <a href="#architecture" className="hover:text-foreground">How it works</a>
-            <a href="#selfhost" className="hover:text-foreground">Self-host</a>
+            <a href="#features" className="hover:text-foreground">
+              Features
+            </a>
+            <a href="#clients" className="hover:text-foreground">
+              Clients
+            </a>
+            <a href="#architecture" className="hover:text-foreground">
+              How it works
+            </a>
+            <a href="#selfhost" className="hover:text-foreground">
+              Self-host
+            </a>
           </div>
           <div className="flex-1" />
           <div className="flex items-center gap-2.5">
@@ -90,7 +109,8 @@ export function Home() {
               backgroundImage: 'radial-gradient(#0a0a0a 1px, transparent 1px)',
               backgroundSize: '24px 24px',
               mask: 'linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%)',
-              WebkitMask: 'linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%)',
+              WebkitMask:
+                'linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%)',
             }}
           />
           <div className="relative z-1 grid items-center gap-12 lg:grid-cols-[1.1fr_.9fr] lg:gap-16">
@@ -102,14 +122,18 @@ export function Home() {
                 className="mt-4.5 font-medium tracking-tight text-foreground text-[clamp(40px,5.4vw,72px)] leading-none"
                 style={{ textWrap: 'balance' }}
               >
-                Flip flags.<br />
+                Flip flags.
+                <br />
                 Watch your app react{' '}
-                <span className="underline decoration-1 underline-offset-[6px]">in real-time</span>.
+                <span className="underline decoration-1 underline-offset-[6px]">
+                  in real-time
+                </span>
+                .
               </h1>
               <p className="mt-5.5 max-w-[48ch] text-base leading-normal text-muted-foreground">
-                Switchboard is a minimal, self-hosted feature flag provider. WebSocket-based,
-                backed by Convex, with first-class React and vanilla JS clients. No vendors,
-                no quotas, no tracking pixels.
+                Switchboard is a minimal, self-hosted feature flag provider.
+                WebSocket-based, backed by Convex, with first-class React and
+                vanilla JS clients. No vendors, no quotas, no tracking pixels.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button size="lg" asChild>
@@ -119,15 +143,17 @@ export function Home() {
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
-                  <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={GITHUB_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <GitHubIcon /> Star on GitHub
                   </a>
                 </Button>
               </div>
               <div className="mt-9 flex flex-wrap gap-4 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full bg-[#13a36a]" /> realtime
-                </span>
+                <span>realtime</span>
                 <span>&middot;</span>
                 <span>websocket</span>
                 <span>&middot;</span>
@@ -151,9 +177,14 @@ export function Home() {
           />
           <div className="grid grid-cols-1 gap-px border border-foreground bg-foreground sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => (
-              <div key={f.num} className="flex min-h-50 flex-col gap-2.5 bg-white p-6">
+              <div
+                key={f.num}
+                className="flex min-h-50 flex-col gap-2.5 bg-white p-6"
+              >
                 {f.icon}
-                <span className="text-[11px] tracking-wider text-muted-foreground">{f.num}</span>
+                <span className="text-[11px] tracking-wider text-muted-foreground">
+                  {f.num}
+                </span>
                 <h3 className="mt-0.5 text-lg font-medium">{f.title}</h3>
                 <p className="text-[13px] text-muted-foreground">{f.desc}</p>
               </div>

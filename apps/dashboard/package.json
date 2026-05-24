@@ -7,7 +7,7 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "portless app.switchboard tsx --env-file=./.env.local scripts/dev.ts",
+    "dev": "portless app.switchboard vite dev",
     "build": "vite build"
   },
   "dependencies": {
