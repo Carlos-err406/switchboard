@@ -1,5 +1,5 @@
 import { Switch } from '@switchboard/ui/components/switch'
-import { Flag } from 'lucide-react'
+import { Flag, RotateCw } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface DemoFlag {
@@ -31,7 +31,13 @@ export function DemoCard() {
   const pushLog = useCallback((flag: string, val: string) => {
     const ts = new Date().toISOString().split('T')[1]?.replace('Z', '') ?? ''
     setLines((prev) =>
-      [{ id: ++logIdCounter, text: `[ws] ${ts}  flag.changed  ${flag} → ${val}` }, ...prev].slice(0, 3),
+      [
+        {
+          id: ++logIdCounter,
+          text: `[ws] ${ts}  flag.changed  ${flag} → ${val}`,
+        },
+        ...prev,
+      ].slice(0, 3),
     )
   }, [])
 
@@ -53,22 +59,25 @@ export function DemoCard() {
   const flagsRef = useRef(flags)
   flagsRef.current = flags
 
-  const toggle = useCallback((index: number) => {
-    const flag = flagsRef.current[index]
-    const next = !flag.on
-    setFlags((prev) =>
-      prev.map((f, i) => (i === index ? { ...f, on: next } : f)),
-    )
-    pushLog(flag.name, String(next))
-    demoRef.current?.animate(
-      [
-        { boxShadow: 'inset 0 0 0 0 #0a0a0a' },
-        { boxShadow: 'inset 0 0 0 2px #0a0a0a' },
-        { boxShadow: 'inset 0 0 0 0 #0a0a0a' },
-      ],
-      { duration: 420, easing: 'ease-out' },
-    )
-  }, [pushLog])
+  const toggle = useCallback(
+    (index: number) => {
+      const flag = flagsRef.current[index]
+      const next = !flag.on
+      setFlags((prev) =>
+        prev.map((f, i) => (i === index ? { ...f, on: next } : f)),
+      )
+      pushLog(flag.name, String(next))
+      demoRef.current?.animate(
+        [
+          { boxShadow: 'inset 0 0 0 0 #0a0a0a' },
+          { boxShadow: 'inset 0 0 0 2px #0a0a0a' },
+          { boxShadow: 'inset 0 0 0 0 #0a0a0a' },
+        ],
+        { duration: 420, easing: 'ease-out' },
+      )
+    },
+    [pushLog],
+  )
 
   useEffect(() => {
     const t1 = setTimeout(() => pushLog('ai_assistant', 'true'), 800)
@@ -79,9 +88,12 @@ export function DemoCard() {
     let autoTimer: ReturnType<typeof setTimeout>
     function autoToggle() {
       if (!document.hidden) {
-        const pool = flagCount > 1
-          ? Array.from({ length: flagCount }, (_, i) => i).filter((i) => i !== lastToggled)
-          : [0]
+        const pool =
+          flagCount > 1
+            ? Array.from({ length: flagCount }, (_, i) => i).filter(
+                (i) => i !== lastToggled,
+              )
+            : [0]
         const pick = pool[Math.floor(Math.random() * pool.length)] ?? 0
         toggle(pick)
         lastToggled = pick
@@ -124,9 +136,15 @@ export function DemoCard() {
                   <Flag className="size-3.5" />
                   {f.name}
                 </div>
-                <div className="mt-0.5 text-[11px] font-normal text-muted-foreground">{f.meta}</div>
+                <div className="mt-0.5 text-[11px] font-normal text-muted-foreground">
+                  {f.meta}
+                </div>
               </div>
-              <Switch checked={f.on} onCheckedChange={() => toggle(i)} aria-label={`Toggle ${f.name}`} />
+              <Switch
+                checked={f.on}
+                onCheckedChange={() => toggle(i)}
+                aria-label={`Toggle ${f.name}`}
+              />
             </div>
           ))}
         </div>
@@ -142,7 +160,9 @@ export function DemoCard() {
           <div className="mt-1.5 min-h-13.5 overflow-hidden whitespace-pre-wrap break-all bg-foreground p-2.5 text-[11px] leading-normal text-white">
             <div ref={pipeRef}>
               {lines.length === 0 ? (
-                <span className="text-muted-foreground">{'// awaiting next change...'}</span>
+                <span className="text-muted-foreground">
+                  {'// awaiting next change...'}
+                </span>
               ) : (
                 lines.map((ln) => {
                   const parts = ln.text.split(/(flag\.changed|\[ws\])/)
@@ -150,9 +170,13 @@ export function DemoCard() {
                     <div key={ln.id}>
                       {parts.map((p, j) =>
                         p === '[ws]' ? (
-                          <span key={j} className="text-[#9ae6b4]">{p}</span>
+                          <span key={j} className="text-[#9ae6b4]">
+                            {p}
+                          </span>
                         ) : p === 'flag.changed' ? (
-                          <span key={j} className="text-[#7aa2f7]">{p}</span>
+                          <span key={j} className="text-[#7aa2f7]">
+                            {p}
+                          </span>
                         ) : (
                           <span key={j}>{p}</span>
                         ),
@@ -168,7 +192,9 @@ export function DemoCard() {
 
       <div className="flex items-center justify-between border-t border-foreground bg-secondary px-3.5 py-2.5 text-[11px] text-muted-foreground">
         <span>ws://switchboard/projects/acm</span>
-        <span>{'↻'} try a switch</span>
+        <span className="flex items-center gap-1">
+          <RotateCw className="size-2" /> try a switch
+        </span>
       </div>
     </div>
   )

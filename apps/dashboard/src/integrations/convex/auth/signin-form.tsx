@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@switchboard/ui/components/button'
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -40,14 +41,19 @@ export function SignInForm() {
       await signIn('password', data)
       navigate({ to: '/projects' })
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : String(err)
+      const message = err instanceof Error ? err.message : String(err)
 
-      if (message.includes('Invalid credentials') || message.includes('InvalidSecret')) {
+      if (
+        message.includes('Invalid credentials') ||
+        message.includes('InvalidSecret')
+      ) {
         toast.error('Invalid email or password')
       } else if (message.includes('locked')) {
         toast.error('Your account has been locked. Contact an administrator.')
-      } else if (message.includes('Too many') || message.includes('TooManyFailedAttempts')) {
+      } else if (
+        message.includes('Too many') ||
+        message.includes('TooManyFailedAttempts')
+      ) {
         toast.error('Too many failed attempts. Please try again later.')
       } else {
         toast.error('Something went wrong. Please try again.')
@@ -65,23 +71,19 @@ export function SignInForm() {
             <FieldError>{errors.email?.message}</FieldError>
           </Field>
           <Field>
-            <div className="flex w-full items-center justify-between">
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Link
-                to="/auth/reset-password"
-                search={{ email }}
-                className="text-xs text-muted-foreground"
-              >
-                Forgot password?
-              </Link>
-            </div>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
             <Input
               {...register('password')}
               type="password"
               placeholder="******"
             />
+            <FieldDescription>
+              <Link to="/auth/reset-password" search={{ email }}>
+                Forgot password?
+              </Link>
+            </FieldDescription>
+            <FieldError>{errors.password?.message}</FieldError>
           </Field>
-          <FieldError>{errors.password?.message}</FieldError>
         </FieldGroup>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Signing in...' : 'Sign in'}

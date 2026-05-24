@@ -57,24 +57,29 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           const result = await retrieveAccount(ctx, {
             provider: 'password',
             account: { id: email, secret: password },
-          }).catch((e: unknown) => e)
+          })
+            .then((r) => r)
+            .catch((e) => e)
 
-          if (result && typeof result === 'object' && 'user' in result) {
+          if (typeof result === 'object' && 'user' in result) {
             return { userId: result.user._id }
           }
 
-          const errMsg = result instanceof Error ? result.message : String(result)
+          const errMsg =
+            result instanceof Error ? result.message : String(result)
 
-          if (errMsg.includes('InvalidSecret') || errMsg.includes('Invalid')) {
+          if (errMsg.includes('InvalidSecret') || errMsg.includes('Invalid'))
             throw new Error('Invalid credentials')
-          }
-          if (errMsg.includes('TooManyFailedAttempts') || errMsg.includes('rate')) {
+
+          if (
+            errMsg.includes('TooManyFailedAttempts') ||
+            errMsg.includes('rate')
+          )
             throw new Error('Too many failed attempts. Try again later.')
-          }
 
-          if (password !== env.ADMIN_PASSWORD) {
+          if (password !== env.ADMIN_PASSWORD)
             throw new Error('Invalid credentials')
-          }
+
           const created = await createAccount(ctx, {
             provider: 'password',
             shouldLinkViaEmail: true,

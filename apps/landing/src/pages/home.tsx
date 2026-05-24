@@ -122,11 +122,12 @@ export function Home() {
                 className="mt-4.5 font-medium tracking-tight text-foreground text-[clamp(40px,5.4vw,72px)] leading-none"
                 style={{ textWrap: 'balance' }}
               >
-                Flip flags.
+                Flip a flag:
                 <br />
-                Watch your app react{' '}
+                your app reacts in
+                <br />
                 <span className="underline decoration-1 underline-offset-[6px]">
-                  in real-time
+                  real-time
                 </span>
                 .
               </h1>

@@ -10,14 +10,7 @@ export const SearchInput: FC = () => {
   const navigate = useNavigate()
 
   const debounced = useDebouncedCallback(
-    // function
-    (dValue) => {
-      navigate({
-        to: '.',
-        search: { q: dValue || undefined },
-      })
-    },
-    // delay in ms
+    (dValue) => navigate({ to: '.', search: { q: dValue || undefined } }),
     1000,
   )
 

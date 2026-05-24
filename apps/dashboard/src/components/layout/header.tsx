@@ -2,13 +2,25 @@ import { env } from '#env'
 import { HeaderUser } from '#/integrations/convex/auth/header-user.tsx'
 import { Link } from '@tanstack/react-router'
 import { Authenticated } from 'convex/react'
-import type { FC } from 'react'
+import { useEffect, useState, type FC } from 'react'
 import { SearchInput } from './search-input'
+import { Switch } from '@switchboard/ui'
 
 export const Header: FC = () => {
+  const [status, setStatus] = useState(false)
+  useEffect(() => {
+    const interval = setInterval(() => setStatus((s) => !s), 10_000)
+    return () => clearInterval(interval)
+  })
   return (
     <div className="flex items-center justify-between h-16 px-4">
-      <a href={env.VITE_LANDING_URL}>Switchboard</a>
+      <a
+        href={env.VITE_LANDING_URL}
+        target="_blank"
+        className="flex items-center gap-2"
+      >
+        <Switch checked={status} /> Switchboard
+      </a>
       <div className="flex items-center gap-4">
         <Authenticated>
           <SearchInput />
