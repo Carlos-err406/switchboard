@@ -30,6 +30,16 @@ export const getUser = internalQuery({
   },
 })
 
+export const getUserByEmail = internalQuery({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return ctx.db
+      .query('users')
+      .filter((q) => q.eq(q.field('email'), args.email))
+      .unique()
+  },
+})
+
 export const getAuthAccount = internalQuery({
   args: { userId: v.id('users') },
   handler: async (ctx, args) => {

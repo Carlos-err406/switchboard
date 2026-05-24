@@ -34,6 +34,8 @@ interface WelcomeVariables extends TemplateVariables<'welcome'> {
 
 interface ForgotPasswordVariables extends TemplateVariables<'forgot_password'> {
   variables: {
+    platformName: string
+    orgName: string
     email: string
     url: string
     expiresIn: string
@@ -57,8 +59,7 @@ interface AccountUnlockedVariables extends TemplateVariables<'account_unlocked'>
   }
 }
 
-interface PasswordChangedVariables
-  extends TemplateVariables<'password_changed'> {
+interface PasswordChangedVariables extends TemplateVariables<'password_changed'> {
   variables: {
     email: string
     platformName: string
@@ -66,8 +67,7 @@ interface PasswordChangedVariables
   }
 }
 
-interface PermissionsChangedVariables
-  extends TemplateVariables<'permissions_changed'> {
+interface PermissionsChangedVariables extends TemplateVariables<'permissions_changed'> {
   variables: {
     email: string
     platformName: string

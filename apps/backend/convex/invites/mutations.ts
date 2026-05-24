@@ -1,10 +1,10 @@
+import { v } from 'convex/values'
 import { internal } from '../_generated/api.js'
 import { internalMutation, mutation } from '../_generated/server.js'
+import { noPermission, notAuthenticated, tokenNotFound } from '../errors'
 import { generateToken, hashString } from '../helpers.js'
 import { userPermissionValues } from '../schema/helpers.js'
 import { getAuthUser } from '../users/helpers.js'
-import { v } from 'convex/values'
-import { inviteNotFound, noPermission, notAuthenticated } from '../errors'
 
 export const inviteUserMutation = mutation({
   args: { email: v.string(), permissions: userPermissionValues },
@@ -19,7 +19,7 @@ export const inviteUserMutation = mutation({
     }
     const inviteToken = generateToken()
     const hashed = await hashString(inviteToken)
-    const invite = await ctx.db.insert('invites', {
+    await ctx.db.insert('invites', {
       createdBy: user._id,
       createdByEmail: user.email,
       hash: hashed,
@@ -30,8 +30,7 @@ export const inviteUserMutation = mutation({
     })
 
     await ctx.scheduler.runAfter(0, internal.email.actions.sendInviteEmail, {
-      inviteId: invite,
-      inviteToken: inviteToken,
+      token: inviteToken,
     })
   },
 })
@@ -40,7 +39,7 @@ export const markInviteAsUsed = internalMutation({
   args: { id: v.id('invites') },
   handler: async (ctx, args) => {
     const invite = await ctx.db.get(args.id)
-    if (!invite) throw inviteNotFound()
+    if (!invite) throw tokenNotFound()
     await ctx.db.patch(args.id, { used: true })
     await ctx.scheduler.runAfter(0, internal.email.actions.sendWelcomeEmail, {
       to: invite.toEmail,

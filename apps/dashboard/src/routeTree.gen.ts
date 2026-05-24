@@ -17,8 +17,10 @@ import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as authenticatedUsersRouteRouteImport } from './routes/(authenticated)/users/route'
 import { Route as authenticatedProjectsRouteRouteImport } from './routes/(authenticated)/projects/route'
 import { Route as InviteTokenIndexRouteImport } from './routes/invite/$token/index'
+import { Route as AuthResetPasswordIndexRouteImport } from './routes/auth/reset-password/index'
 import { Route as authenticatedUsersIndexRouteImport } from './routes/(authenticated)/users/index'
 import { Route as authenticatedProjectsIndexRouteImport } from './routes/(authenticated)/projects/index'
+import { Route as AuthResetPasswordTokenRouteImport } from './routes/auth/reset-password/$token'
 import { Route as authenticatedProjectsProjectIdIndexRouteImport } from './routes/(authenticated)/projects/$projectId/index'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -61,6 +63,11 @@ const InviteTokenIndexRoute = InviteTokenIndexRouteImport.update({
   path: '/invite/$token/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthResetPasswordIndexRoute = AuthResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const authenticatedUsersIndexRoute = authenticatedUsersIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -72,6 +79,11 @@ const authenticatedProjectsIndexRoute =
     path: '/',
     getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
+const AuthResetPasswordTokenRoute = AuthResetPasswordTokenRouteImport.update({
+  id: '/reset-password/$token',
+  path: '/reset-password/$token',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const authenticatedProjectsProjectIdIndexRoute =
   authenticatedProjectsProjectIdIndexRouteImport.update({
     id: '/$projectId/',
@@ -86,8 +98,10 @@ export interface FileRoutesByFullPath {
   '/users': typeof authenticatedUsersRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
+  '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
   '/projects/': typeof authenticatedProjectsIndexRoute
   '/users/': typeof authenticatedUsersIndexRoute
+  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
   '/invite/$token/': typeof InviteTokenIndexRoute
   '/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
@@ -95,8 +109,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth': typeof AuthIndexRoute
+  '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
   '/projects': typeof authenticatedProjectsIndexRoute
   '/users': typeof authenticatedUsersIndexRoute
+  '/auth/reset-password': typeof AuthResetPasswordIndexRoute
   '/invite/$token': typeof InviteTokenIndexRoute
   '/projects/$projectId': typeof authenticatedProjectsProjectIdIndexRoute
 }
@@ -109,8 +125,10 @@ export interface FileRoutesById {
   '/(authenticated)/users': typeof authenticatedUsersRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
+  '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
   '/(authenticated)/projects/': typeof authenticatedProjectsIndexRoute
   '/(authenticated)/users/': typeof authenticatedUsersIndexRoute
+  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
   '/invite/$token/': typeof InviteTokenIndexRoute
   '/(authenticated)/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
 }
@@ -123,8 +141,10 @@ export interface FileRouteTypes {
     | '/users'
     | '/auth/signin'
     | '/auth/'
+    | '/auth/reset-password/$token'
     | '/projects/'
     | '/users/'
+    | '/auth/reset-password/'
     | '/invite/$token/'
     | '/projects/$projectId/'
   fileRoutesByTo: FileRoutesByTo
@@ -132,8 +152,10 @@ export interface FileRouteTypes {
     | '/'
     | '/auth/signin'
     | '/auth'
+    | '/auth/reset-password/$token'
     | '/projects'
     | '/users'
+    | '/auth/reset-password'
     | '/invite/$token'
     | '/projects/$projectId'
   id:
@@ -145,8 +167,10 @@ export interface FileRouteTypes {
     | '/(authenticated)/users'
     | '/auth/signin'
     | '/auth/'
+    | '/auth/reset-password/$token'
     | '/(authenticated)/projects/'
     | '/(authenticated)/users/'
+    | '/auth/reset-password/'
     | '/invite/$token/'
     | '/(authenticated)/projects/$projectId/'
   fileRoutesById: FileRoutesById
@@ -216,6 +240,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InviteTokenIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/reset-password/': {
+      id: '/auth/reset-password/'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password/'
+      preLoaderRoute: typeof AuthResetPasswordIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/(authenticated)/users/': {
       id: '/(authenticated)/users/'
       path: '/'
@@ -229,6 +260,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/'
       preLoaderRoute: typeof authenticatedProjectsIndexRouteImport
       parentRoute: typeof authenticatedProjectsRouteRoute
+    }
+    '/auth/reset-password/$token': {
+      id: '/auth/reset-password/$token'
+      path: '/reset-password/$token'
+      fullPath: '/auth/reset-password/$token'
+      preLoaderRoute: typeof AuthResetPasswordTokenRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/(authenticated)/projects/$projectId/': {
       id: '/(authenticated)/projects/$projectId/'
@@ -287,11 +325,15 @@ const authenticatedRouteRouteWithChildren =
 interface AuthRouteRouteChildren {
   AuthSigninRoute: typeof AuthSigninRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthResetPasswordTokenRoute: typeof AuthResetPasswordTokenRoute
+  AuthResetPasswordIndexRoute: typeof AuthResetPasswordIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthSigninRoute: AuthSigninRoute,
   AuthIndexRoute: AuthIndexRoute,
+  AuthResetPasswordTokenRoute: AuthResetPasswordTokenRoute,
+  AuthResetPasswordIndexRoute: AuthResetPasswordIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

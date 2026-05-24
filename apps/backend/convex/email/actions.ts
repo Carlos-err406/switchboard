@@ -6,26 +6,24 @@ import { env } from '../env.js'
 import { v } from 'convex/values'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { inviteNotFound } from '../errors'
+import { tokenNotFound } from '../errors'
 
 dayjs.extend(relativeTime)
 
 export const sendInviteEmail = internalAction({
-  args: {
-    inviteId: v.id('invites'),
-    inviteToken: v.string(),
-  },
+  args: { token: v.string() },
   handler: async (ctx, args) => {
-    const invite = await ctx.runQuery(internal.invites.queries.getInvite, {
-      id: args.inviteId,
-    })
-    if (!invite) throw inviteNotFound()
+    const invite = await ctx.runQuery(
+      internal.invites.queries.getInviteByTokenInternal,
+      { token: args.token },
+    )
+    if (!invite) throw tokenNotFound()
     await sendEmail({
       email: {
         template: 'invite',
         variables: {
           email: invite.toEmail,
-          url: `${env.SITE_URL}/invite/${args.inviteToken}`,
+          url: `${env.SITE_URL}/invite/${args.token}`,
           platformName: env.PLATFORM_NAME,
           orgName: env.ORG_NAME,
           invitedBy: invite.createdByEmail,
@@ -115,6 +113,35 @@ export const sendPasswordChangedEmail = internalAction({
         template: 'password_changed',
         variables: {
           email: args.to,
+          platformName: env.PLATFORM_NAME,
+          orgName: env.ORG_NAME,
+        },
+      },
+      to: [args.to],
+    })
+  },
+})
+
+export const sendResetPasswordEmail = internalAction({
+  args: {
+    token: v.string(),
+    to: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const passwordReset = await ctx.runQuery(
+      internal.password_resets.queries.getPasswordResetByTokenInternal,
+      {
+        token: args.token,
+      },
+    )
+    if (!passwordReset) throw tokenNotFound()
+    await sendEmail({
+      email: {
+        template: 'forgot_password',
+        variables: {
+          email: passwordReset.toEmail,
+          expiresIn: dayjs(passwordReset.expiresAt).fromNow(true),
+          url: `${env.SITE_URL}/auth/reset-password/${args.token}`,
           platformName: env.PLATFORM_NAME,
           orgName: env.ORG_NAME,
         },

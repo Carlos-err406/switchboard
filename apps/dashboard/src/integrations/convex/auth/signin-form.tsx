@@ -1,3 +1,5 @@
+import { useAuthActions } from '@convex-dev/auth/react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@switchboard/ui/components/button'
 import {
   Field,
@@ -7,11 +9,10 @@ import {
   FieldSet,
 } from '@switchboard/ui/components/field'
 import { Input } from '@switchboard/ui/components/input'
-import { useAuthActions } from '@convex-dev/auth/react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod/v4'
 
 const signInSchema = z.object({
@@ -26,15 +27,32 @@ export function SignInForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    watch,
+    formState: { errors, isSubmitting },
   } = useForm<SignInInputs>({
     resolver: zodResolver(signInSchema),
     defaultValues: { email: '', password: '' },
   })
+  const email = watch('email')
 
   const onSubmit: SubmitHandler<SignInInputs> = async (data) => {
-    await signIn('password', data)
-    navigate({ to: '/projects' })
+    try {
+      await signIn('password', data)
+      navigate({ to: '/projects' })
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : String(err)
+
+      if (message.includes('Invalid credentials') || message.includes('InvalidSecret')) {
+        toast.error('Invalid email or password')
+      } else if (message.includes('locked')) {
+        toast.error('Your account has been locked. Contact an administrator.')
+      } else if (message.includes('Too many') || message.includes('TooManyFailedAttempts')) {
+        toast.error('Too many failed attempts. Please try again later.')
+      } else {
+        toast.error('Something went wrong. Please try again.')
+      }
+    }
   }
 
   return (
@@ -44,24 +62,29 @@ export function SignInForm() {
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input {...register('email')} type="text" placeholder="Email" />
-            {errors.email?.message && (
-              <FieldError>{errors.email.message}</FieldError>
-            )}
+            <FieldError>{errors.email?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <div className="flex w-full items-center justify-between">
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <Link
+                to="/auth/reset-password"
+                search={{ email }}
+                className="text-xs text-muted-foreground"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <Input
               {...register('password')}
               type="password"
               placeholder="******"
             />
           </Field>
-          {errors.password?.message && (
-            <FieldError>{errors.password.message}</FieldError>
-          )}
+          <FieldError>{errors.password?.message}</FieldError>
         </FieldGroup>
-        <Button type="submit" className="ml-auto">
-          Sign in
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Signing in...' : 'Sign in'}
         </Button>
       </FieldSet>
     </form>

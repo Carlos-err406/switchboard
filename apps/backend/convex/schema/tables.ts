@@ -79,3 +79,12 @@ export const invites = defineTable({
   .index('by_creator', ['createdBy'])
   .index('by_expiration_date', ['expiresAt'])
   .index('by_creator_email', ['createdByEmail'])
+
+export const passwordResets = defineTable({
+  hash: v.string(),
+  expiresAt: v.number(),
+  used: v.boolean(),
+  toEmail: v.string(),
+})
+  .index('by_hash', ['hash'])
+  .index('by_expiration_date', ['expiresAt'])

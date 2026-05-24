@@ -1,16 +1,16 @@
 import { internalQuery, query } from '../_generated/server.js'
 import { v } from 'convex/values'
 import dayjs from 'dayjs'
-import { inviteAlreadyUsed, inviteExpired, inviteNotFound } from '../errors'
+import { tokenAlreadyUsed, tokenExpired, tokenNotFound } from '../errors'
 import { getInviteByToken } from './helpers'
 
 export const getInviteByTokenQuery = query({
   args: { token: v.string() },
   handler: async (ctx, args) => {
     const invite = await getInviteByToken(ctx, { token: args.token })
-    if (!invite) throw inviteNotFound()
-    if (invite.used) throw inviteAlreadyUsed()
-    if (dayjs().isAfter(dayjs(invite.expiresAt))) throw inviteExpired()
+    if (!invite) throw tokenNotFound()
+    if (invite.used) throw tokenAlreadyUsed()
+    if (dayjs().isAfter(dayjs(invite.expiresAt))) throw tokenExpired()
     return invite
   },
 })

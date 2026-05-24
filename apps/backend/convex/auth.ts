@@ -54,36 +54,45 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         }
 
         if (email === env.ADMIN_EMAIL) {
+          const result = await retrieveAccount(ctx, {
+            provider: 'password',
+            account: { id: email, secret: password },
+          }).catch((e: unknown) => e)
+
+          if (result && typeof result === 'object' && 'user' in result) {
+            return { userId: result.user._id }
+          }
+
+          const errMsg = result instanceof Error ? result.message : String(result)
+
+          if (errMsg.includes('InvalidSecret') || errMsg.includes('Invalid')) {
+            throw new Error('Invalid credentials')
+          }
+          if (errMsg.includes('TooManyFailedAttempts') || errMsg.includes('rate')) {
+            throw new Error('Too many failed attempts. Try again later.')
+          }
+
           if (password !== env.ADMIN_PASSWORD) {
             throw new Error('Invalid credentials')
           }
-
-          try {
-            const existing = await retrieveAccount(ctx, {
-              provider: 'password',
-              account: { id: email },
-            })
-            return { userId: existing.user._id }
-          } catch {
-            const created = await createAccount(ctx, {
-              provider: 'password',
-              shouldLinkViaEmail: true,
-              account: { id: email, secret: password },
-              profile: {
-                email,
-                locked: false,
-                role: 'admin' as const,
-                permissions: [
-                  'projects.create',
-                  'users.list',
-                  'users.invite',
-                  'users.delete',
-                  'users.update',
-                ],
-              },
-            })
-            return { userId: created.user._id }
-          }
+          const created = await createAccount(ctx, {
+            provider: 'password',
+            shouldLinkViaEmail: true,
+            account: { id: email, secret: password },
+            profile: {
+              email,
+              locked: false,
+              role: 'admin' as const,
+              permissions: [
+                'projects.create',
+                'users.list',
+                'users.invite',
+                'users.delete',
+                'users.update',
+              ],
+            },
+          })
+          return { userId: created.user._id }
         }
         const retrieved = await retrieveAccount(ctx, {
           provider: 'password',

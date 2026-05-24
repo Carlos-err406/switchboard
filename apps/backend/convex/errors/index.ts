@@ -51,14 +51,14 @@ export const apikeyAlreadyExist = () =>
 export const apiKeyNotFound = () =>
   queryError(QueryErrorCode.API_KEY_NOT_FOUND, 'Api key not found')
 
-export const inviteNotFound = () =>
-  queryError(QueryErrorCode.INVITE_NOT_FOUND, 'Invitation not found')
-
-export const inviteExpired = () =>
-  queryError(QueryErrorCode.INVITE_EXPIRED, 'Invitation expired')
-
-export const inviteAlreadyUsed = () =>
-  queryError(QueryErrorCode.INVITE_ALREADY_USED, 'Invitation already used')
-
 export const userNotFound = () =>
   queryError(QueryErrorCode.USER_NOT_FOUND, 'User not found')
+
+export const tokenNotFound = () =>
+  queryError(QueryErrorCode.TOKEN_NOT_FOUND, 'Token not found')
+
+export const tokenExpired = () =>
+  queryError(QueryErrorCode.TOKEN_EXPIRED, 'Token expired')
+
+export const tokenAlreadyUsed = () =>
+  queryError(QueryErrorCode.TOKEN_ALREADY_USED, 'Token already used')
