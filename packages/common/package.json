@@ -1,12 +1,9 @@
 {
-  "name": "@switchboard/node",
+  "name": "@switchboard/common",
   "version": "0.0.1",
   "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
-  },
-  "dependencies": {
-    "@switchboard/common": "workspace:*"
   }
 }
