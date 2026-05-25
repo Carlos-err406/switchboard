@@ -22,7 +22,7 @@ import { SwitchboardProvider } from "@switchboard/react";
 export function App() {
   return (
     <SwitchboardProvider
-      url="wss://flags.acme.io"
+      switchboardHost={import.meta.env.VITE_SB_HOST}
       apiKey={import.meta.env.VITE_SB_KEY}
     >
       <Routes />
@@ -34,9 +34,9 @@ const REACT_WS_RIGHT = /* js */ `// 2. read flags anywhere — they update live
 import { useFlag } from "@switchboard/react";
 
 export function Checkout() {
-  const newCheckout = useFlag("new_checkout");
+  const variant = useFlag<"v1" | "v2">("checkout", "v1");
 
-  return newCheckout
+  return variant === "v2"
     ? <CheckoutV2 />
     : <CheckoutV1 />;
 }
@@ -69,28 +69,31 @@ const note = await client.getFlag<string | null>("banner");
 
 const VANILLA_LEFT = /* html */ `<!-- no framework, no build step -->
 <script type="module">
-  import { Switchboard } from "https://esm.sh/@switchboard/js";
+  import { SwitchboardWsClient } from "https://esm.sh/@switchboard/js";
 
-  const sb = new Switchboard({
-    url: "wss://flags.acme.io",
-    apiKey: "pk_live_...",
-    env: "production",
+  const client = new SwitchboardWsClient({
+    url: "https://flags.acme.io",
+    apiKey: "pk_...",
+    onError: (err) => console.error(err),
   });
 
-  await sb.ready();
+  // realtime — callback fires on every change
+  client.on("ui_v2", (enabled) => {
+    document.querySelector("#app").dataset.version =
+      enabled ? "v2" : "v1";
+  }, false);
 </script>`
 
-const VANILLA_RIGHT = /* javascript */ `// subscribe to any flag
-sb.on("new_checkout", (on) => {
-  document.body.classList.toggle("checkout-v2", on);
-});
+const VANILLA_RIGHT = /* javascript */ `// one-shot read with default
+const max = await client.getFlag("max_items", 10);
 
-// or one-shot read
-if (sb.get("ai_assistant")) {
-  mountAssistant();
-}
+// without default — throws on error
+const banner = await client.getFlag("banner");
 
-// reconnects automatically. ~2kb gzipped.`
+// subscribe to multiple flags
+client.on("checkout_variant", (v) => {
+  mountCheckout(v);
+}, "v1");`
 
 const CODE_PANELS: Record<
   string,

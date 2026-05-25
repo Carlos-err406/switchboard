@@ -10,5 +10,9 @@
   },
   "files.associations": {
     "*.css": "tailwindcss"
+  },
+  "tailwindCSS.experimental.configFile": {
+    "packages/ui/src/styles.css": "apps/*/src/**",
+    "samples/react-sample/src/index.css": "samples/react-sample/src/**"
   }
 }
