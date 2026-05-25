@@ -1,0 +1,16 @@
+{
+  "name": "edge-sample",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --watch --env-file=./.env.local src/main.ts"
+  },
+  "dependencies": {
+    "@switchboard/edge": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsx": "^4.19.4"
+  }
+}
