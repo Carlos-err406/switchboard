@@ -1,20 +1,20 @@
-import { Button } from '@switchboard/ui/components/button'
+import { onFormError } from '#/lib/utils.ts';
+import { useConvexMutation } from '@convex-dev/react-query';
+import { api } from '@convex/_generated/api.js';
+import type { Doc } from '@convex/_generated/dataModel.js';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@switchboard/ui/components/button';
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-  FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import type { FC } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+    Field,
+    FieldError,
+    FieldLabel,
+    FieldSet,
+} from '@switchboard/ui/components/field';
+import { Input } from '@switchboard/ui/components/input';
+import { useMutation } from '@tanstack/react-query';
+import type { FC } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const updateFlagSchema = z.object({
   key: z.string().min(3, 'Must have at least 3 characters'),
@@ -49,7 +49,7 @@ export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
     defaultValues: {
       key: flag.key,
       description: flag.description,
-      value: flag.value,
+      value: String(flag.value),
     },
     resolver: zodResolver(updateFlagSchema),
   })

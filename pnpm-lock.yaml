@@ -240,9 +240,15 @@ importers:
         specifier: ^8.0.0
         version: 8.0.13(@types/node@22.19.19)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.0)
 
+  packages/common: {}
+
   packages/js: {}
 
-  packages/node: {}
+  packages/node:
+    dependencies:
+      '@switchboard/common':
+        specifier: workspace:*
+        version: link:../common
 
   packages/react:
     dependencies:

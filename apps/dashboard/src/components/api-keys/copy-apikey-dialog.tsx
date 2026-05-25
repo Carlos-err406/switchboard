@@ -13,7 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@switchboard/ui/components/tooltip'
-import { Check, Clipboard } from 'lucide-react'
+import { Check, Clipboard, Info } from 'lucide-react'
 import type { FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
@@ -58,7 +58,7 @@ export const CopyApiKeyDialog: FC<Props> = ({ title, value, onClose }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="bg-muted p-2 flex items-center justify-between">
-          <div className="text-xs">{value?.preview}</div>
+          <p className="text-xs text-center flex-1">{value?.preview}</p>
           <Button
             onClick={async () => {
               if (!value) return
@@ -70,6 +70,10 @@ export const CopyApiKeyDialog: FC<Props> = ({ title, value, onClose }) => {
           >
             {copied ? <Check /> : <Clipboard />}
           </Button>
+        </div>
+        <div className="flex items-start text-center text-xs">
+          <Info className="size-4 flex-none mt-px" /> Api Keys are read-only and
+          scoped to specific environments, they are safe to use client side!
         </div>
         <AlertDialogFooter className="justify-end">
           <Tooltip>

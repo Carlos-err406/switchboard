@@ -1,5 +1,5 @@
+import type { DetailedApiKey } from '#/lib/types/inferred.ts'
 import { Badge } from '@switchboard/ui/components/badge'
-import { Button } from '@switchboard/ui/components/button'
 import {
   Card,
   CardContent,
@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@switchboard/ui/components/card'
-import type { DetailedApiKey } from '#/lib/types/inferred.ts'
 import dayjs from 'dayjs'
 import { Key } from 'lucide-react'
 import type { FC } from 'react'
@@ -45,10 +44,16 @@ export const ApiKeyCard: FC<{ apiKey: DetailedApiKey }> = ({ apiKey }) => {
           {apiKey.description && ' · ' + apiKey.description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex justify-end flex-col gap-2">
-        <Badge variant={'outline'}>Expires: {formatExpiresAt()}</Badge>
-        <Badge variant={'outline'}>Last used: {formatLastUsed()}</Badge>
-        <Badge variant={'outline'}>Created by: {apiKey.creatorEmail}</Badge>
+      <CardContent className="space-y-4">
+        <div className="bg-muted p-1">
+          <p className="text-center">{apiKey.keyPreview}</p>
+        </div>
+
+        <div className="flex justify-end flex-col gap-2">
+          <Badge variant={'outline'}>Expires: {formatExpiresAt()}</Badge>
+          <Badge variant={'outline'}>Last used: {formatLastUsed()}</Badge>
+          <Badge variant={'outline'}>Created by: {apiKey.creatorEmail}</Badge>
+        </div>
       </CardContent>
       <CardFooter className="justify-end">
         <RotateApiKeyDialog apiKey={apiKey} />
