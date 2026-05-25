@@ -1,4 +1,5 @@
 /** Wraps all errors originating from Switchboard flag operations. Check `cause` for the underlying error. */
+
 export class SwitchboardClientError extends Error {
   constructor(error: Error)
   constructor(message: string)
