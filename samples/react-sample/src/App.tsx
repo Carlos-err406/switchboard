@@ -1,58 +1,47 @@
-import { useFlag } from '@switchboard/react'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@switchboard/ui/components/card'
-import { Badge } from '@switchboard/ui/components/badge'
-import { Flag } from 'lucide-react'
-
-function FlagRow({
-  name,
-  defaultValue,
-}: {
-  name: string
-  defaultValue?: string | number | boolean | null
-}) {
-  const value = useFlag(name, defaultValue)
-  return (
-    <tr className="border-b border-border">
-      <td className="p-2.5 flex items-center gap-2">
-        <Flag className="size-3.5 text-muted-foreground" />
-        {name}
-      </td>
-      <td className="p-2.5">
-        <code className="bg-muted px-1.5 py-0.5 text-xs">
-          {String(defaultValue ?? 'undefined')}
-        </code>
-      </td>
-      <td className="p-2.5">
-        <code className="bg-muted px-1.5 py-0.5 text-xs">
-          {String(value ?? 'undefined')}
-        </code>
-      </td>
-      <td className="p-2.5">
-        <Badge variant="outline">{typeof value}</Badge>
-      </td>
-    </tr>
-  )
-}
+} from "@switchboard/ui/components/card";
+import { useCallback, useState } from "react";
+import { ConnectionStatus } from "./components/connection-status";
+import { FlagRow } from "./components/flag-row";
+import { Log, type LogEntry } from "./components/log";
 
 function App() {
+  const [entries, setEntries] = useState<LogEntry[]>([]);
+
+  const log = useCallback((message: string) => {
+    setEntries((prev) => [
+      { time: new Date().toLocaleTimeString(), message },
+      ...prev,
+    ]);
+  }, []);
+
+  const onFlagUpdate = useCallback(
+    (name: string, value: unknown) => {
+      log(`${name} → ${String(value)}`);
+    },
+    [log],
+  );
+
   return (
     <div className="max-w-2xl mx-auto p-8 flex flex-col gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>
-            <a
-              target="_blank"
-              href="https://github.com/Carlos-err406/switchboard/tree/main/samples/react-sample"
-            >
-              @switchboard/react-sample
-            </a>
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>
+              <a
+                target="_blank"
+                href="https://github.com/Carlos-err406/switchboard/tree/main/samples/react-sample"
+              >
+                @switchboard/react-sample
+              </a>
+            </CardTitle>
+            <ConnectionStatus onLog={log} />
+          </div>
           <CardDescription>
             Toggle flags in the dashboard — values update in realtime.
           </CardDescription>
@@ -68,15 +57,24 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              <FlagRow name="ui_v2" defaultValue={false} />
-              <FlagRow name="max_items" defaultValue={10} />
-              <FlagRow name="banner" />
+              <FlagRow
+                name="ui_v2"
+                defaultValue={false}
+                onUpdate={onFlagUpdate}
+              />
+              <FlagRow
+                name="max_items"
+                defaultValue={10}
+                onUpdate={onFlagUpdate}
+              />
+              <FlagRow name="banner" onUpdate={onFlagUpdate} />
             </tbody>
           </table>
         </CardContent>
       </Card>
+      <Log entries={entries} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

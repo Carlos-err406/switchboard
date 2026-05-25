@@ -10,11 +10,7 @@ export function useFlag<T extends FlagValueType>(
   const { client } = useSwitchboardProvider()
   useEffect(() => {
     let unsubscribe = () => {}
-    if (defaultValue !== undefined) {
-      unsubscribe = client.on<T>(flag, setValue, defaultValue)
-    } else {
-      unsubscribe = client.on<T>(flag, setValue)
-    }
+    unsubscribe = client.on<T>(flag, setValue, defaultValue)
     return () => {
       unsubscribe()
     }

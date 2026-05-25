@@ -3,6 +3,7 @@ import type {
   SwitchboardClientOnErrorCallback,
 } from '@switchboard/common'
 import { $try, SwitchboardClientError } from '@switchboard/common'
+import type { ConnectionState } from 'convex/browser'
 import { ConvexClient } from 'convex/browser'
 import { anyApi } from 'convex/server'
 
@@ -13,7 +14,7 @@ export type SwitchboardWsClientConstructorOpts = {
   apiKey: string
   /**
    * The URL of the Switchboard backend (Convex WebSocket endpoint).
-   * @example "http://127.0.0.1:3210" - 
+   * @example "http://127.0.0.1:3210" -
    */
   url: string
   /**
@@ -122,15 +123,6 @@ export class SwitchboardWsClient {
    */
   public on<T extends FlagValueType>(
     key: string,
-    callback: (value: T) => void,
-    defaultValue: T,
-  ): () => void
-  public on<T extends FlagValueType>(
-    key: string,
-    callback: (value: T | undefined) => void,
-  ): () => void
-  public on<T extends FlagValueType>(
-    key: string,
     callback: (value: T | undefined) => void,
     defaultValue?: T,
   ): () => void {
@@ -146,6 +138,18 @@ export class SwitchboardWsClient {
         callback(defaultValue)
       },
     )
+  }
+
+  /**
+   * Subscribe to connection state changes.
+   *
+   * @param callback - Called whenever the connection state changes.
+   * @returns An unsubscribe function.
+   */
+  public onConnectionChange(
+    callback: (state: ConnectionState) => void,
+  ): () => void {
+    return this.client.subscribeToConnectionState(callback)
   }
 
   /** Close the WebSocket connection. */

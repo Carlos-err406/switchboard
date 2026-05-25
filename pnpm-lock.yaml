@@ -316,6 +316,25 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
 
+  samples/js-sample:
+    dependencies:
+      '@switchboard/js':
+        specifier: workspace:*
+        version: link:../../packages/js
+    devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.3.0
+        version: 4.3.0(vite@8.0.13(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.0))
+      portless:
+        specifier: ^0.13.0
+        version: 0.13.0
+      tailwindcss:
+        specifier: ^4.3.0
+        version: 4.3.0
+      vite:
+        specifier: ^8.0.12
+        version: 8.0.13(@types/node@24.12.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.0)
+
   samples/react-sample:
     dependencies:
       '@switchboard/react':
