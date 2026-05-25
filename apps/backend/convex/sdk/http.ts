@@ -1,6 +1,6 @@
 import type { HttpRouter } from 'convex/server'
 import { httpActionGeneric } from 'convex/server'
-import { internal } from './_generated/api'
+import { internal } from '../_generated/api'
 
 export const setupRestRoutes = (http: HttpRouter) => {
   http.route({

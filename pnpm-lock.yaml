@@ -242,7 +242,14 @@ importers:
 
   packages/common: {}
 
-  packages/js: {}
+  packages/js:
+    dependencies:
+      '@switchboard/common':
+        specifier: workspace:*
+        version: link:../common
+      convex:
+        specifier: ^1.39.1
+        version: 1.39.1(react@19.2.6)
 
   packages/node:
     dependencies:

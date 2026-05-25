@@ -1,8 +1,6 @@
-import { $try } from '@switchboard/common'
+import type { SwitchboardClientOnErrorCallback } from '@switchboard/common'
+import { $try, SwitchboardClientError } from '@switchboard/common'
 
-export type SwitchboardHttpClientOnErrorCallback = (
-  error: SwitchboardClientError,
-) => void
 export type SwitchboardHttpClientConstructorOpts = {
   /** The API key for authenticating with Switchboard (prefixed with `pk_`). */
   apiKey: string
@@ -25,7 +23,7 @@ export type SwitchboardHttpClientConstructorOpts = {
    * })
    * ```
    */
-  onError?: SwitchboardHttpClientOnErrorCallback
+  onError?: SwitchboardClientOnErrorCallback
 }
 
 /**
@@ -50,7 +48,7 @@ export class SwitchboardHttpClient {
   private apiKey: string
   private switchboardHost: string
   private readonly ENDPOINT = '/api/flags'
-  private onError?: SwitchboardHttpClientOnErrorCallback
+  private onError?: SwitchboardClientOnErrorCallback
   constructor({
     apiKey,
     switchboardHost,
@@ -124,19 +122,5 @@ export class SwitchboardHttpClient {
     if (flag.enabled) return flag.value
     else if (defaultValue !== undefined) return defaultValue
     else return undefined
-  }
-}
-
-/** Wraps all errors originating from Switchboard flag fetches. Check `cause` for the underlying error. */
-export class SwitchboardClientError extends Error {
-  constructor(error: Error)
-  constructor(message: string)
-  constructor(messageOrError: string | Error) {
-    if (messageOrError instanceof Error) {
-      super(messageOrError.message, { cause: messageOrError })
-    } else {
-      super(messageOrError, { cause: messageOrError })
-    }
-    this.name = 'SwitchboardClientError'
   }
 }

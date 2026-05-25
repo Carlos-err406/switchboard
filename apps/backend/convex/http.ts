@@ -1,6 +1,6 @@
 import { httpRouter } from 'convex/server'
 import { auth } from './auth'
-import { setupRestRoutes } from './sdk'
+import { setupRestRoutes } from './sdk/http'
 
 const http = httpRouter()
 

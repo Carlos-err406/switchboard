@@ -51,6 +51,12 @@ export const apikeyAlreadyExist = () =>
 export const apiKeyNotFound = () =>
   queryError(QueryErrorCode.API_KEY_NOT_FOUND, 'Api key not found')
 
+export const apiKeyDisabled = () =>
+  queryError(QueryErrorCode.API_KEY_NOT_FOUND, 'API key disabled')
+
+export const apiKeyExpired = () =>
+  queryError(QueryErrorCode.API_KEY_NOT_FOUND, 'API key expired')
+
 export const userNotFound = () =>
   queryError(QueryErrorCode.USER_NOT_FOUND, 'User not found')
 

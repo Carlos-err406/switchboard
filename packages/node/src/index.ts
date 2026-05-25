@@ -1,1 +1,1 @@
-export * from './switchboard-http-client'
+export * from './client'
