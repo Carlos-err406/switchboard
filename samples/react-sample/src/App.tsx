@@ -48,7 +48,7 @@ function App() {
           <CardTitle>
             <a
               target="_blank"
-              href="https://github.com/carlos-err406/switchboard/samples/react-sample"
+              href="https://github.com/Carlos-err406/switchboard/tree/main/samples/react-sample"
             >
               @switchboard/react-sample
             </a>
