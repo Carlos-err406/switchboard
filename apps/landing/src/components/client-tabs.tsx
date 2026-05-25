@@ -16,7 +16,7 @@ const CLIENT_TABS = [
   },
 ] as const
 
-const REACT_WS_LEFT = `// 1. wrap your tree once
+const REACT_WS_LEFT = /* js */ `// 1. wrap your tree once
 import { SwitchboardProvider } from "@switchboard/react";
 
 export function App() {
@@ -24,14 +24,13 @@ export function App() {
     <SwitchboardProvider
       url="wss://flags.acme.io"
       apiKey={import.meta.env.VITE_SB_KEY}
-      env="production"
     >
       <Routes />
     </SwitchboardProvider>
   );
 }`
 
-const REACT_WS_RIGHT = `// 2. read flags anywhere — they update live
+const REACT_WS_RIGHT = /* js */ `// 2. read flags anywhere — they update live
 import { useFlag } from "@switchboard/react";
 
 export function Checkout() {
@@ -45,54 +44,45 @@ export function Checkout() {
 // flip it in the dashboard ─ the component re-renders
 // across every connected tab. no refresh, no flicker.`
 
-const NODE_LEFT = `// SSR / edge — no socket, just fetch
-import { createClient } from "@switchboard/node";
+const NODE_LEFT = /* typescript */ `// SSR / edge — no socket, just fetch
+import { SwitchboardHttpClient } from "@switchboard/node";
 
-const sb = createClient({
-  url:    "https://flags.acme.io",
+const client = new SwitchboardHttpClient({
   apiKey: process.env.SB_KEY,
-  env:    "production",
-  cache:  "force-cache",
+  switchboardHost: "https://flags.acme.io",
+  onError: (err) => console.error(err),
 });
 
-export default async function handler() {
-  const { newCheckout } = await sb.flags([
-    "newCheckout",
-  ]);
-  return newCheckout ? renderV2() : renderV1();
-}`
+app.get("/checkout", async (req, res) => {
+  const variant = await client.getFlag<"v1" | "v2">("checkout_variant", "v1");
+  res.json({ checkout: variant });
+});`
 
-const NODE_RIGHT = `// same shape, different transport.
+const NODE_RIGHT = /* typescript */ `// flags can be string, number, boolean, or null
+const dark = await client.getFlag("dark_mode", false);
+const max  = await client.getFlag("max_items", 10);
+const note = await client.getFlag<string | null>("banner");
+
 // drop into Express, Hono, Fastify, or anything
 // that can hold an HTTP client.
+// flags are fetched per-call, no socket needed.`
 
-const { all } = await sb.flags("*");
-console.log(all);
-// {
-//   new_checkout: true,
-//   dark_mode_v2: false,
-//   ai_assistant: true,
-// }`
-
-const VANILLA_LEFT = `// no framework, no build step
+const VANILLA_LEFT = /* html */ `<!-- no framework, no build step -->
 <script type="module">
-  import { Switchboard }
-    from "https://esm.sh/@switchboard/js";
+  import { Switchboard } from "https://esm.sh/@switchboard/js";
 
   const sb = new Switchboard({
-    url:    "wss://flags.acme.io",
-    apiKey: "sk_live_...",
-    env:    "production",
+    url: "wss://flags.acme.io",
+    apiKey: "pk_live_...",
+    env: "production",
   });
 
   await sb.ready();
 </script>`
 
-const VANILLA_RIGHT = `// subscribe to any flag
+const VANILLA_RIGHT = /* javascript */ `// subscribe to any flag
 sb.on("new_checkout", (on) => {
-  document.body.classList.toggle(
-    "checkout-v2", on,
-  );
+  document.body.classList.toggle("checkout-v2", on);
 });
 
 // or one-shot read
@@ -104,11 +94,26 @@ if (sb.get("ai_assistant")) {
 
 const CODE_PANELS: Record<
   string,
-  { left: string; right: string; lang: string }
+  { left: string; right: string; langLeft: string; langRight: string }
 > = {
-  'react-ws': { left: REACT_WS_LEFT, right: REACT_WS_RIGHT, lang: 'tsx' },
-  node: { left: NODE_LEFT, right: NODE_RIGHT, lang: 'typescript' },
-  vanilla: { left: VANILLA_LEFT, right: VANILLA_RIGHT, lang: 'javascript' },
+  'react-ws': {
+    left: REACT_WS_LEFT,
+    right: REACT_WS_RIGHT,
+    langLeft: 'tsx',
+    langRight: 'tsx',
+  },
+  node: {
+    left: NODE_LEFT,
+    right: NODE_RIGHT,
+    langLeft: 'typescript',
+    langRight: 'typescript',
+  },
+  vanilla: {
+    left: VANILLA_LEFT,
+    right: VANILLA_RIGHT,
+    langLeft: 'html',
+    langRight: 'javascript',
+  },
 }
 
 export function ClientTabs() {
@@ -157,10 +162,10 @@ export function ClientTabs() {
         {/* code panels — fixed height prevents layout shift between tabs */}
 
         <div className="grid h-[380px] lg:grid-cols-2">
-          <CodeBlock code={panel.left} language={panel.lang} />
+          <CodeBlock code={panel.left} language={panel.langLeft} />
           <CodeBlock
             code={panel.right}
-            language={panel.lang}
+            language={panel.langRight}
             className="border-t border-foreground lg:border-t-0 lg:border-l"
           />
         </div>

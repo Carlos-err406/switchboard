@@ -72,9 +72,14 @@ export class SwitchboardHttpClient {
    * @param defaultValue - Fallback value returned when the flag is disabled or the request fails.
    * @returns The flag value, the default, or `undefined` if the flag is disabled and no default was given.
    */
-  public async getFlag<T>(key: string, defaultValue: T): Promise<T>
-  public async getFlag<T>(key: string): Promise<T | undefined>
-  public async getFlag<T>(
+  public async getFlag<T extends string | number | boolean | null>(
+    key: string,
+    defaultValue: T,
+  ): Promise<T>
+  public async getFlag<T extends string | number | boolean | null>(
+    key: string,
+  ): Promise<T | undefined>
+  public async getFlag<T extends string | number | boolean | null>(
     key: string,
     defaultValue?: T,
   ): Promise<T | undefined> {
