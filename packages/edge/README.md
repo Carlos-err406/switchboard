@@ -1,17 +1,17 @@
-# @switchboard/node
+# @switchboard/edge
 
-Node.js SDK for [Switchboard](https://github.com/your-org/switchboard) feature flags. Fetches flags via HTTP — designed for server-side use where realtime subscriptions aren't needed.
+Edge/server SDK for [Switchboard](https://github.com/Carlos-err406/switchboard) feature flags. Fetches flags via HTTP — designed for server-side and edge environments where realtime subscriptions aren't needed.
 
 ## Install
 
 ```sh
-npm install @switchboard/node
+npm install @switchboard/edge
 ```
 
 ## Setup
 
 ```ts
-import { SwitchboardHttpClient } from '@switchboard/node'
+import { SwitchboardHttpClient } from '@switchboard/edge'
 
 const client = new SwitchboardHttpClient({
   apiKey: 'pk_...',

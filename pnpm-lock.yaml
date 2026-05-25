@@ -242,6 +242,12 @@ importers:
 
   packages/common: {}
 
+  packages/edge:
+    dependencies:
+      '@switchboard/common':
+        specifier: workspace:*
+        version: link:../common
+
   packages/js:
     dependencies:
       '@switchboard/common':
@@ -250,12 +256,6 @@ importers:
       convex:
         specifier: ^1.39.1
         version: 1.39.1(react@19.2.6)
-
-  packages/node:
-    dependencies:
-      '@switchboard/common':
-        specifier: workspace:*
-        version: link:../common
 
   packages/react:
     dependencies:

@@ -28,7 +28,7 @@ export type SwitchboardHttpClientConstructorOpts = {
 
 /**
  * Non-realtime Switchboard client that fetches flags via HTTP.
- * Designed for server-side use (Node.js) where realtime subscriptions aren't needed.
+ * Designed for server-side and edge environments where realtime subscriptions aren't needed.
  *
  * @example
  * ```ts

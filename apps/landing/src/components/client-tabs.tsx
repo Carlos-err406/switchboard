@@ -8,7 +8,7 @@ const CLIENT_TABS = [
     label: 'React · realtime',
     install: 'pnpm add @switchboard/react',
   },
-  { key: 'node', label: 'Node.js', install: 'pnpm add @switchboard/node' },
+  { key: 'edge', label: 'Edge / Node', install: 'pnpm add @switchboard/edge' },
   {
     key: 'vanilla',
     label: 'Vanilla JS',
@@ -44,8 +44,8 @@ export function Checkout() {
 // flip it in the dashboard ─ the component re-renders
 // across every connected tab. no refresh, no flicker.`
 
-const NODE_LEFT = /* typescript */ `// SSR / edge — no socket, just fetch
-import { SwitchboardHttpClient } from "@switchboard/node";
+const EDGE_LEFT = /* typescript */ `// SSR / edge — no socket, just fetch
+import { SwitchboardHttpClient } from "@switchboard/edge";
 
 const client = new SwitchboardHttpClient({
   apiKey: process.env.SB_KEY,
@@ -58,7 +58,7 @@ app.get("/checkout", async (req, res) => {
   res.json({ checkout: variant });
 });`
 
-const NODE_RIGHT = /* typescript */ `// flags can be string, number, boolean, or null
+const EDGE_RIGHT = /* typescript */ `// flags can be string, number, boolean, or null
 const dark = await client.getFlag("dark_mode", false);
 const max  = await client.getFlag("max_items", 10);
 const note = await client.getFlag<string | null>("banner");
@@ -105,9 +105,9 @@ const CODE_PANELS: Record<
     langLeft: 'tsx',
     langRight: 'tsx',
   },
-  node: {
-    left: NODE_LEFT,
-    right: NODE_RIGHT,
+  edge: {
+    left: EDGE_LEFT,
+    right: EDGE_RIGHT,
     langLeft: 'typescript',
     langRight: 'typescript',
   },
