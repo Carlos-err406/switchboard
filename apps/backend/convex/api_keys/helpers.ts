@@ -4,7 +4,7 @@ import { hashString } from '../helpers.js'
 import type { GenericQueryCtx } from 'convex/server'
 import { v } from 'convex/values'
 
-export const API_KEY_PREFIX = 'sk'
+export const API_KEY_PREFIX = 'pk'
 
 export const getProjectApiKeys = internalQuery({
   args: { projectId: v.id('projects') },
@@ -70,4 +70,4 @@ export const getApiKeyByValue = async (
 }
 
 export const getApiKeyPreview = (apiKey: string) =>
-  apiKey.slice(0, 10) + '*'.repeat(apiKey.length - 15) + apiKey.slice(-5)
+  apiKey.slice(0, 10) + '*'.repeat(8) + apiKey.slice(-5)

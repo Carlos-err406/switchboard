@@ -50,6 +50,7 @@ import type * as projects_mutations from "../projects/mutations.js";
 import type * as projects_queries from "../projects/queries.js";
 import type * as schema_helpers from "../schema/helpers.js";
 import type * as schema_tables from "../schema/tables.js";
+import type * as sdk from "../sdk.js";
 import type * as users_actions from "../users/actions.js";
 import type * as users_helpers from "../users/helpers.js";
 import type * as users_mutations from "../users/mutations.js";
@@ -104,6 +105,7 @@ declare const fullApi: ApiFromModules<{
   "projects/queries": typeof projects_queries;
   "schema/helpers": typeof schema_helpers;
   "schema/tables": typeof schema_tables;
+  sdk: typeof sdk;
   "users/actions": typeof users_actions;
   "users/helpers": typeof users_helpers;
   "users/mutations": typeof users_mutations;

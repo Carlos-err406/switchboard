@@ -1,10 +1,7 @@
-import { mutation } from '../_generated/server.js'
-import { getEnvironment } from '../environments/helpers.js'
-import { generateToken, hashString } from '../helpers.js'
-import { getProjectUser } from '../project_users/helpers.js'
-import { getProject } from '../projects/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
+import { internalMutation, mutation } from '../_generated/server.js'
+import { getEnvironment } from '../environments/helpers.js'
 import {
   apikeyAlreadyExist,
   apiKeyNotFound,
@@ -14,6 +11,9 @@ import {
   notAuthenticated,
   projectNotFound,
 } from '../errors'
+import { generateToken, hashString } from '../helpers.js'
+import { getProjectUser } from '../project_users/helpers.js'
+import { getProject } from '../projects/helpers.js'
 import {
   API_KEY_PREFIX,
   getApiKey,
@@ -53,8 +53,7 @@ export const createApiKeyMutation = mutation({
     if (existing) throw apikeyAlreadyExist()
     const apiKey = generateToken(API_KEY_PREFIX)
     const hash = await hashString(apiKey)
-    const preview =
-      apiKey.slice(0, 10) + '*'.repeat(apiKey.length - 15) + apiKey.slice(-5)
+    const preview = getApiKeyPreview(apiKey)
     await ctx.db.insert('apiKeys', {
       enabled: true,
       createdBy: userId,
@@ -175,5 +174,14 @@ export const rotateApiKeyMutation = mutation({
       keyPreview: preview,
     })
     return { apiKey: newKey, preview }
+  },
+})
+
+export const setLastUsed = internalMutation({
+  args: { id: v.id('apiKeys') },
+  handler: async (ctx, args) => {
+    const apiKey = await getApiKey(ctx, { id: args.id })
+    if (!apiKey) throw apiKeyNotFound()
+    await ctx.db.patch('apiKeys', apiKey._id, { lastUsedAt: Date.now() })
   },
 })

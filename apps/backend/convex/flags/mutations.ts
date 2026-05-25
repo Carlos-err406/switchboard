@@ -77,7 +77,7 @@ export const updateFlagMutation = mutation({
           userId: userId,
         }),
         getEnvironment(ctx, { id: flag.environmentId }),
-        args.key !== undefined
+        args.key !== undefined && args.key !== flag.key
           ? getFlagByKey(ctx, {
               environmentId: flag.environmentId,
               key: args.key,

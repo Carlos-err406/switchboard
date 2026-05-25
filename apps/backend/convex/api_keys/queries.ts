@@ -1,4 +1,4 @@
-import { query } from '../_generated/server.js'
+import { internalQuery, query } from '../_generated/server.js'
 import { getEnvironment } from '../environments/helpers.js'
 import { getProjectUser } from '../project_users/helpers.js'
 import { getProject } from '../projects/helpers.js'
@@ -48,7 +48,7 @@ export const getApiKeysQuery = query({
   },
 })
 
-export const getApiKeyByValueQuery = query({
+export const getApiKeyByValueQuery = internalQuery({
   args: { value: v.string() },
   handler: async (ctx, args) => {
     return getApiKeyByValue(ctx, args)

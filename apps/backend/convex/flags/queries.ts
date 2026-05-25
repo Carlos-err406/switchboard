@@ -1,4 +1,4 @@
-import { query } from '../_generated/server.js'
+import { internalQuery, query } from '../_generated/server.js'
 import { getEnvironment } from '../environments/helpers.js'
 import { getProject } from '../projects/helpers.js'
 import { getAuthUserId } from '@convex-dev/auth/server'
@@ -10,7 +10,7 @@ import {
   notAuthenticated,
   projectNotFound,
 } from '../errors'
-import { getFlag, getFlags } from './helpers'
+import { getFlag, getFlagByKey, getFlags } from './helpers'
 import { getProjectUser } from '../project_users/helpers.js'
 
 export const getFlagsQuery = query({
@@ -48,31 +48,18 @@ export const getFlagsQuery = query({
   },
 })
 
-export const getFlagQuery = query({
+export const getFlagByKeyQuery = internalQuery({
   args: {
-    projectId: v.id('projects'),
     environmentId: v.id('environments'),
-    flagId: v.id('flags'),
+    key: v.string(),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
-
-    const [project, environment, projectUser, flag] = await Promise.all([
-      getProject(ctx, { id: args.projectId }),
-      getEnvironment(ctx, { id: args.environmentId }),
-      getProjectUser(ctx, {
-        projectId: args.projectId,
-        userId: userId,
-      }),
-      getFlag(ctx, { id: args.flagId }),
-    ])
-
-    if (!project) throw projectNotFound()
-    if (!projectUser) throw notAProjectMember()
+    const environment = await getEnvironment(ctx, { id: args.environmentId })
     if (!environment) throw environmentNotFound()
-    if (!flag) throw flagNotFound()
-
+    const flag = await getFlagByKey(ctx, {
+      environmentId: environment._id,
+      key: args.key,
+    })
     return flag
   },
 })
