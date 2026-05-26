@@ -7,7 +7,7 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "portless app.switchboard vite dev",
+    "dev": "portless dashboard.switchboard vite dev",
     "build": "vite build"
   },
   "dependencies": {

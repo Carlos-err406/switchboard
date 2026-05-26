@@ -2,6 +2,7 @@ import { Button, buttonVariants } from '@switchboard/ui/components/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -77,6 +78,9 @@ export const RenameProjectDialog: FC<{ project: Doc<'projects'> }> = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Rename project</DialogTitle>
+          <DialogDescription>
+            Change the display name for "{project.name}".
+          </DialogDescription>
         </DialogHeader>
         <form
           noValidate

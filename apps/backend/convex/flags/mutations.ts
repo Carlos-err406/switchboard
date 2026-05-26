@@ -1,21 +1,20 @@
-import { mutation } from '../_generated/server.js'
+import { v } from 'convex/values'
+import { mutationWithAudit } from '../lib/functions.js'
+import { diffMetadata } from '../audit_logs/helpers.js'
 import { getEnvironment } from '../environments/helpers.js'
 import { getProjectUser } from '../project_users/helpers.js'
 import { getProject } from '../projects/helpers.js'
-import { getAuthUserId } from '@convex-dev/auth/server'
-import { v } from 'convex/values'
 import {
   environmentNotFound,
   flagAlreadyExistInEnvironment,
   flagNotFound,
   noPermission,
   notAProjectMember,
-  notAuthenticated,
   projectNotFound,
 } from '../errors'
 import { getFlag, getFlagByKey } from './helpers'
 
-export const createFlagMutation = mutation({
+export const createFlagMutation = mutationWithAudit({
   args: {
     environmentId: v.id('environments'),
     key: v.string(),
@@ -23,16 +22,13 @@ export const createFlagMutation = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
-
     const environment = await getEnvironment(ctx, { id: args.environmentId })
     if (!environment) throw environmentNotFound()
     const [project, projectUser, existingFlag] = await Promise.all([
       getProject(ctx, { id: environment.projectId }),
       getProjectUser(ctx, {
         projectId: environment.projectId,
-        userId: userId,
+        userId: ctx.user._id,
       }),
       getFlagByKey(ctx, { environmentId: args.environmentId, key: args.key }),
     ])
@@ -43,7 +39,7 @@ export const createFlagMutation = mutation({
       throw noPermission('create flags')
     if (existingFlag) throw flagAlreadyExistInEnvironment()
 
-    await ctx.db.insert('flags', {
+    const flagId = await ctx.db.insert('flags', {
       projectId: project._id,
       environmentId: environment._id,
       key: args.key,
@@ -51,10 +47,24 @@ export const createFlagMutation = mutation({
       description: args.description,
       enabled: true,
     })
+
+    ctx.audit.log({
+      action: 'created',
+      resource: 'flag',
+      resourceId: flagId,
+      projectId: project._id,
+      message: `${ctx.user.email} created flag "${args.key}" in environment "${environment.name}"`,
+      metadata: {
+        key: args.key,
+        value: String(args.value),
+        environment: environment.name,
+        ...(args.description ? { description: args.description } : {}),
+      },
+    })
   },
 })
 
-export const updateFlagMutation = mutation({
+export const updateFlagMutation = mutationWithAudit({
   args: {
     flagId: v.id('flags'),
     key: v.optional(v.string()),
@@ -63,9 +73,6 @@ export const updateFlagMutation = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
-
     const flag = await getFlag(ctx, { id: args.flagId })
     if (!flag) throw flagNotFound()
 
@@ -74,7 +81,7 @@ export const updateFlagMutation = mutation({
         getProject(ctx, { id: flag.projectId }),
         getProjectUser(ctx, {
           projectId: flag.projectId,
-          userId: userId,
+          userId: ctx.user._id,
         }),
         getEnvironment(ctx, { id: flag.environmentId }),
         args.key !== undefined && args.key !== flag.key
@@ -102,15 +109,24 @@ export const updateFlagMutation = mutation({
     }
 
     await ctx.db.replace('flags', flag._id, updatedFlag)
+
+    ctx.audit.log({
+      action: 'updated',
+      resource: 'flag',
+      resourceId: flag._id,
+      projectId: project._id,
+      message: `${ctx.user.email} updated flag "${flag.key}" in environment "${environment.name}"`,
+      metadata: {
+        environment: environment.name,
+        ...diffMetadata(flag, updatedFlag),
+      },
+    })
   },
 })
 
-export const deleteFlagMutation = mutation({
+export const deleteFlagMutation = mutationWithAudit({
   args: { flagId: v.id('flags') },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
-
     const flag = await getFlag(ctx, { id: args.flagId })
     if (!flag) throw flagNotFound()
     const [project, environment, projectUser] = await Promise.all([
@@ -118,7 +134,7 @@ export const deleteFlagMutation = mutation({
       getEnvironment(ctx, { id: flag.environmentId }),
       getProjectUser(ctx, {
         projectId: flag.projectId,
-        userId: userId,
+        userId: ctx.user._id,
       }),
     ])
 
@@ -129,5 +145,14 @@ export const deleteFlagMutation = mutation({
     if (!environment) throw environmentNotFound()
 
     await ctx.db.delete('flags', flag._id)
+
+    ctx.audit.log({
+      action: 'deleted',
+      resource: 'flag',
+      resourceId: flag._id,
+      projectId: project._id,
+      message: `${ctx.user.email} deleted flag "${flag.key}" from environment "${environment.name}"`,
+      metadata: { key: flag.key, environment: environment.name },
+    })
   },
 })

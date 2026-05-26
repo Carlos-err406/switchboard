@@ -1,16 +1,16 @@
-import { internal } from '../_generated/api.js'
-import { internalMutation, mutation } from '../_generated/server.js'
-import { userPermissionValues } from '../schema/helpers.js'
 import { v } from 'convex/values'
-import { noPermission, notAuthenticated, userNotFound } from '../errors'
-import { getAuthUser, getUserById } from './helpers'
+import { internal } from '../_generated/api.js'
+import { internalMutation } from '../_generated/server.js'
+import { mutationWithAudit } from '../lib/functions.js'
+import { diffMetadata } from '../audit_logs/helpers.js'
+import { userPermissionValues } from '../schema/helpers.js'
+import { noPermission, userNotFound } from '../errors'
+import { getUserById } from './helpers'
 
-export const deleteUserMutation = mutation({
+export const deleteUserMutation = mutationWithAudit({
   args: { id: v.id('users') },
   handler: async (ctx, args) => {
-    const auth = await getAuthUser(ctx)
-    if (!auth) throw notAuthenticated()
-    if (!auth.permissions.includes('users.delete'))
+    if (!ctx.user.permissions.includes('users.delete'))
       throw noPermission('delete users')
     const user = await getUserById(ctx, { id: args.id })
     if (!user) throw userNotFound()
@@ -31,19 +31,25 @@ export const deleteUserMutation = mutation({
       internal.users.actions.invalidateUserSessions,
       { userId: user._id },
     )
+
+    ctx.audit.log({
+      action: 'deleted',
+      resource: 'user',
+      resourceId: user._id,
+      message: `${ctx.user.email} deleted user "${user.email}"`,
+      metadata: { email: user.email },
+    })
   },
 })
 
-export const updateUserMutation = mutation({
+export const updateUserMutation = mutationWithAudit({
   args: {
     userId: v.id('users'),
     permissions: v.optional(userPermissionValues),
     locked: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    const auth = await getAuthUser(ctx)
-    if (!auth) throw notAuthenticated()
-    if (!auth.permissions.includes('users.update'))
+    if (!ctx.user.permissions.includes('users.update'))
       throw noPermission('update users')
     const user = await getUserById(ctx, { id: args.userId })
     if (!user) throw userNotFound()
@@ -51,7 +57,7 @@ export const updateUserMutation = mutation({
     const newPermissions =
       args.permissions === undefined ? user.permissions : args.permissions
     for (const perm of newPermissions) {
-      if (!auth.permissions.includes(perm))
+      if (!ctx.user.permissions.includes(perm))
         throw noPermission(`update user to have ${perm}`)
     }
 
@@ -88,6 +94,24 @@ export const updateUserMutation = mutation({
         )
       }
     }
+
+    const action =
+      args.locked !== undefined && args.locked !== user.locked
+        ? args.locked
+          ? 'locked'
+          : 'unlocked'
+        : 'updated'
+
+    ctx.audit.log({
+      action,
+      resource: 'user',
+      resourceId: user._id,
+      message: `${ctx.user.email} ${action} user "${user.email}"`,
+      metadata: {
+        email: user.email,
+        ...diffMetadata(user, patchedUser),
+      },
+    })
   },
 })
 

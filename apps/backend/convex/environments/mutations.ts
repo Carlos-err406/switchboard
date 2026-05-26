@@ -1,16 +1,15 @@
-import { mutation } from '../_generated/server.js'
+import { v } from 'convex/values'
+import { mutationWithAudit } from '../lib/functions.js'
+import { diffMetadata } from '../audit_logs/helpers.js'
 import { getEnvironmentFlags } from '../flags/helpers.js'
 import { getProjectUser } from '../project_users/helpers.js'
 import { getProject } from '../projects/helpers.js'
-import { getAuthUserId } from '@convex-dev/auth/server'
-import { v } from 'convex/values'
 import {
   cantDeleteTheLastEnvironment,
   environmentAlreadyExist,
   environmentNotFound,
   noPermission,
   notAProjectMember,
-  notAuthenticated,
   projectNotFound,
 } from '../errors'
 import {
@@ -19,19 +18,17 @@ import {
   getProjectEnvironments,
 } from './helpers'
 
-export const createEnvironmentMutation = mutation({
+export const createEnvironmentMutation = mutationWithAudit({
   args: {
     projectId: v.id('projects'),
     name: v.string(),
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
     const [projectUser, project, existing] = await Promise.all([
       getProjectUser(ctx, {
         projectId: args.projectId,
-        userId: userId,
+        userId: ctx.user._id,
       }),
       getProject(ctx, { id: args.projectId }),
       getEnvironmentByName(ctx, {
@@ -45,19 +42,32 @@ export const createEnvironmentMutation = mutation({
     if (!project) throw projectNotFound()
     if (existing) throw environmentAlreadyExist()
 
-    return await ctx.db.insert('environments', {
+    const envId = await ctx.db.insert('environments', {
       projectId: args.projectId,
       name: args.name,
       description: args.description,
     })
+
+    ctx.audit.log({
+      action: 'created',
+      resource: 'environment',
+      resourceId: envId,
+      projectId: args.projectId,
+      message: `${ctx.user.email} created environment "${args.name}" in project "${project.name}"`,
+      metadata: {
+        name: args.name,
+        project: project.name,
+        ...(args.description ? { description: args.description } : {}),
+      },
+    })
+
+    return envId
   },
 })
 
-export const deleteEnvironmentMutation = mutation({
+export const deleteEnvironmentMutation = mutationWithAudit({
   args: { environmentId: v.id('environments') },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
     const environment = await getEnvironment(ctx, { id: args.environmentId })
     if (!environment) throw environmentNotFound()
 
@@ -65,7 +75,7 @@ export const deleteEnvironmentMutation = mutation({
       await Promise.all([
         getProjectUser(ctx, {
           projectId: environment.projectId,
-          userId: userId,
+          userId: ctx.user._id,
         }),
         getProjectEnvironments(ctx, { id: environment.projectId }),
         getProject(ctx, { id: environment.projectId }),
@@ -82,25 +92,36 @@ export const deleteEnvironmentMutation = mutation({
       ctx.db.delete('environments', args.environmentId),
       ...flags.map((f) => ctx.db.delete('flags', f._id)),
     ])
+
+    ctx.audit.log({
+      action: 'deleted',
+      resource: 'environment',
+      resourceId: environment._id,
+      projectId: project._id,
+      message: `${ctx.user.email} deleted environment "${environment.name}" from project "${project.name}"`,
+      metadata: {
+        name: environment.name,
+        project: project.name,
+        flagsDeleted: String(flags.length),
+      },
+    })
   },
 })
 
-export const updateEnvironmentMutation = mutation({
+export const updateEnvironmentMutation = mutationWithAudit({
   args: {
     environmentId: v.id('environments'),
     name: v.optional(v.string()),
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw notAuthenticated()
     const environment = await getEnvironment(ctx, { id: args.environmentId })
     if (!environment) throw environmentNotFound()
 
     const [projectUser, project, existingName] = await Promise.all([
       getProjectUser(ctx, {
         projectId: environment.projectId,
-        userId: userId,
+        userId: ctx.user._id,
       }),
       getProject(ctx, { id: environment.projectId }),
       args.name !== undefined
@@ -125,5 +146,17 @@ export const updateEnvironmentMutation = mutation({
           : environment.description,
     }
     await ctx.db.replace('environments', environment._id, updatedEnv)
+
+    ctx.audit.log({
+      action: 'updated',
+      resource: 'environment',
+      resourceId: environment._id,
+      projectId: project._id,
+      message: `${ctx.user.email} updated environment "${environment.name}" in project "${project.name}"`,
+      metadata: {
+        project: project.name,
+        ...diffMetadata(environment, updatedEnv),
+      },
+    })
   },
 })

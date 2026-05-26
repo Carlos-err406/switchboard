@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "portless js-sample.switchboard.localhost vite"
+    "dev": "portless js-sample.switchboard vite"
   },
   "dependencies": {
     "@switchboard/js": "workspace:*"

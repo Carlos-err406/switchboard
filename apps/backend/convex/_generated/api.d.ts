@@ -11,6 +11,9 @@
 import type * as api_keys_helpers from "../api_keys/helpers.js";
 import type * as api_keys_mutations from "../api_keys/mutations.js";
 import type * as api_keys_queries from "../api_keys/queries.js";
+import type * as audit_logs_helpers from "../audit_logs/helpers.js";
+import type * as audit_logs_mutations from "../audit_logs/mutations.js";
+import type * as audit_logs_queries from "../audit_logs/queries.js";
 import type * as auth from "../auth.js";
 import type * as email_actions from "../email/actions.js";
 import type * as email_helpers from "../email/helpers.js";
@@ -39,6 +42,7 @@ import type * as http from "../http.js";
 import type * as invites_helpers from "../invites/helpers.js";
 import type * as invites_mutations from "../invites/mutations.js";
 import type * as invites_queries from "../invites/queries.js";
+import type * as lib_functions from "../lib/functions.js";
 import type * as password_resets_actions from "../password_resets/actions.js";
 import type * as password_resets_helpers from "../password_resets/helpers.js";
 import type * as password_resets_mutations from "../password_resets/mutations.js";
@@ -67,6 +71,9 @@ declare const fullApi: ApiFromModules<{
   "api_keys/helpers": typeof api_keys_helpers;
   "api_keys/mutations": typeof api_keys_mutations;
   "api_keys/queries": typeof api_keys_queries;
+  "audit_logs/helpers": typeof audit_logs_helpers;
+  "audit_logs/mutations": typeof audit_logs_mutations;
+  "audit_logs/queries": typeof audit_logs_queries;
   auth: typeof auth;
   "email/actions": typeof email_actions;
   "email/helpers": typeof email_helpers;
@@ -95,6 +102,7 @@ declare const fullApi: ApiFromModules<{
   "invites/helpers": typeof invites_helpers;
   "invites/mutations": typeof invites_mutations;
   "invites/queries": typeof invites_queries;
+  "lib/functions": typeof lib_functions;
   "password_resets/actions": typeof password_resets_actions;
   "password_resets/helpers": typeof password_resets_helpers;
   "password_resets/mutations": typeof password_resets_mutations;

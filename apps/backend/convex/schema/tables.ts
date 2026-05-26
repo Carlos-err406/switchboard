@@ -55,7 +55,7 @@ export const apiKeys = defineTable({
   name: v.string(),
   description: v.optional(v.string()),
   keyHash: v.string(),
-  keyPreview: v.string(), // "sk_abc***xyz" for display
+  keyPreview: v.string(),
   expiresAt: v.nullable(v.number()),
   enabled: v.boolean(),
   createdBy: v.id('users'),
@@ -88,3 +88,16 @@ export const passwordResets = defineTable({
 })
   .index('by_hash', ['hash'])
   .index('by_expiration_date', ['expiresAt'])
+
+export const auditLogs = defineTable({
+  actor: v.id('users'),
+  action: v.string(),
+  resource: v.string(),
+  resourceId: v.string(),
+  projectId: v.optional(v.id('projects')),
+  message: v.string(),
+  metadata: v.optional(v.record(v.string(), v.string())),
+})
+  .index('by_project_id', ['projectId'])
+  .index('by_actor', ['actor'])
+  .index('by_resource', ['resource'])

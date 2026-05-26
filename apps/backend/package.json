@@ -10,6 +10,7 @@
     "@auth/core": "0.37.0",
     "@convex-dev/auth": "^0.0.92",
     "convex": "^1.39.1",
+    "convex-helpers": "^0.1.118",
     "dayjs": "^1.11.20",
     "lucia": "^3.2.2",
     "nodemailer": "^8.0.7",

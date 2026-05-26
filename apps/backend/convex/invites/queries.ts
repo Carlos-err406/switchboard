@@ -1,7 +1,8 @@
 import { internalQuery, query } from '../_generated/server.js'
+import { authenticatedQuery } from '../lib/functions.js'
 import { v } from 'convex/values'
 import dayjs from 'dayjs'
-import { tokenAlreadyUsed, tokenExpired, tokenNotFound } from '../errors'
+import { noPermission, tokenAlreadyUsed, tokenExpired, tokenNotFound } from '../errors'
 import { getInviteByToken } from './helpers'
 
 export const getInviteByTokenQuery = query({
@@ -19,6 +20,19 @@ export const getInviteByTokenInternal = internalQuery({
   args: { token: v.string() },
   handler: async (ctx, args) => {
     return await getInviteByToken(ctx, { token: args.token })
+  },
+})
+
+export const getPendingInvitesQuery = authenticatedQuery({
+  args: {},
+  handler: async (ctx) => {
+    if (!ctx.user.permissions.includes('users.list'))
+      throw noPermission('list users')
+    const invites = await ctx.db
+      .query('invites')
+      .order('desc')
+      .collect()
+    return invites.filter((i) => !i.used)
   },
 })
 

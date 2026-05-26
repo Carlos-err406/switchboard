@@ -6,6 +6,7 @@ export const USER_PERMISSIONS = [
   'users.invite',
   'users.delete',
   'users.update',
+  'logs.list'
 ] as const
 
 export const PROJECT_USER_PERMISSIONS = [

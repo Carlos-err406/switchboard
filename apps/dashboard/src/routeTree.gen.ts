@@ -16,10 +16,12 @@ import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as authenticatedUsersRouteRouteImport } from './routes/(authenticated)/users/route'
 import { Route as authenticatedProjectsRouteRouteImport } from './routes/(authenticated)/projects/route'
+import { Route as authenticatedLogsRouteRouteImport } from './routes/(authenticated)/logs/route'
 import { Route as InviteTokenIndexRouteImport } from './routes/invite/$token/index'
 import { Route as AuthResetPasswordIndexRouteImport } from './routes/auth/reset-password/index'
 import { Route as authenticatedUsersIndexRouteImport } from './routes/(authenticated)/users/index'
 import { Route as authenticatedProjectsIndexRouteImport } from './routes/(authenticated)/projects/index'
+import { Route as authenticatedLogsIndexRouteImport } from './routes/(authenticated)/logs/index'
 import { Route as AuthResetPasswordTokenRouteImport } from './routes/auth/reset-password/$token'
 import { Route as authenticatedProjectsProjectIdIndexRouteImport } from './routes/(authenticated)/projects/$projectId/index'
 
@@ -58,6 +60,11 @@ const authenticatedProjectsRouteRoute =
     path: '/projects',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const authenticatedLogsRouteRoute = authenticatedLogsRouteRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => authenticatedRouteRoute,
+} as any)
 const InviteTokenIndexRoute = InviteTokenIndexRouteImport.update({
   id: '/invite/$token/',
   path: '/invite/$token/',
@@ -79,6 +86,11 @@ const authenticatedProjectsIndexRoute =
     path: '/',
     getParentRoute: () => authenticatedProjectsRouteRoute,
   } as any)
+const authenticatedLogsIndexRoute = authenticatedLogsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authenticatedLogsRouteRoute,
+} as any)
 const AuthResetPasswordTokenRoute = AuthResetPasswordTokenRouteImport.update({
   id: '/reset-password/$token',
   path: '/reset-password/$token',
@@ -94,11 +106,13 @@ const authenticatedProjectsProjectIdIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/logs': typeof authenticatedLogsRouteRouteWithChildren
   '/projects': typeof authenticatedProjectsRouteRouteWithChildren
   '/users': typeof authenticatedUsersRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
   '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
+  '/logs/': typeof authenticatedLogsIndexRoute
   '/projects/': typeof authenticatedProjectsIndexRoute
   '/users/': typeof authenticatedUsersIndexRoute
   '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
@@ -110,6 +124,7 @@ export interface FileRoutesByTo {
   '/auth/signin': typeof AuthSigninRoute
   '/auth': typeof AuthIndexRoute
   '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
+  '/logs': typeof authenticatedLogsIndexRoute
   '/projects': typeof authenticatedProjectsIndexRoute
   '/users': typeof authenticatedUsersIndexRoute
   '/auth/reset-password': typeof AuthResetPasswordIndexRoute
@@ -121,11 +136,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/(authenticated)/logs': typeof authenticatedLogsRouteRouteWithChildren
   '/(authenticated)/projects': typeof authenticatedProjectsRouteRouteWithChildren
   '/(authenticated)/users': typeof authenticatedUsersRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/': typeof AuthIndexRoute
   '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
+  '/(authenticated)/logs/': typeof authenticatedLogsIndexRoute
   '/(authenticated)/projects/': typeof authenticatedProjectsIndexRoute
   '/(authenticated)/users/': typeof authenticatedUsersIndexRoute
   '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
@@ -137,11 +154,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/logs'
     | '/projects'
     | '/users'
     | '/auth/signin'
     | '/auth/'
     | '/auth/reset-password/$token'
+    | '/logs/'
     | '/projects/'
     | '/users/'
     | '/auth/reset-password/'
@@ -153,6 +172,7 @@ export interface FileRouteTypes {
     | '/auth/signin'
     | '/auth'
     | '/auth/reset-password/$token'
+    | '/logs'
     | '/projects'
     | '/users'
     | '/auth/reset-password'
@@ -163,11 +183,13 @@ export interface FileRouteTypes {
     | '/'
     | '/(authenticated)'
     | '/auth'
+    | '/(authenticated)/logs'
     | '/(authenticated)/projects'
     | '/(authenticated)/users'
     | '/auth/signin'
     | '/auth/'
     | '/auth/reset-password/$token'
+    | '/(authenticated)/logs/'
     | '/(authenticated)/projects/'
     | '/(authenticated)/users/'
     | '/auth/reset-password/'
@@ -233,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedProjectsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
+    '/(authenticated)/logs': {
+      id: '/(authenticated)/logs'
+      path: '/logs'
+      fullPath: '/logs'
+      preLoaderRoute: typeof authenticatedLogsRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
     '/invite/$token/': {
       id: '/invite/$token/'
       path: '/invite/$token'
@@ -261,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedProjectsIndexRouteImport
       parentRoute: typeof authenticatedProjectsRouteRoute
     }
+    '/(authenticated)/logs/': {
+      id: '/(authenticated)/logs/'
+      path: '/'
+      fullPath: '/logs/'
+      preLoaderRoute: typeof authenticatedLogsIndexRouteImport
+      parentRoute: typeof authenticatedLogsRouteRoute
+    }
     '/auth/reset-password/$token': {
       id: '/auth/reset-password/$token'
       path: '/reset-password/$token'
@@ -277,6 +313,20 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface authenticatedLogsRouteRouteChildren {
+  authenticatedLogsIndexRoute: typeof authenticatedLogsIndexRoute
+}
+
+const authenticatedLogsRouteRouteChildren: authenticatedLogsRouteRouteChildren =
+  {
+    authenticatedLogsIndexRoute: authenticatedLogsIndexRoute,
+  }
+
+const authenticatedLogsRouteRouteWithChildren =
+  authenticatedLogsRouteRoute._addFileChildren(
+    authenticatedLogsRouteRouteChildren,
+  )
 
 interface authenticatedProjectsRouteRouteChildren {
   authenticatedProjectsIndexRoute: typeof authenticatedProjectsIndexRoute
@@ -310,11 +360,13 @@ const authenticatedUsersRouteRouteWithChildren =
   )
 
 interface authenticatedRouteRouteChildren {
+  authenticatedLogsRouteRoute: typeof authenticatedLogsRouteRouteWithChildren
   authenticatedProjectsRouteRoute: typeof authenticatedProjectsRouteRouteWithChildren
   authenticatedUsersRouteRoute: typeof authenticatedUsersRouteRouteWithChildren
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
+  authenticatedLogsRouteRoute: authenticatedLogsRouteRouteWithChildren,
   authenticatedProjectsRouteRoute: authenticatedProjectsRouteRouteWithChildren,
   authenticatedUsersRouteRoute: authenticatedUsersRouteRouteWithChildren,
 }
