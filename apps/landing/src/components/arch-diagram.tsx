@@ -14,7 +14,7 @@ const ARCH_STEPS: ArchStep[] = [
     num: '01',
     label: '01 / mutation lands',
     title: 'Admin flips a flag',
-    desc: 'The dashboard writes one mutation. Convex records it and fans it out to every subscriber on that environment.',
+    desc: 'The dashboard writes one mutation. The backend records it and fans it out to every subscriber on that environment.',
   },
   {
     num: '02',
@@ -32,7 +32,7 @@ const ARCH_STEPS: ArchStep[] = [
     num: '04',
     label: '04 / server fallback',
     title: 'HTTP for SSR / edge',
-    desc: "Runtimes that can't hold a socket hit the cached HTTP endpoint instead. Same shape, same scoping.",
+    desc: "Runtimes that can't hold a socket call the same query over HTTP. Same data, same scoping.",
   },
 ]
 
@@ -179,7 +179,7 @@ export function ArchDiagram() {
               'Members & audit log',
             ]}
             footLeft="web"
-            footRight=":5173"
+            footRight="https"
           />
         </div>
 
@@ -194,13 +194,13 @@ export function ArchDiagram() {
             title="Switchboard core"
             kind="server"
             items={[
-              'Convex DB (reactive)',
+              'Reactive database',
               'WebSocket gateway',
-              'HTTP read API',
-              'Auth + RBAC',
+              'HTTP + WS query API',
+              'Auth + RBAC + Audit log',
             ]}
-            footLeft="ws :5174"
-            footRight="http :3210"
+            footLeft="ws"
+            footRight="http"
           />
         </div>
 
@@ -247,9 +247,9 @@ export function ArchDiagram() {
             </div>
           </div>
           <NodeCard
-            title="HTTP / SSR"
-            kind="pull"
-            items={['Cached fetch', 'Next, Remix, edge']}
+            title="Edge / SSR"
+            kind="http"
+            items={['Same query over HTTP', 'Next, Remix, Workers, edge']}
             footLeft="node / edge"
             footRight="http"
           />

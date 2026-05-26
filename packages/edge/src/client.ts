@@ -1,12 +1,16 @@
 import type { SwitchboardClientOnErrorCallback } from "@switchboard/common";
 import { $try, SwitchboardClientError } from "@switchboard/common";
+import { ConvexHttpClient } from "convex/browser";
+import { anyApi } from "convex/server";
+
+const flagQuery = anyApi.sdk.queries.getFlagQuery;
 
 export type SwitchboardHttpClientConstructorOpts = {
   /** The API key for authenticating with Switchboard (prefixed with `pk_`). */
   apiKey: string;
   /**
    * The base URL of the Switchboard backend (Convex HTTP endpoint).
-   * @example "http://127.0.0.1:3211"
+   * @example "http://127.0.0.1:3210"
    */
   switchboardHost: string;
   /**
@@ -45,19 +49,20 @@ export type SwitchboardHttpClientConstructorOpts = {
  * ```
  */
 export class SwitchboardHttpClient {
+  private client: ConvexHttpClient;
   private apiKey: string;
-  private switchboardHost: string;
-  private readonly ENDPOINT = "/api/flags";
   private onError?: SwitchboardClientOnErrorCallback;
+
   constructor({
     apiKey,
     switchboardHost,
     onError,
   }: SwitchboardHttpClientConstructorOpts) {
     this.apiKey = apiKey;
-    this.switchboardHost = switchboardHost;
+    this.client = new ConvexHttpClient(switchboardHost);
     this.onError = onError;
   }
+
   /**
    * Fetch a feature flag value by key.
    *
@@ -74,48 +79,27 @@ export class SwitchboardHttpClient {
     key: string,
     defaultValue?: T,
   ): Promise<T | undefined> {
-    const url = new URL(this.ENDPOINT, this.switchboardHost);
-    url.searchParams.set("flag", key);
-    const headers = new Headers();
-    headers.append("authorization", `Bearer ${this.apiKey}`);
-    const [fetchError, response] = await $try(fetch(url, { headers }));
-    if (fetchError) {
-      const error = new SwitchboardClientError(fetchError);
-      if (defaultValue !== undefined) {
-        this.onError?.(error);
-        return defaultValue;
-      }
-      throw error;
-    }
-    if (!response.ok) {
-      const body = await response.text();
-      const error = new SwitchboardClientError(
-        body || `HTTP ${response.status} ${response.statusText}`,
-      );
-      if (defaultValue !== undefined) {
-        this.onError?.(error);
-        return defaultValue;
-      }
-      throw error;
-    }
-
-    const [parseError, flag] = await $try<{
+    const [error, flag] = await $try<{
       enabled: boolean;
       value: T;
       key: string;
-    }>(response.json());
-    if (parseError) {
-      const error = new SwitchboardClientError(
-        "Error parsing switchboard response: " + parseError,
-      );
+    }>(
+      this.client.query(flagQuery, {
+        flagKey: key,
+        apiKey: this.apiKey,
+      }),
+    );
+
+    if (error) {
+      const wrapped = new SwitchboardClientError(error);
       if (defaultValue !== undefined) {
-        this.onError?.(error);
+        this.onError?.(wrapped);
         return defaultValue;
       }
-      throw error;
+      throw wrapped;
     }
+
     if (flag.enabled) return flag.value;
-    else if (defaultValue !== undefined) return defaultValue;
-    else return undefined;
+    return defaultValue ?? undefined;
   }
 }

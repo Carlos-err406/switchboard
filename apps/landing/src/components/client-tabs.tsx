@@ -44,7 +44,7 @@ export function Checkout() {
 // flip it in the dashboard ─ the component re-renders
 // across every connected tab. no refresh, no flicker.`
 
-const EDGE_LEFT = /* typescript */ `// SSR / edge — no socket, just fetch
+const EDGE_LEFT = /* typescript */ `// SSR / edge — same query, over HTTP
 import { SwitchboardHttpClient } from "@switchboard/edge";
 
 const client = new SwitchboardHttpClient({
@@ -63,9 +63,9 @@ const dark = await client.getFlag("dark_mode", false);
 const max  = await client.getFlag("max_items", 10);
 const note = await client.getFlag<string | null>("banner");
 
-// drop into Express, Hono, Fastify, or anything
-// that can hold an HTTP client.
-// flags are fetched per-call, no socket needed.`
+// same query as the WebSocket client, just over HTTP.
+// drop into Express, Hono, Fastify, Cloudflare Workers,
+// or anything with a fetch-compatible runtime.`
 
 const VANILLA_LEFT = /* html */ `<!-- no framework, no build step -->
 <script type="module">

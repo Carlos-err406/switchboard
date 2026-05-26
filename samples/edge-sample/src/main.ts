@@ -1,7 +1,7 @@
 import { SwitchboardHttpClient } from "@switchboard/edge";
 
 const API_KEY = process.env.SB_API_KEY!;
-const HOST = process.env.SB_HOST ?? "http://127.0.0.1:3211";
+const HOST = process.env.SB_HOST ?? "http://127.0.0.1:3210";
 
 const client = new SwitchboardHttpClient({
   apiKey: API_KEY,

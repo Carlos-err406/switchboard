@@ -39,8 +39,8 @@ const FEATURES: Feature[] = [
   },
   {
     icon: <Globe className="size-5.5" strokeWidth={1.6} />,
-    num: '03 / convex',
-    title: 'Convex backend',
+    num: '03 / reactive',
+    title: 'Reactive backend',
     desc: 'Reactive database that does the heavy lifting. Sockets, auth, sync, and audit log out of the box.',
   },
   {
@@ -53,7 +53,7 @@ const FEATURES: Feature[] = [
     icon: <RefreshCw className="size-5.5" strokeWidth={1.6} />,
     num: '05 / server-ready',
     title: 'HTTP client too',
-    desc: "For SSR, jobs, and edge runtimes that can't hold a socket. Same SDK, cached, no realtime needed.",
+    desc: "For SSR, jobs, and edge runtimes that can't hold a socket. Same query over HTTP, same scoping.",
   },
   {
     icon: <Monitor className="size-5.5" strokeWidth={1.6} />,
@@ -133,8 +133,8 @@ export function Home() {
               </h1>
               <p className="mt-5.5 max-w-[48ch] text-base leading-normal text-muted-foreground">
                 Switchboard is a minimal, self-hosted feature flag provider.
-                WebSocket-based, backed by Convex, with first-class React and
-                vanilla JS clients. No vendors, no quotas, no tracking pixels.
+                WebSocket-based, with first-class React and vanilla JS clients.
+                No vendors, no quotas, no tracking pixels.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button size="lg" asChild>
@@ -157,8 +157,6 @@ export function Home() {
                 <span>realtime</span>
                 <span>&middot;</span>
                 <span>websocket</span>
-                <span>&middot;</span>
-                <span>convex backend</span>
                 <span>&middot;</span>
                 <span>react + vanilla js</span>
                 <span>&middot;</span>
@@ -208,7 +206,7 @@ export function Home() {
           <SectionHead
             eyebrow="how it works"
             title="One socket. One source of truth."
-            sub="Convex pushes mutations to subscribed clients. Switchboard sits on top with auth, scopes, and a small dashboard."
+            sub="Mutations push to subscribed clients in real-time. Switchboard handles auth, scopes, and a small dashboard."
           />
           <ArchDiagram />
         </section>

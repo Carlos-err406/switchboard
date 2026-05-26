@@ -7,6 +7,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@switchboard/common": "workspace:*"
+    "@switchboard/common": "workspace:*",
+    "convex": "^1.39.1"
   }
 }

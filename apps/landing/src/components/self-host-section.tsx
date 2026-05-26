@@ -11,15 +11,13 @@ const SETUP_STEPS: { title: string; desc: React.ReactNode }[] = [
     title: 'Configure .env',
     desc: (
       <>
-        Set <code className="font-mono">CONVEX_URL</code>,{' '}
-        <code className="font-mono">AUTH_SECRET</code>, and the admin email.
-        That&rsquo;s it.
+        Set the admin email, SMTP, and auth keys. That&rsquo;s it.
       </>
     ),
   },
   {
     title: 'docker compose up',
-    desc: 'Brings up Convex, the dashboard, and the websocket gateway behind a single port.',
+    desc: 'Brings up the backend, the dashboard, and the websocket gateway behind a single port.',
   },
   {
     title: 'Create a project & key',
