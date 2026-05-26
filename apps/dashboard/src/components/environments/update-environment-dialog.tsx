@@ -11,6 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import type { Doc } from "@convex/_generated/dataModel.js";
 import { Pencil } from "lucide-react";
 import type { FC } from "react";
@@ -20,13 +21,20 @@ import { UpdateEnvironmentForm } from "./update-environment-form";
 export const UpdateEnvironmentDialog: FC<{
   environment: Doc<"environments">;
 }> = ({ environment }) => {
+  const canUpdate = useHasProjectPermissions(
+    ["environment.update"],
+    environment.projectId,
+  );
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
+          <DialogTrigger
+            disabled={!canUpdate}
+            className={buttonVariants({ variant: "secondary" })}
+          >
             <Pencil />
           </DialogTrigger>
         </TooltipTrigger>

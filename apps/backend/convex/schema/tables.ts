@@ -16,6 +16,7 @@ export const users = defineTable({
 
 export const projects = defineTable({
   name: v.string(),
+  createdBy: v.id("users"),
 }).index("by_name", ["name"]);
 
 export const projectUsers = defineTable({

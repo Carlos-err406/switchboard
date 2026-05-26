@@ -5,7 +5,10 @@ export type EmailTemplateTypes =
   | "account_locked"
   | "account_unlocked"
   | "password_changed"
-  | "permissions_changed";
+  | "permissions_changed"
+  | "project_member_added"
+  | "project_member_removed"
+  | "project_member_permissions_changed";
 
 interface TemplateVariables<T extends EmailTemplateTypes> {
   template: T;
@@ -75,6 +78,34 @@ interface PermissionsChangedVariables extends TemplateVariables<"permissions_cha
   };
 }
 
+interface ProjectMemberAddedVariables extends TemplateVariables<"project_member_added"> {
+  variables: {
+    email: string;
+    platformName: string;
+    orgName: string;
+    projectName: string;
+    addedBy: string;
+  };
+}
+
+interface ProjectMemberRemovedVariables extends TemplateVariables<"project_member_removed"> {
+  variables: {
+    email: string;
+    platformName: string;
+    orgName: string;
+    projectName: string;
+  };
+}
+
+interface ProjectMemberPermissionsChangedVariables extends TemplateVariables<"project_member_permissions_changed"> {
+  variables: {
+    email: string;
+    platformName: string;
+    orgName: string;
+    projectName: string;
+  };
+}
+
 export type Email<T extends EmailTemplateTypes> = Extract<
   | InviteVariables
   | WelcomeVariables
@@ -82,6 +113,9 @@ export type Email<T extends EmailTemplateTypes> = Extract<
   | AccountLockedVariables
   | AccountUnlockedVariables
   | PasswordChangedVariables
-  | PermissionsChangedVariables,
+  | PermissionsChangedVariables
+  | ProjectMemberAddedVariables
+  | ProjectMemberRemovedVariables
+  | ProjectMemberPermissionsChangedVariables,
   { template: T }
 >;

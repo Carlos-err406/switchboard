@@ -5,9 +5,10 @@ import type {
   UserPermissionValue,
 } from "@convex/schema/helpers";
 import { useQuery } from "convex/react";
+import { useCurrentUser } from "./use-current-user";
 
 export const useHasPermissions = (permissions: UserPermissionValue[]) => {
-  const user = useQuery(api.users.queries.currentUserQuery);
+  const user = useCurrentUser();
   for (const permission of permissions) {
     if (!user?.permissions.includes(permission)) return false;
   }

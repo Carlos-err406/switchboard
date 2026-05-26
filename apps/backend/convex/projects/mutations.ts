@@ -22,7 +22,10 @@ export const createProjectMutation = mutationWithAudit({
     const existing = await getProjectByName(ctx, { name: args.name });
     if (existing) throw projectAlreadyExist();
 
-    const inserted = await ctx.db.insert("projects", args);
+    const inserted = await ctx.db.insert("projects", {
+      ...args,
+      createdBy: ctx.user._id,
+    });
     await Promise.all([
       ctx.db.insert("projectUsers", {
         projectId: inserted,

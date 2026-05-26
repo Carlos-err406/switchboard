@@ -12,6 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import type { Doc } from "@convex/_generated/dataModel.js";
 import { Pencil } from "lucide-react";
 import type { FC } from "react";
@@ -21,13 +22,20 @@ import { UpdateApiKeyForm } from "./update-apikey-form";
 export const UpdateApiKeyDialog: FC<{ apiKey: Doc<"apiKeys"> }> = ({
   apiKey,
 }) => {
+  const canUpdate = useHasProjectPermissions(
+    ["api_key.update"],
+    apiKey.projectId,
+  );
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
+          <DialogTrigger
+            disabled={!canUpdate}
+            className={buttonVariants({ variant: "secondary" })}
+          >
             <Pencil />
           </DialogTrigger>
         </TooltipTrigger>

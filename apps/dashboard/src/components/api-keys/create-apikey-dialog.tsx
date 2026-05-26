@@ -7,8 +7,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@switchboard/ui/components/dialog";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import type { api } from "@convex/_generated/api.js";
 import type { Id } from "@convex/_generated/dataModel.js";
+import { useParams } from "@tanstack/react-router";
 import type { FunctionReturnType } from "convex/server";
 import { Key } from "lucide-react";
 import type { FC } from "react";
@@ -19,6 +21,10 @@ import { CreateApiKeyForm } from "./create-apikey-form";
 export const CreateApiKeyDialog: FC<{
   environmentId: Id<"environments">;
 }> = ({ environmentId }) => {
+  const { projectId } = useParams({ strict: false }) as {
+    projectId: Id<"projects">;
+  };
+  const canCreate = useHasProjectPermissions(["api_key.create"], projectId);
   const [open, setOpen] = useState(false);
   const [copyResult, setCopyResult] = useState<FunctionReturnType<
     typeof api.api_keys.mutations.createApiKeyMutation
@@ -27,7 +33,10 @@ export const CreateApiKeyDialog: FC<{
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className={buttonVariants({ variant: "default" })}>
+        <DialogTrigger
+          disabled={!canCreate}
+          className={buttonVariants({ variant: "default" })}
+        >
           <Key /> Create ApiKey
         </DialogTrigger>
         <DialogContent>

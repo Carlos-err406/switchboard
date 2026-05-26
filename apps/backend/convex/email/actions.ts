@@ -150,3 +150,58 @@ export const sendResetPasswordEmail = internalAction({
     });
   },
 });
+
+export const sendProjectMemberAddedEmail = internalAction({
+  args: { to: v.string(), projectName: v.string(), addedBy: v.string() },
+  handler: async (_ctx, args) => {
+    await sendEmail({
+      email: {
+        template: "project_member_added",
+        variables: {
+          email: args.to,
+          platformName: env.PLATFORM_NAME,
+          orgName: env.ORG_NAME,
+          projectName: args.projectName,
+          addedBy: args.addedBy,
+        },
+      },
+      to: [args.to],
+    });
+  },
+});
+
+export const sendProjectMemberRemovedEmail = internalAction({
+  args: { to: v.string(), projectName: v.string() },
+  handler: async (_ctx, args) => {
+    await sendEmail({
+      email: {
+        template: "project_member_removed",
+        variables: {
+          email: args.to,
+          platformName: env.PLATFORM_NAME,
+          orgName: env.ORG_NAME,
+          projectName: args.projectName,
+        },
+      },
+      to: [args.to],
+    });
+  },
+});
+
+export const sendProjectMemberPermissionsChangedEmail = internalAction({
+  args: { to: v.string(), projectName: v.string() },
+  handler: async (_ctx, args) => {
+    await sendEmail({
+      email: {
+        template: "project_member_permissions_changed",
+        variables: {
+          email: args.to,
+          platformName: env.PLATFORM_NAME,
+          orgName: env.ORG_NAME,
+          projectName: args.projectName,
+        },
+      },
+      to: [args.to],
+    });
+  },
+});

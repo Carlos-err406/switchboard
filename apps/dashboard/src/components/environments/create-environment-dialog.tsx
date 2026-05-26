@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@switchboard/ui/components/dialog";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import type { Id } from "@convex/_generated/dataModel.js";
 import { useNavigate } from "@tanstack/react-router";
 import { Stone } from "lucide-react";
@@ -28,11 +29,15 @@ export const CreateEnvironmentDialog: FC<Props> = ({
   const open = controlledOpen ?? internalOpen;
   const setOpen = controlledSetOpen ?? setInternalOpen;
   const navigate = useNavigate();
+  const canCreate = useHasProjectPermissions(["environment.create"], projectId);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {controlledOpen === undefined && (
-        <DialogTrigger className={buttonVariants({ variant: "default" })}>
+        <DialogTrigger
+          className={buttonVariants({ variant: "default" })}
+          disabled={!canCreate}
+        >
           <Stone /> Create Environment
         </DialogTrigger>
       )}

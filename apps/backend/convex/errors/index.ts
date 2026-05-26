@@ -68,3 +68,14 @@ export const tokenExpired = () =>
 
 export const tokenAlreadyUsed = () =>
   queryError(QueryErrorCode.TOKEN_ALREADY_USED, "Token already used");
+
+export const cantModifyProjectOwner = () =>
+  genericError("Cannot modify or remove the project owner");
+
+export const cantRemoveLastMember = () =>
+  genericError("Cannot remove the last member of a project");
+
+export const cantRemoveLastManager = () =>
+  genericError(
+    "Cannot remove or downgrade the last member with member management permissions",
+  );

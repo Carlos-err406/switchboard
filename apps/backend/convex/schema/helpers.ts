@@ -9,6 +9,12 @@ export const USER_PERMISSIONS = [
   "logs.list",
 ] as const;
 
+export const MEMBER_MANAGEMENT_PERMISSIONS = [
+  "member.add",
+  "member.update",
+  "member.remove",
+] as const;
+
 export const PROJECT_USER_PERMISSIONS = [
   "project.update",
   "project.delete",
@@ -21,8 +27,7 @@ export const PROJECT_USER_PERMISSIONS = [
   "environment.create",
   "environment.update",
   "environment.delete",
-  "member.add",
-  "member.remove",
+  ...MEMBER_MANAGEMENT_PERMISSIONS,
 ] as const;
 
 export const USER_ROLES = ["member", "admin"] as const;

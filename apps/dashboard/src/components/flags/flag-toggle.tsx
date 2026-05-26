@@ -4,6 +4,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import { toastMutationError } from "#/lib/utils.ts";
 import { api } from "@convex/_generated/api.js";
 import type { Doc } from "@convex/_generated/dataModel.js";
@@ -12,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { FC } from "react";
 
 export const FlagToggle: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
+  const canUpdate = useHasProjectPermissions(["flag.update"], flag.projectId);
   const mutationFn = useConvexMutation(api.flags.mutations.updateFlagMutation);
   const { mutate: updateFlag, isPending } = useMutation({
     mutationFn,
@@ -23,7 +25,7 @@ export const FlagToggle: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
       <TooltipTrigger asChild>
         <div>
           <Switch
-            disabled={isPending}
+            disabled={isPending || !canUpdate}
             checked={flag.enabled}
             onCheckedChange={(checked) =>
               updateFlag({

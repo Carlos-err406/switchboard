@@ -12,6 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useCurrentUser } from "#/hooks/use-current-user.ts";
 import type { Doc } from "@convex/_generated/dataModel.js";
 import { Shield } from "lucide-react";
 import type { FC } from "react";
@@ -22,6 +23,8 @@ export const UpdatePermissionsDialog: FC<{ user: Doc<"users"> }> = ({
   user,
 }) => {
   const [open, setOpen] = useState(false);
+  const currentUser = useCurrentUser();
+  const isSelf = currentUser?._id === user._id;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -29,7 +32,7 @@ export const UpdatePermissionsDialog: FC<{ user: Doc<"users"> }> = ({
         <TooltipTrigger asChild>
           <DialogTrigger
             className={buttonVariants({ variant: "secondary" })}
-            disabled={user.role === "admin"}
+            disabled={user.role === "admin" || isSelf}
           >
             <Shield />
           </DialogTrigger>

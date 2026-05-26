@@ -6,6 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@switchboard/ui/components/dropdown-menu";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import type { DetailedProject } from "#/lib/types/inferred.ts";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Asterisk, ChevronDown, Stone } from "lucide-react";
@@ -17,6 +18,10 @@ export const EnvironmentSelector: FC<{
   project: DetailedProject;
 }> = ({ project }) => {
   const [openCreateEnvironment, setOpenCreateEnvironment] = useState(false);
+  const canCreate = useHasProjectPermissions(
+    ["environment.create"],
+    project._id,
+  );
   const { environment } = useSearch({
     from: "/(authenticated)/projects/$projectId/",
   });
@@ -50,7 +55,10 @@ export const EnvironmentSelector: FC<{
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator></DropdownMenuSeparator>
-          <DropdownMenuItem onClick={() => setOpenCreateEnvironment(true)}>
+          <DropdownMenuItem
+            disabled={!canCreate}
+            onClick={() => setOpenCreateEnvironment(true)}
+          >
             <Stone />
             Create environment
           </DropdownMenuItem>

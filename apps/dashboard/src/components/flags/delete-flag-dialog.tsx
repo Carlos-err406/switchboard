@@ -13,6 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import { toastMutationError } from "#/lib/utils.ts";
 import { api } from "@convex/_generated/api.js";
 import type { Doc } from "@convex/_generated/dataModel.js";
@@ -23,6 +24,7 @@ import type { FC } from "react";
 import { useState } from "react";
 
 export const DeleteFlagDialog: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
+  const canDelete = useHasProjectPermissions(["flag.delete"], flag.projectId);
   const [open, setOpen] = useState(false);
   const mutationFn = useConvexMutation(api.flags.mutations.deleteFlagMutation);
   const { mutate: deleteFlag, isPending } = useMutation({
@@ -35,7 +37,10 @@ export const DeleteFlagDialog: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <DialogTrigger className={buttonVariants({ variant: "destructive" })}>
+          <DialogTrigger
+            disabled={!canDelete}
+            className={buttonVariants({ variant: "destructive" })}
+          >
             <Trash2 />
           </DialogTrigger>
         </TooltipTrigger>

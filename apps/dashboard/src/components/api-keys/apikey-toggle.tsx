@@ -4,6 +4,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import { toastMutationError } from "#/lib/utils.ts";
 import { api } from "@convex/_generated/api.js";
 import type { Doc } from "@convex/_generated/dataModel.js";
@@ -12,6 +13,10 @@ import { useMutation } from "@tanstack/react-query";
 import type { FC } from "react";
 
 export const ApiKeyToggle: FC<{ apiKey: Doc<"apiKeys"> }> = ({ apiKey }) => {
+  const canUpdate = useHasProjectPermissions(
+    ["api_key.update"],
+    apiKey.projectId,
+  );
   const mutationFn = useConvexMutation(
     api.api_keys.mutations.updateApiKeyMutation,
   );
@@ -25,7 +30,7 @@ export const ApiKeyToggle: FC<{ apiKey: Doc<"apiKeys"> }> = ({ apiKey }) => {
       <TooltipTrigger asChild>
         <div>
           <Switch
-            disabled={isPending}
+            disabled={isPending || !canUpdate}
             checked={apiKey.enabled}
             onCheckedChange={(checked) =>
               updateApiKey({

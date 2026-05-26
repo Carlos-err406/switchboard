@@ -14,6 +14,7 @@ import {
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
 import { toastMutationError } from "#/lib/utils.ts";
+import { useCurrentUser } from "#/hooks/use-current-user.ts";
 import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import { api } from "@convex/_generated/api.js";
 import type { Doc } from "@convex/_generated/dataModel.js";
@@ -23,15 +24,21 @@ import { Trash2 } from "lucide-react";
 import type { FC } from "react";
 import { useState } from "react";
 
-export const DeleteProjectDialog: FC<{ project: Doc<"projects"> }> = ({
-  project,
+type MemberWithUser = Doc<"projectUsers"> & { email: string };
+
+export const RemoveMemberDialog: FC<{ member: MemberWithUser }> = ({
+  member,
 }) => {
   const [open, setOpen] = useState(false);
-  const canDelete = useHasProjectPermissions(["project.delete"], project._id);
+  const currentUser = useCurrentUser();
+  const isSelf = currentUser?._id === member.userId;
+  const canRemove =
+    useHasProjectPermissions(["member.remove"], member.projectId) && !isSelf;
+
   const mutationFn = useConvexMutation(
-    api.projects.mutations.deleteProjectMutation,
+    api.project_users.mutations.removeProjectMemberMutation,
   );
-  const { mutate: deleteProject, isPending } = useMutation({
+  const { mutate: removeMember, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: () => setOpen(false),
@@ -43,34 +50,29 @@ export const DeleteProjectDialog: FC<{ project: Doc<"projects"> }> = ({
         <TooltipTrigger asChild>
           <DialogTrigger
             className={buttonVariants({ variant: "destructive" })}
-            disabled={!canDelete}
+            disabled={!canRemove}
           >
             <Trash2 />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Delete project</TooltipContent>
+        <TooltipContent side="bottom">Remove member</TooltipContent>
       </Tooltip>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete project</DialogTitle>
-          <DialogDescription className="prose">
-            Are you sure you want to delete this project? All{" "}
-            <strong>flags</strong> and <strong>api keys</strong> will be deleted
-            and <strong>members</strong> will be unassigned automatically.{" "}
-            <br />
-            <strong className="text-destructive">
-              This action is irreversible.
-            </strong>
+          <DialogTitle>Remove member</DialogTitle>
+          <DialogDescription>
+            Remove {member.email} from this project? They will lose access to
+            all flags and environments.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button
-            onClick={() => deleteProject({ id: project._id })}
-            variant={"destructive"}
+            onClick={() => removeMember({ id: member._id })}
+            variant="destructive"
             disabled={isPending}
             className="ml-auto"
           >
-            Delete
+            Remove
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -25,6 +25,10 @@ const TemplatesMap: Record<
   account_unlocked: () => import("./templates/account_unlocked"),
   password_changed: () => import("./templates/password_changed"),
   permissions_changed: () => import("./templates/permissions_changed"),
+  project_member_added: () => import("./templates/project_member_added"),
+  project_member_removed: () => import("./templates/project_member_removed"),
+  project_member_permissions_changed: () =>
+    import("./templates/project_member_permissions_changed"),
 };
 export const getRawTemplate = async (key: EmailTemplateTypes) => {
   return await TemplatesMap[key]();

@@ -12,40 +12,50 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useCurrentUser } from "#/hooks/use-current-user.ts";
 import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import type { Doc } from "@convex/_generated/dataModel.js";
-import { Pencil } from "lucide-react";
+import { Shield } from "lucide-react";
 import type { FC } from "react";
 import { useState } from "react";
-import { UpdateFlagForm } from "./update-flag-form";
+import { UpdateMemberPermissionsForm } from "./update-member-permissions-form";
 
-export const UpdateFlagDialog: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
-  const canUpdate = useHasProjectPermissions(["flag.update"], flag.projectId);
+type MemberWithUser = Doc<"projectUsers"> & { email: string };
+
+export const UpdateMemberPermissionsDialog: FC<{
+  member: MemberWithUser;
+}> = ({ member }) => {
   const [open, setOpen] = useState(false);
+  const currentUser = useCurrentUser();
+  const isSelf = currentUser?._id === member.userId;
+  const canEdit =
+    useHasProjectPermissions(["member.update"], member.projectId) && !isSelf;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
           <DialogTrigger
-            disabled={!canUpdate}
             className={buttonVariants({ variant: "secondary" })}
+            disabled={!canEdit}
           >
-            <Pencil />
+            <Shield />
           </DialogTrigger>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Update flag</TooltipContent>
+        <TooltipContent side="bottom">Update permissions</TooltipContent>
       </Tooltip>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update flag</DialogTitle>
+          <DialogTitle>Update member permissions</DialogTitle>
           <DialogDescription>
-            Update a feature flag for the current environment. Values are
-            inferred to null, boolean, number or "string"
+            Update project permissions for {member.email}.
           </DialogDescription>
         </DialogHeader>
-        <UpdateFlagForm flag={flag} onSuccess={() => setOpen(false)} />
+        <UpdateMemberPermissionsForm
+          member={member}
+          onSuccess={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );

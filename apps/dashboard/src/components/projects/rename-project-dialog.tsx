@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
 import { onFormError } from "#/lib/utils.ts";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import { api } from "@convex/_generated/api.js";
 import type { Doc } from "@convex/_generated/dataModel.js";
 import { useConvexMutation } from "@convex-dev/react-query";
@@ -40,6 +41,7 @@ export const RenameProjectDialog: FC<{ project: Doc<"projects"> }> = ({
   project,
 }) => {
   const [open, setOpen] = useState(false);
+  const canUpdate = useHasProjectPermissions(["project.update"], project._id);
 
   const {
     register,
@@ -68,7 +70,10 @@ export const RenameProjectDialog: FC<{ project: Doc<"projects"> }> = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
+          <DialogTrigger
+            className={buttonVariants({ variant: "secondary" })}
+            disabled={!canUpdate}
+          >
             <Pencil />
           </DialogTrigger>
         </TooltipTrigger>

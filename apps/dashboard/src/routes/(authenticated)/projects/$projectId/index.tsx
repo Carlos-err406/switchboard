@@ -5,6 +5,8 @@ import { EnvironmentSelector } from "#/components/environments/environment-selec
 import { EnvironmentsGrid } from "#/components/environments/environments-grid.tsx";
 import { CreateFlagDialog } from "#/components/flags/create-flag-dialog.tsx";
 import { FlagsGrid } from "#/components/flags/flags-grid.tsx";
+import { AddMemberDialog } from "#/components/project-users/add-member-dialog.tsx";
+import { MembersGrid } from "#/components/project-users/members-grid.tsx";
 import { ProjectSelector } from "#/components/projects/project-selector.tsx";
 import {
   Tabs,
@@ -88,7 +90,10 @@ function RouteComponent() {
         </div>
       </TabsContent>
       <TabsContent value="members">
-        {/* <UsersGrid project={project} /> */}
+        <div className="space-y-4">
+          <AddMemberDialog projectId={project._id} />
+          <MembersGrid projectId={project._id} />
+        </div>
       </TabsContent>
       <TabsContent value="api_keys">
         <div className="space-y-4">

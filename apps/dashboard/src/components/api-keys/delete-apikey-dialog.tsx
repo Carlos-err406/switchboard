@@ -13,6 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import { toastMutationError } from "#/lib/utils.ts";
 import { api } from "@convex/_generated/api.js";
 import type { Doc } from "@convex/_generated/dataModel.js";
@@ -25,6 +26,10 @@ import { useState } from "react";
 export const DeleteApiKeyDialog: FC<{ apiKey: Doc<"apiKeys"> }> = ({
   apiKey,
 }) => {
+  const canDelete = useHasProjectPermissions(
+    ["api_key.delete"],
+    apiKey.projectId,
+  );
   const [open, setOpen] = useState(false);
   const mutationFn = useConvexMutation(
     api.api_keys.mutations.deleteApiKeyMutation,
@@ -39,7 +44,10 @@ export const DeleteApiKeyDialog: FC<{ apiKey: Doc<"apiKeys"> }> = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <DialogTrigger className={buttonVariants({ variant: "destructive" })}>
+          <DialogTrigger
+            disabled={!canDelete}
+            className={buttonVariants({ variant: "destructive" })}
+          >
             <Trash2 />
           </DialogTrigger>
         </TooltipTrigger>

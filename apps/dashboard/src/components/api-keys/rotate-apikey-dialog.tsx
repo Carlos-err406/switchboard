@@ -13,6 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@switchboard/ui/components/tooltip";
+import { useHasProjectPermissions } from "#/hooks/use-has-permission.ts";
 import { toastMutationError } from "#/lib/utils.ts";
 import { api } from "@convex/_generated/api.js";
 import type { Doc } from "@convex/_generated/dataModel.js";
@@ -27,6 +28,10 @@ import { CopyApiKeyDialog } from "./copy-apikey-dialog";
 export const RotateApiKeyDialog: FC<{ apiKey: Doc<"apiKeys"> }> = ({
   apiKey,
 }) => {
+  const canRotate = useHasProjectPermissions(
+    ["api_key.delete"],
+    apiKey.projectId,
+  );
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState<FunctionReturnType<
     typeof api.api_keys.mutations.rotateApiKeyMutation
@@ -49,7 +54,10 @@ export const RotateApiKeyDialog: FC<{ apiKey: Doc<"apiKeys"> }> = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
+            <DialogTrigger
+              disabled={!canRotate}
+              className={buttonVariants({ variant: "secondary" })}
+            >
               <RotateCcwKey />
             </DialogTrigger>
           </TooltipTrigger>
