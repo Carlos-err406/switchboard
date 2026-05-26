@@ -1,40 +1,40 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldError,
   FieldLabel,
   FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import type { FunctionReturnType } from 'convex/server'
-import type { FC } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { DatePickerInput } from '@switchboard/ui/components/date-picker-input'
-import dayjs from 'dayjs'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { onFormError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import type { FunctionReturnType } from "convex/server";
+import type { FC } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { DatePickerInput } from "@switchboard/ui/components/date-picker-input";
+import dayjs from "dayjs";
 
 const createApiKeySchema = () =>
   z.object({
-    name: z.string().min(3, 'Must have at least 3 characters'),
+    name: z.string().min(3, "Must have at least 3 characters"),
     description: z.string().optional(),
-    expiresAt: z.number().gt(dayjs().add(1, 'day').unix()).nullable(),
-  })
-type CreateApiKeyInputs = z.infer<ReturnType<typeof createApiKeySchema>>
+    expiresAt: z.number().gt(dayjs().add(1, "day").unix()).nullable(),
+  });
+type CreateApiKeyInputs = z.infer<ReturnType<typeof createApiKeySchema>>;
 
 type Props = {
-  environmentId: Id<'environments'>
+  environmentId: Id<"environments">;
   onSuccess?: (
     result: FunctionReturnType<
       typeof api.api_keys.mutations.createApiKeyMutation
     >,
-  ) => void
-}
+  ) => void;
+};
 export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
   const {
     register,
@@ -44,21 +44,21 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
     control,
     setError,
   } = useForm<CreateApiKeyInputs>({
-    defaultValues: { name: '', description: '', expiresAt: null },
+    defaultValues: { name: "", description: "", expiresAt: null },
     resolver: zodResolver(createApiKeySchema()),
-  })
+  });
 
   const mutationFn = useConvexMutation(
     api.api_keys.mutations.createApiKeyMutation,
-  )
+  );
   const { mutate: createApiKey, isPending } = useMutation({
     mutationFn,
     onError: onFormError(setError),
     onSuccess: (apiKey) => {
-      onSuccess?.(apiKey)
-      reset()
+      onSuccess?.(apiKey);
+      reset();
     },
-  })
+  });
 
   return (
     <form
@@ -75,14 +75,14 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
       <FieldSet>
         <Field required>
           <FieldLabel htmlFor="name">Api key Name</FieldLabel>
-          <Input id="name" {...register('name')} placeholder="local" />
+          <Input id="name" {...register("name")} placeholder="local" />
           <FieldError>{errors.name?.message}</FieldError>
         </Field>
         <Field>
           <FieldLabel htmlFor="description">Description</FieldLabel>
           <Input
             id="description"
-            {...register('description')}
+            {...register("description")}
             placeholder="to use for local development only"
           />
           <FieldError>{errors.description?.message}</FieldError>
@@ -93,7 +93,7 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
             control={control}
             name="expiresAt"
             render={({ field }) => {
-              return <DatePickerInput {...field} placeholder="never" />
+              return <DatePickerInput {...field} placeholder="never" />;
             }}
           />
 
@@ -105,5 +105,5 @@ export const CreateApiKeyForm: FC<Props> = ({ environmentId, onSuccess }) => {
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

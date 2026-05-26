@@ -47,7 +47,7 @@
   justify-content: center;
 }
 .arch-trunk::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: 0;
@@ -57,7 +57,7 @@
   z-index: 0;
 }
 .arch-trunk::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   bottom: -1px;
@@ -82,7 +82,7 @@
   position: relative;
 }
 .arch-fanout::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: 0;
@@ -92,7 +92,7 @@
   z-index: 0;
 }
 .arch-fanout::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 32px;
   left: calc((100% - 24px) / 4);
@@ -115,7 +115,7 @@
   position: relative;
 }
 .arch-fanout-drop::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: 0;
@@ -126,7 +126,7 @@
   z-index: 0;
 }
 .arch-fanout-drop::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   bottom: -1px;
@@ -422,7 +422,7 @@
   justify-content: center;
 }
 .arch-aside-line::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
@@ -432,7 +432,7 @@
   z-index: 0;
 }
 .arch-aside-get::after {
-  content: '';
+  content: "";
   position: absolute;
   left: -1px;
   top: 50%;
@@ -442,7 +442,7 @@
   border-right: 6px solid var(--foreground);
 }
 .arch-aside-res::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -1px;
   top: 50%;
@@ -477,7 +477,7 @@
   flex: 0 0 auto;
 }
 .sample-link::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
@@ -485,7 +485,7 @@
   border-top: 1px dashed var(--foreground);
 }
 .sample-link::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -1px;
   top: 50%;
@@ -584,7 +584,7 @@
     position: relative;
   }
   .arch-aside::before {
-    content: 'or pull via http';
+    content: "or pull via http";
     position: absolute;
     top: -7px;
     left: 50%;

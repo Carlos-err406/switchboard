@@ -1,39 +1,39 @@
-import { CalendarIcon } from 'lucide-react'
-import React, { useEffect, useState, type FC } from 'react'
+import { CalendarIcon } from "lucide-react";
+import React, { useEffect, useState, type FC } from "react";
 
-import { Calendar } from './calendar'
+import { Calendar } from "./calendar";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from './input-group'
-import { Popover, PopoverContent, PopoverTrigger } from './popover'
+} from "./input-group";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 function formatDate(date: Date | undefined) {
-  if (!date) return ''
+  if (!date) return "";
 
-  return date.toLocaleDateString('en-US', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  })
+  return date.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 function isValidDate(date: Date | undefined) {
-  if (!date) return false
-  return !isNaN(date.getTime())
+  if (!date) return false;
+  return !isNaN(date.getTime());
 }
 
 export type DatePickerInputProps = Omit<
-  React.ComponentProps<'input'>,
-  'value' | 'defaultValue' | 'onChange'
+  React.ComponentProps<"input">,
+  "value" | "defaultValue" | "onChange"
 > & {
-  value?: number | null
-  defaultValue?: number | null
-  onChange?: (value: number | null) => void
-  onDateChange?: (date: Date | undefined) => void
-}
+  value?: number | null;
+  defaultValue?: number | null;
+  onChange?: (value: number | null) => void;
+  onDateChange?: (date: Date | undefined) => void;
+};
 
 export const DatePickerInput: FC<DatePickerInputProps> = ({
   value: valueProp,
@@ -43,66 +43,68 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
   onKeyDown,
   ...props
 }) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
-  const isControlled = valueProp !== undefined
+  const isControlled = valueProp !== undefined;
 
   const [internalValue, setInternalValue] = useState<number | null>(
     defaultValue ?? null,
-  )
+  );
 
-  const value = isControlled ? valueProp : internalValue
+  const value = isControlled ? valueProp : internalValue;
 
   const dateFromValue = (value: number | null | undefined) => {
-    if (value == null) return undefined
+    if (value == null) return undefined;
 
-    const parsed = new Date(value)
+    const parsed = new Date(value);
 
-    return isValidDate(parsed) ? parsed : undefined
-  }
+    return isValidDate(parsed) ? parsed : undefined;
+  };
 
-  const [date, setDate] = useState<Date | undefined>(() => dateFromValue(value))
+  const [date, setDate] = useState<Date | undefined>(() =>
+    dateFromValue(value),
+  );
 
-  const [month, setMonth] = useState<Date | undefined>(date)
+  const [month, setMonth] = useState<Date | undefined>(date);
 
-  const displayValue = formatDate(dateFromValue(value))
+  const displayValue = formatDate(dateFromValue(value));
 
   useEffect(() => {
-    const nextDate = dateFromValue(value)
+    const nextDate = dateFromValue(value);
 
-    setDate(nextDate)
+    setDate(nextDate);
 
     if (nextDate) {
-      setMonth(nextDate)
+      setMonth(nextDate);
     }
-  }, [value])
+  }, [value]);
 
   const updateValue = (nextValue: string) => {
-    const parsed = new Date(nextValue)
+    const parsed = new Date(nextValue);
 
     if (isValidDate(parsed)) {
-      const timestamp = parsed.getTime()
+      const timestamp = parsed.getTime();
 
       if (!isControlled) {
-        setInternalValue(timestamp)
+        setInternalValue(timestamp);
       }
 
-      setDate(parsed)
-      setMonth(parsed)
-      onChange?.(timestamp)
-      onDateChange?.(parsed)
+      setDate(parsed);
+      setMonth(parsed);
+      onChange?.(timestamp);
+      onDateChange?.(parsed);
 
-      return
+      return;
     }
 
     if (!isControlled) {
-      setInternalValue(null)
+      setInternalValue(null);
     }
 
-    setDate(undefined)
-    onChange?.(null)
-    onDateChange?.(undefined)
-  }
+    setDate(undefined);
+    onChange?.(null);
+    onDateChange?.(undefined);
+  };
 
   return (
     <InputGroup>
@@ -110,15 +112,15 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
         {...props}
         value={displayValue}
         onChange={(e) => {
-          updateValue(e.target.value)
+          updateValue(e.target.value);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'ArrowDown') {
-            e.preventDefault()
-            setOpen(true)
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setOpen(true);
           }
 
-          onKeyDown?.(e)
+          onKeyDown?.(e);
         }}
       />
 
@@ -150,31 +152,31 @@ export const DatePickerInput: FC<DatePickerInputProps> = ({
               onSelect={(nextDate) => {
                 if (!nextDate) {
                   if (!isControlled) {
-                    setInternalValue(null)
+                    setInternalValue(null);
                   }
 
-                  setDate(undefined)
-                  onChange?.(null)
-                  onDateChange?.(undefined)
-                  return
+                  setDate(undefined);
+                  onChange?.(null);
+                  onDateChange?.(undefined);
+                  return;
                 }
 
-                const timestamp = nextDate.getTime()
+                const timestamp = nextDate.getTime();
 
                 if (!isControlled) {
-                  setInternalValue(timestamp)
+                  setInternalValue(timestamp);
                 }
 
-                setDate(nextDate)
-                setMonth(nextDate)
-                onChange?.(timestamp)
-                onDateChange?.(nextDate)
-                setOpen(false)
+                setDate(nextDate);
+                setMonth(nextDate);
+                onChange?.(timestamp);
+                onDateChange?.(nextDate);
+                setOpen(false);
               }}
             />
           </PopoverContent>
         </Popover>
       </InputGroupAddon>
     </InputGroup>
-  )
-}
+  );
+};

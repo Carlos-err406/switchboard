@@ -8,329 +8,329 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteRouteImport } from './routes/auth/route'
-import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthIndexRouteImport } from './routes/auth/index'
-import { Route as AuthSigninRouteImport } from './routes/auth/signin'
-import { Route as authenticatedUsersRouteRouteImport } from './routes/(authenticated)/users/route'
-import { Route as authenticatedProjectsRouteRouteImport } from './routes/(authenticated)/projects/route'
-import { Route as authenticatedLogsRouteRouteImport } from './routes/(authenticated)/logs/route'
-import { Route as InviteTokenIndexRouteImport } from './routes/invite/$token/index'
-import { Route as AuthResetPasswordIndexRouteImport } from './routes/auth/reset-password/index'
-import { Route as authenticatedUsersIndexRouteImport } from './routes/(authenticated)/users/index'
-import { Route as authenticatedProjectsIndexRouteImport } from './routes/(authenticated)/projects/index'
-import { Route as authenticatedLogsIndexRouteImport } from './routes/(authenticated)/logs/index'
-import { Route as AuthResetPasswordTokenRouteImport } from './routes/auth/reset-password/$token'
-import { Route as authenticatedProjectsProjectIdIndexRouteImport } from './routes/(authenticated)/projects/$projectId/index'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as AuthRouteRouteImport } from "./routes/auth/route";
+import { Route as authenticatedRouteRouteImport } from "./routes/(authenticated)/route";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as AuthIndexRouteImport } from "./routes/auth/index";
+import { Route as AuthSigninRouteImport } from "./routes/auth/signin";
+import { Route as authenticatedUsersRouteRouteImport } from "./routes/(authenticated)/users/route";
+import { Route as authenticatedProjectsRouteRouteImport } from "./routes/(authenticated)/projects/route";
+import { Route as authenticatedLogsRouteRouteImport } from "./routes/(authenticated)/logs/route";
+import { Route as InviteTokenIndexRouteImport } from "./routes/invite/$token/index";
+import { Route as AuthResetPasswordIndexRouteImport } from "./routes/auth/reset-password/index";
+import { Route as authenticatedUsersIndexRouteImport } from "./routes/(authenticated)/users/index";
+import { Route as authenticatedProjectsIndexRouteImport } from "./routes/(authenticated)/projects/index";
+import { Route as authenticatedLogsIndexRouteImport } from "./routes/(authenticated)/logs/index";
+import { Route as AuthResetPasswordTokenRouteImport } from "./routes/auth/reset-password/$token";
+import { Route as authenticatedProjectsProjectIdIndexRouteImport } from "./routes/(authenticated)/projects/$projectId/index";
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+  id: "/auth",
+  path: "/auth",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
-  id: '/(authenticated)',
+  id: "/(authenticated)",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => AuthRouteRoute,
-} as any)
+} as any);
 const AuthSigninRoute = AuthSigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
+  id: "/signin",
+  path: "/signin",
   getParentRoute: () => AuthRouteRoute,
-} as any)
+} as any);
 const authenticatedUsersRouteRoute = authenticatedUsersRouteRouteImport.update({
-  id: '/users',
-  path: '/users',
+  id: "/users",
+  path: "/users",
   getParentRoute: () => authenticatedRouteRoute,
-} as any)
+} as any);
 const authenticatedProjectsRouteRoute =
   authenticatedProjectsRouteRouteImport.update({
-    id: '/projects',
-    path: '/projects',
+    id: "/projects",
+    path: "/projects",
     getParentRoute: () => authenticatedRouteRoute,
-  } as any)
+  } as any);
 const authenticatedLogsRouteRoute = authenticatedLogsRouteRouteImport.update({
-  id: '/logs',
-  path: '/logs',
+  id: "/logs",
+  path: "/logs",
   getParentRoute: () => authenticatedRouteRoute,
-} as any)
+} as any);
 const InviteTokenIndexRoute = InviteTokenIndexRouteImport.update({
-  id: '/invite/$token/',
-  path: '/invite/$token/',
+  id: "/invite/$token/",
+  path: "/invite/$token/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthResetPasswordIndexRoute = AuthResetPasswordIndexRouteImport.update({
-  id: '/reset-password/',
-  path: '/reset-password/',
+  id: "/reset-password/",
+  path: "/reset-password/",
   getParentRoute: () => AuthRouteRoute,
-} as any)
+} as any);
 const authenticatedUsersIndexRoute = authenticatedUsersIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => authenticatedUsersRouteRoute,
-} as any)
+} as any);
 const authenticatedProjectsIndexRoute =
   authenticatedProjectsIndexRouteImport.update({
-    id: '/',
-    path: '/',
+    id: "/",
+    path: "/",
     getParentRoute: () => authenticatedProjectsRouteRoute,
-  } as any)
+  } as any);
 const authenticatedLogsIndexRoute = authenticatedLogsIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => authenticatedLogsRouteRoute,
-} as any)
+} as any);
 const AuthResetPasswordTokenRoute = AuthResetPasswordTokenRouteImport.update({
-  id: '/reset-password/$token',
-  path: '/reset-password/$token',
+  id: "/reset-password/$token",
+  path: "/reset-password/$token",
   getParentRoute: () => AuthRouteRoute,
-} as any)
+} as any);
 const authenticatedProjectsProjectIdIndexRoute =
   authenticatedProjectsProjectIdIndexRouteImport.update({
-    id: '/$projectId/',
-    path: '/$projectId/',
+    id: "/$projectId/",
+    path: "/$projectId/",
     getParentRoute: () => authenticatedProjectsRouteRoute,
-  } as any)
+  } as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/auth': typeof AuthRouteRouteWithChildren
-  '/logs': typeof authenticatedLogsRouteRouteWithChildren
-  '/projects': typeof authenticatedProjectsRouteRouteWithChildren
-  '/users': typeof authenticatedUsersRouteRouteWithChildren
-  '/auth/signin': typeof AuthSigninRoute
-  '/auth/': typeof AuthIndexRoute
-  '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
-  '/logs/': typeof authenticatedLogsIndexRoute
-  '/projects/': typeof authenticatedProjectsIndexRoute
-  '/users/': typeof authenticatedUsersIndexRoute
-  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
-  '/invite/$token/': typeof InviteTokenIndexRoute
-  '/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
+  "/": typeof IndexRoute;
+  "/auth": typeof AuthRouteRouteWithChildren;
+  "/logs": typeof authenticatedLogsRouteRouteWithChildren;
+  "/projects": typeof authenticatedProjectsRouteRouteWithChildren;
+  "/users": typeof authenticatedUsersRouteRouteWithChildren;
+  "/auth/signin": typeof AuthSigninRoute;
+  "/auth/": typeof AuthIndexRoute;
+  "/auth/reset-password/$token": typeof AuthResetPasswordTokenRoute;
+  "/logs/": typeof authenticatedLogsIndexRoute;
+  "/projects/": typeof authenticatedProjectsIndexRoute;
+  "/users/": typeof authenticatedUsersIndexRoute;
+  "/auth/reset-password/": typeof AuthResetPasswordIndexRoute;
+  "/invite/$token/": typeof InviteTokenIndexRoute;
+  "/projects/$projectId/": typeof authenticatedProjectsProjectIdIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/auth/signin': typeof AuthSigninRoute
-  '/auth': typeof AuthIndexRoute
-  '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
-  '/logs': typeof authenticatedLogsIndexRoute
-  '/projects': typeof authenticatedProjectsIndexRoute
-  '/users': typeof authenticatedUsersIndexRoute
-  '/auth/reset-password': typeof AuthResetPasswordIndexRoute
-  '/invite/$token': typeof InviteTokenIndexRoute
-  '/projects/$projectId': typeof authenticatedProjectsProjectIdIndexRoute
+  "/": typeof IndexRoute;
+  "/auth/signin": typeof AuthSigninRoute;
+  "/auth": typeof AuthIndexRoute;
+  "/auth/reset-password/$token": typeof AuthResetPasswordTokenRoute;
+  "/logs": typeof authenticatedLogsIndexRoute;
+  "/projects": typeof authenticatedProjectsIndexRoute;
+  "/users": typeof authenticatedUsersIndexRoute;
+  "/auth/reset-password": typeof AuthResetPasswordIndexRoute;
+  "/invite/$token": typeof InviteTokenIndexRoute;
+  "/projects/$projectId": typeof authenticatedProjectsProjectIdIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/(authenticated)': typeof authenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRouteRouteWithChildren
-  '/(authenticated)/logs': typeof authenticatedLogsRouteRouteWithChildren
-  '/(authenticated)/projects': typeof authenticatedProjectsRouteRouteWithChildren
-  '/(authenticated)/users': typeof authenticatedUsersRouteRouteWithChildren
-  '/auth/signin': typeof AuthSigninRoute
-  '/auth/': typeof AuthIndexRoute
-  '/auth/reset-password/$token': typeof AuthResetPasswordTokenRoute
-  '/(authenticated)/logs/': typeof authenticatedLogsIndexRoute
-  '/(authenticated)/projects/': typeof authenticatedProjectsIndexRoute
-  '/(authenticated)/users/': typeof authenticatedUsersIndexRoute
-  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
-  '/invite/$token/': typeof InviteTokenIndexRoute
-  '/(authenticated)/projects/$projectId/': typeof authenticatedProjectsProjectIdIndexRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/(authenticated)": typeof authenticatedRouteRouteWithChildren;
+  "/auth": typeof AuthRouteRouteWithChildren;
+  "/(authenticated)/logs": typeof authenticatedLogsRouteRouteWithChildren;
+  "/(authenticated)/projects": typeof authenticatedProjectsRouteRouteWithChildren;
+  "/(authenticated)/users": typeof authenticatedUsersRouteRouteWithChildren;
+  "/auth/signin": typeof AuthSigninRoute;
+  "/auth/": typeof AuthIndexRoute;
+  "/auth/reset-password/$token": typeof AuthResetPasswordTokenRoute;
+  "/(authenticated)/logs/": typeof authenticatedLogsIndexRoute;
+  "/(authenticated)/projects/": typeof authenticatedProjectsIndexRoute;
+  "/(authenticated)/users/": typeof authenticatedUsersIndexRoute;
+  "/auth/reset-password/": typeof AuthResetPasswordIndexRoute;
+  "/invite/$token/": typeof InviteTokenIndexRoute;
+  "/(authenticated)/projects/$projectId/": typeof authenticatedProjectsProjectIdIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/auth'
-    | '/logs'
-    | '/projects'
-    | '/users'
-    | '/auth/signin'
-    | '/auth/'
-    | '/auth/reset-password/$token'
-    | '/logs/'
-    | '/projects/'
-    | '/users/'
-    | '/auth/reset-password/'
-    | '/invite/$token/'
-    | '/projects/$projectId/'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/auth"
+    | "/logs"
+    | "/projects"
+    | "/users"
+    | "/auth/signin"
+    | "/auth/"
+    | "/auth/reset-password/$token"
+    | "/logs/"
+    | "/projects/"
+    | "/users/"
+    | "/auth/reset-password/"
+    | "/invite/$token/"
+    | "/projects/$projectId/";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/auth/signin'
-    | '/auth'
-    | '/auth/reset-password/$token'
-    | '/logs'
-    | '/projects'
-    | '/users'
-    | '/auth/reset-password'
-    | '/invite/$token'
-    | '/projects/$projectId'
+    | "/"
+    | "/auth/signin"
+    | "/auth"
+    | "/auth/reset-password/$token"
+    | "/logs"
+    | "/projects"
+    | "/users"
+    | "/auth/reset-password"
+    | "/invite/$token"
+    | "/projects/$projectId";
   id:
-    | '__root__'
-    | '/'
-    | '/(authenticated)'
-    | '/auth'
-    | '/(authenticated)/logs'
-    | '/(authenticated)/projects'
-    | '/(authenticated)/users'
-    | '/auth/signin'
-    | '/auth/'
-    | '/auth/reset-password/$token'
-    | '/(authenticated)/logs/'
-    | '/(authenticated)/projects/'
-    | '/(authenticated)/users/'
-    | '/auth/reset-password/'
-    | '/invite/$token/'
-    | '/(authenticated)/projects/$projectId/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/(authenticated)"
+    | "/auth"
+    | "/(authenticated)/logs"
+    | "/(authenticated)/projects"
+    | "/(authenticated)/users"
+    | "/auth/signin"
+    | "/auth/"
+    | "/auth/reset-password/$token"
+    | "/(authenticated)/logs/"
+    | "/(authenticated)/projects/"
+    | "/(authenticated)/users/"
+    | "/auth/reset-password/"
+    | "/invite/$token/"
+    | "/(authenticated)/projects/$projectId/";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  InviteTokenIndexRoute: typeof InviteTokenIndexRoute
+  IndexRoute: typeof IndexRoute;
+  authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren;
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren;
+  InviteTokenIndexRoute: typeof InviteTokenIndexRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(authenticated)': {
-      id: '/(authenticated)'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof authenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/': {
-      id: '/auth/'
-      path: '/'
-      fullPath: '/auth/'
-      preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/auth/signin': {
-      id: '/auth/signin'
-      path: '/signin'
-      fullPath: '/auth/signin'
-      preLoaderRoute: typeof AuthSigninRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/(authenticated)/users': {
-      id: '/(authenticated)/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof authenticatedUsersRouteRouteImport
-      parentRoute: typeof authenticatedRouteRoute
-    }
-    '/(authenticated)/projects': {
-      id: '/(authenticated)/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof authenticatedProjectsRouteRouteImport
-      parentRoute: typeof authenticatedRouteRoute
-    }
-    '/(authenticated)/logs': {
-      id: '/(authenticated)/logs'
-      path: '/logs'
-      fullPath: '/logs'
-      preLoaderRoute: typeof authenticatedLogsRouteRouteImport
-      parentRoute: typeof authenticatedRouteRoute
-    }
-    '/invite/$token/': {
-      id: '/invite/$token/'
-      path: '/invite/$token'
-      fullPath: '/invite/$token/'
-      preLoaderRoute: typeof InviteTokenIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/reset-password/': {
-      id: '/auth/reset-password/'
-      path: '/reset-password'
-      fullPath: '/auth/reset-password/'
-      preLoaderRoute: typeof AuthResetPasswordIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/(authenticated)/users/': {
-      id: '/(authenticated)/users/'
-      path: '/'
-      fullPath: '/users/'
-      preLoaderRoute: typeof authenticatedUsersIndexRouteImport
-      parentRoute: typeof authenticatedUsersRouteRoute
-    }
-    '/(authenticated)/projects/': {
-      id: '/(authenticated)/projects/'
-      path: '/'
-      fullPath: '/projects/'
-      preLoaderRoute: typeof authenticatedProjectsIndexRouteImport
-      parentRoute: typeof authenticatedProjectsRouteRoute
-    }
-    '/(authenticated)/logs/': {
-      id: '/(authenticated)/logs/'
-      path: '/'
-      fullPath: '/logs/'
-      preLoaderRoute: typeof authenticatedLogsIndexRouteImport
-      parentRoute: typeof authenticatedLogsRouteRoute
-    }
-    '/auth/reset-password/$token': {
-      id: '/auth/reset-password/$token'
-      path: '/reset-password/$token'
-      fullPath: '/auth/reset-password/$token'
-      preLoaderRoute: typeof AuthResetPasswordTokenRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/(authenticated)/projects/$projectId/': {
-      id: '/(authenticated)/projects/$projectId/'
-      path: '/$projectId'
-      fullPath: '/projects/$projectId/'
-      preLoaderRoute: typeof authenticatedProjectsProjectIdIndexRouteImport
-      parentRoute: typeof authenticatedProjectsRouteRoute
-    }
+    "/auth": {
+      id: "/auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/(authenticated)": {
+      id: "/(authenticated)";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof authenticatedRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/auth/": {
+      id: "/auth/";
+      path: "/";
+      fullPath: "/auth/";
+      preLoaderRoute: typeof AuthIndexRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
+    "/auth/signin": {
+      id: "/auth/signin";
+      path: "/signin";
+      fullPath: "/auth/signin";
+      preLoaderRoute: typeof AuthSigninRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
+    "/(authenticated)/users": {
+      id: "/(authenticated)/users";
+      path: "/users";
+      fullPath: "/users";
+      preLoaderRoute: typeof authenticatedUsersRouteRouteImport;
+      parentRoute: typeof authenticatedRouteRoute;
+    };
+    "/(authenticated)/projects": {
+      id: "/(authenticated)/projects";
+      path: "/projects";
+      fullPath: "/projects";
+      preLoaderRoute: typeof authenticatedProjectsRouteRouteImport;
+      parentRoute: typeof authenticatedRouteRoute;
+    };
+    "/(authenticated)/logs": {
+      id: "/(authenticated)/logs";
+      path: "/logs";
+      fullPath: "/logs";
+      preLoaderRoute: typeof authenticatedLogsRouteRouteImport;
+      parentRoute: typeof authenticatedRouteRoute;
+    };
+    "/invite/$token/": {
+      id: "/invite/$token/";
+      path: "/invite/$token";
+      fullPath: "/invite/$token/";
+      preLoaderRoute: typeof InviteTokenIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/auth/reset-password/": {
+      id: "/auth/reset-password/";
+      path: "/reset-password";
+      fullPath: "/auth/reset-password/";
+      preLoaderRoute: typeof AuthResetPasswordIndexRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
+    "/(authenticated)/users/": {
+      id: "/(authenticated)/users/";
+      path: "/";
+      fullPath: "/users/";
+      preLoaderRoute: typeof authenticatedUsersIndexRouteImport;
+      parentRoute: typeof authenticatedUsersRouteRoute;
+    };
+    "/(authenticated)/projects/": {
+      id: "/(authenticated)/projects/";
+      path: "/";
+      fullPath: "/projects/";
+      preLoaderRoute: typeof authenticatedProjectsIndexRouteImport;
+      parentRoute: typeof authenticatedProjectsRouteRoute;
+    };
+    "/(authenticated)/logs/": {
+      id: "/(authenticated)/logs/";
+      path: "/";
+      fullPath: "/logs/";
+      preLoaderRoute: typeof authenticatedLogsIndexRouteImport;
+      parentRoute: typeof authenticatedLogsRouteRoute;
+    };
+    "/auth/reset-password/$token": {
+      id: "/auth/reset-password/$token";
+      path: "/reset-password/$token";
+      fullPath: "/auth/reset-password/$token";
+      preLoaderRoute: typeof AuthResetPasswordTokenRouteImport;
+      parentRoute: typeof AuthRouteRoute;
+    };
+    "/(authenticated)/projects/$projectId/": {
+      id: "/(authenticated)/projects/$projectId/";
+      path: "/$projectId";
+      fullPath: "/projects/$projectId/";
+      preLoaderRoute: typeof authenticatedProjectsProjectIdIndexRouteImport;
+      parentRoute: typeof authenticatedProjectsRouteRoute;
+    };
   }
 }
 
 interface authenticatedLogsRouteRouteChildren {
-  authenticatedLogsIndexRoute: typeof authenticatedLogsIndexRoute
+  authenticatedLogsIndexRoute: typeof authenticatedLogsIndexRoute;
 }
 
 const authenticatedLogsRouteRouteChildren: authenticatedLogsRouteRouteChildren =
   {
     authenticatedLogsIndexRoute: authenticatedLogsIndexRoute,
-  }
+  };
 
 const authenticatedLogsRouteRouteWithChildren =
   authenticatedLogsRouteRoute._addFileChildren(
     authenticatedLogsRouteRouteChildren,
-  )
+  );
 
 interface authenticatedProjectsRouteRouteChildren {
-  authenticatedProjectsIndexRoute: typeof authenticatedProjectsIndexRoute
-  authenticatedProjectsProjectIdIndexRoute: typeof authenticatedProjectsProjectIdIndexRoute
+  authenticatedProjectsIndexRoute: typeof authenticatedProjectsIndexRoute;
+  authenticatedProjectsProjectIdIndexRoute: typeof authenticatedProjectsProjectIdIndexRoute;
 }
 
 const authenticatedProjectsRouteRouteChildren: authenticatedProjectsRouteRouteChildren =
@@ -338,47 +338,47 @@ const authenticatedProjectsRouteRouteChildren: authenticatedProjectsRouteRouteCh
     authenticatedProjectsIndexRoute: authenticatedProjectsIndexRoute,
     authenticatedProjectsProjectIdIndexRoute:
       authenticatedProjectsProjectIdIndexRoute,
-  }
+  };
 
 const authenticatedProjectsRouteRouteWithChildren =
   authenticatedProjectsRouteRoute._addFileChildren(
     authenticatedProjectsRouteRouteChildren,
-  )
+  );
 
 interface authenticatedUsersRouteRouteChildren {
-  authenticatedUsersIndexRoute: typeof authenticatedUsersIndexRoute
+  authenticatedUsersIndexRoute: typeof authenticatedUsersIndexRoute;
 }
 
 const authenticatedUsersRouteRouteChildren: authenticatedUsersRouteRouteChildren =
   {
     authenticatedUsersIndexRoute: authenticatedUsersIndexRoute,
-  }
+  };
 
 const authenticatedUsersRouteRouteWithChildren =
   authenticatedUsersRouteRoute._addFileChildren(
     authenticatedUsersRouteRouteChildren,
-  )
+  );
 
 interface authenticatedRouteRouteChildren {
-  authenticatedLogsRouteRoute: typeof authenticatedLogsRouteRouteWithChildren
-  authenticatedProjectsRouteRoute: typeof authenticatedProjectsRouteRouteWithChildren
-  authenticatedUsersRouteRoute: typeof authenticatedUsersRouteRouteWithChildren
+  authenticatedLogsRouteRoute: typeof authenticatedLogsRouteRouteWithChildren;
+  authenticatedProjectsRouteRoute: typeof authenticatedProjectsRouteRouteWithChildren;
+  authenticatedUsersRouteRoute: typeof authenticatedUsersRouteRouteWithChildren;
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
   authenticatedLogsRouteRoute: authenticatedLogsRouteRouteWithChildren,
   authenticatedProjectsRouteRoute: authenticatedProjectsRouteRouteWithChildren,
   authenticatedUsersRouteRoute: authenticatedUsersRouteRouteWithChildren,
-}
+};
 
 const authenticatedRouteRouteWithChildren =
-  authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
+  authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren);
 
 interface AuthRouteRouteChildren {
-  AuthSigninRoute: typeof AuthSigninRoute
-  AuthIndexRoute: typeof AuthIndexRoute
-  AuthResetPasswordTokenRoute: typeof AuthResetPasswordTokenRoute
-  AuthResetPasswordIndexRoute: typeof AuthResetPasswordIndexRoute
+  AuthSigninRoute: typeof AuthSigninRoute;
+  AuthIndexRoute: typeof AuthIndexRoute;
+  AuthResetPasswordTokenRoute: typeof AuthResetPasswordTokenRoute;
+  AuthResetPasswordIndexRoute: typeof AuthResetPasswordIndexRoute;
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -386,27 +386,27 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
   AuthResetPasswordTokenRoute: AuthResetPasswordTokenRoute,
   AuthResetPasswordIndexRoute: AuthResetPasswordIndexRoute,
-}
+};
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
-)
+);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authenticatedRouteRoute: authenticatedRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   InviteTokenIndexRoute: InviteTokenIndexRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { createStart } from "@tanstack/react-start";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }

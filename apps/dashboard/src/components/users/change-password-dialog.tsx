@@ -1,4 +1,4 @@
-import { buttonVariants } from '@switchboard/ui/components/button'
+import { buttonVariants } from "@switchboard/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -6,25 +6,25 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@switchboard/ui/components/dialog'
+} from "@switchboard/ui/components/dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { Asterisk } from 'lucide-react'
-import type { FC } from 'react'
-import { useState } from 'react'
-import { ChangePasswordForm } from './change-password-form'
+} from "@switchboard/ui/components/tooltip";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { Asterisk } from "lucide-react";
+import type { FC } from "react";
+import { useState } from "react";
+import { ChangePasswordForm } from "./change-password-form";
 
 type Props = {
-  userId: Id<'users'>
-  requireOldPassword?: boolean
-  disabled?: boolean
-  open?: boolean
-  setOpen?: (open: boolean) => void
-}
+  userId: Id<"users">;
+  requireOldPassword?: boolean;
+  disabled?: boolean;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
+};
 
 export const ChangePasswordDialog: FC<Props> = ({
   userId,
@@ -33,9 +33,9 @@ export const ChangePasswordDialog: FC<Props> = ({
   open: controlledOpen,
   setOpen: controlledSetOpen,
 }) => {
-  const [internalOpen, setInternalOpen] = useState(false)
-  const open = controlledOpen ?? internalOpen
-  const setOpen = controlledSetOpen ?? setInternalOpen
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = controlledSetOpen ?? setInternalOpen;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -43,7 +43,7 @@ export const ChangePasswordDialog: FC<Props> = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger
-              className={buttonVariants({ variant: 'secondary' })}
+              className={buttonVariants({ variant: "secondary" })}
               disabled={disabled}
             >
               <Asterisk />
@@ -58,8 +58,8 @@ export const ChangePasswordDialog: FC<Props> = ({
           <DialogTitle>Change password</DialogTitle>
           <DialogDescription>
             {requireOldPassword
-              ? 'Enter your current password and choose a new one.'
-              : 'Set a new password for this user.'}
+              ? "Enter your current password and choose a new one."
+              : "Set a new password for this user."}
           </DialogDescription>
         </DialogHeader>
         <ChangePasswordForm
@@ -69,5 +69,5 @@ export const ChangePasswordDialog: FC<Props> = ({
         />
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

@@ -1,10 +1,10 @@
-import { CreateProjectDialog } from '#/components/projects/create-project-dialog.tsx'
-import { ProjectsGrid } from '#/components/projects/projects-grid.tsx'
-import { createFileRoute } from '@tanstack/react-router'
+import { CreateProjectDialog } from "#/components/projects/create-project-dialog.tsx";
+import { ProjectsGrid } from "#/components/projects/projects-grid.tsx";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/(authenticated)/projects/')({
+export const Route = createFileRoute("/(authenticated)/projects/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (
@@ -13,5 +13,5 @@ function RouteComponent() {
       <CreateProjectDialog />
       <ProjectsGrid />
     </div>
-  )
+  );
 }

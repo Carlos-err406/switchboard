@@ -2,23 +2,23 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-} from '@tanstack/react-router'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import ConvexProvider from '../integrations/convex/provider'
+} from "@tanstack/react-router";
+import relativeTime from "dayjs/plugin/relativeTime";
+import ConvexProvider from "../integrations/convex/provider";
 
-import appCss from '../styles.css?url'
+import appCss from "../styles.css?url";
 
-import { Toaster } from '@switchboard/ui/components/sonner'
-import { TooltipProvider } from '@switchboard/ui/components/tooltip'
-import type { ConvexQueryClient } from '@convex-dev/react-query'
-import type { QueryClient } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import { z } from 'zod'
-import { Header } from '#/components/layout/header.tsx'
+import { Toaster } from "@switchboard/ui/components/sonner";
+import { TooltipProvider } from "@switchboard/ui/components/tooltip";
+import type { ConvexQueryClient } from "@convex-dev/react-query";
+import type { QueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { z } from "zod";
+import { Header } from "#/components/layout/header.tsx";
 
 interface MyRouterContext {
-  queryClient: QueryClient
-  convexQueryClient: ConvexQueryClient
+  queryClient: QueryClient;
+  convexQueryClient: ConvexQueryClient;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
@@ -26,33 +26,33 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: "utf-8",
       },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
       },
       {
-        title: 'Switchboard',
+        title: "Switchboard",
       },
     ],
     links: [
       {
-        rel: 'icon',
-        type: 'image/svg+xml',
-        href: '/favicon.svg',
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/favicon.svg",
       },
       {
-        rel: 'stylesheet',
+        rel: "stylesheet",
         href: appCss,
       },
     ],
   }),
   shellComponent: RootDocument,
-})
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  dayjs.extend(relativeTime)
+  dayjs.extend(relativeTime);
 
   return (
     <html lang="en">
@@ -70,5 +70,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         </TooltipProvider>
       </body>
     </html>
-  )
+  );
 }

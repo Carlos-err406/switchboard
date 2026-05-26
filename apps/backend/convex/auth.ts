@@ -63,8 +63,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
             .catch((e) => e);
 
           if (typeof result === "object" && "user" in result) {
-            if (result.user.locked)
-              throw new Error("Account is locked");
+            if (result.user.locked) throw new Error("Account is locked");
             return { userId: result.user._id };
           }
 

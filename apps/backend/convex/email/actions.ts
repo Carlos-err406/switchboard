@@ -1,14 +1,14 @@
-'use node'
-import { internal } from '../_generated/api.js'
-import { internalAction } from '../_generated/server.js'
-import sendEmail from '../email/send.js'
-import { env } from '../env.js'
-import { v } from 'convex/values'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { tokenNotFound } from '../errors'
+"use node";
+import { internal } from "../_generated/api.js";
+import { internalAction } from "../_generated/server.js";
+import sendEmail from "../email/send.js";
+import { env } from "../env.js";
+import { v } from "convex/values";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { tokenNotFound } from "../errors";
 
-dayjs.extend(relativeTime)
+dayjs.extend(relativeTime);
 
 export const sendInviteEmail = internalAction({
   args: { token: v.string() },
@@ -16,11 +16,11 @@ export const sendInviteEmail = internalAction({
     const invite = await ctx.runQuery(
       internal.invites.queries.getInviteByTokenInternal,
       { token: args.token },
-    )
-    if (!invite) throw tokenNotFound()
+    );
+    if (!invite) throw tokenNotFound();
     await sendEmail({
       email: {
-        template: 'invite',
+        template: "invite",
         variables: {
           email: invite.toEmail,
           url: `${env.SITE_URL}/invite/${args.token}`,
@@ -31,16 +31,16 @@ export const sendInviteEmail = internalAction({
         },
       },
       to: [invite.toEmail],
-    })
+    });
   },
-})
+});
 
 export const sendWelcomeEmail = internalAction({
   args: { to: v.string() },
   handler: async (_ctx, args) => {
     await sendEmail({
       email: {
-        template: 'welcome',
+        template: "welcome",
         variables: {
           email: args.to,
           platformName: env.PLATFORM_NAME,
@@ -49,16 +49,16 @@ export const sendWelcomeEmail = internalAction({
         },
       },
       to: [args.to],
-    })
+    });
   },
-})
+});
 
 export const sendAccountLockedEmail = internalAction({
   args: { to: v.string() },
   handler: async (_ctx, args) => {
     await sendEmail({
       email: {
-        template: 'account_locked',
+        template: "account_locked",
         variables: {
           email: args.to,
           platformName: env.PLATFORM_NAME,
@@ -66,16 +66,16 @@ export const sendAccountLockedEmail = internalAction({
         },
       },
       to: [args.to],
-    })
+    });
   },
-})
+});
 
 export const sendAccountUnlockedEmail = internalAction({
   args: { to: v.string() },
   handler: async (_ctx, args) => {
     await sendEmail({
       email: {
-        template: 'account_unlocked',
+        template: "account_unlocked",
         variables: {
           email: args.to,
           platformName: env.PLATFORM_NAME,
@@ -84,16 +84,16 @@ export const sendAccountUnlockedEmail = internalAction({
         },
       },
       to: [args.to],
-    })
+    });
   },
-})
+});
 
 export const sendPermissionsChangedEmail = internalAction({
   args: { to: v.string() },
   handler: async (_ctx, args) => {
     await sendEmail({
       email: {
-        template: 'permissions_changed',
+        template: "permissions_changed",
         variables: {
           email: args.to,
           platformName: env.PLATFORM_NAME,
@@ -101,16 +101,16 @@ export const sendPermissionsChangedEmail = internalAction({
         },
       },
       to: [args.to],
-    })
+    });
   },
-})
+});
 
 export const sendPasswordChangedEmail = internalAction({
   args: { to: v.string() },
   handler: async (_ctx, args) => {
     await sendEmail({
       email: {
-        template: 'password_changed',
+        template: "password_changed",
         variables: {
           email: args.to,
           platformName: env.PLATFORM_NAME,
@@ -118,9 +118,9 @@ export const sendPasswordChangedEmail = internalAction({
         },
       },
       to: [args.to],
-    })
+    });
   },
-})
+});
 
 export const sendResetPasswordEmail = internalAction({
   args: {
@@ -133,11 +133,11 @@ export const sendResetPasswordEmail = internalAction({
       {
         token: args.token,
       },
-    )
-    if (!passwordReset) throw tokenNotFound()
+    );
+    if (!passwordReset) throw tokenNotFound();
     await sendEmail({
       email: {
-        template: 'forgot_password',
+        template: "forgot_password",
         variables: {
           email: passwordReset.toEmail,
           expiresIn: dayjs(passwordReset.expiresAt).fromNow(true),
@@ -147,6 +147,6 @@ export const sendResetPasswordEmail = internalAction({
         },
       },
       to: [args.to],
-    })
+    });
   },
-})
+});

@@ -1,7 +1,7 @@
-import type { EnvironmentSummary } from '#/lib/types/inferred.ts'
-import { cn } from '@switchboard/ui'
-import { Badge } from '@switchboard/ui/components/badge'
-import { buttonVariants } from '@switchboard/ui/components/button'
+import type { EnvironmentSummary } from "#/lib/types/inferred.ts";
+import { cn } from "@switchboard/ui";
+import { Badge } from "@switchboard/ui/components/badge";
+import { buttonVariants } from "@switchboard/ui/components/button";
 import {
   Card,
   CardContent,
@@ -9,21 +9,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@switchboard/ui/components/card'
+} from "@switchboard/ui/components/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import { useNavigate } from '@tanstack/react-router'
-import { ExternalLink, Stone } from 'lucide-react'
-import type { ComponentProps, FC, PropsWithChildren } from 'react'
-import { DeleteEnvironmentDialog } from './delete-environment-dialog'
-import { UpdateEnvironmentDialog } from './update-environment-dialog'
+} from "@switchboard/ui/components/tooltip";
+import { useNavigate } from "@tanstack/react-router";
+import { ExternalLink, Stone } from "lucide-react";
+import type { ComponentProps, FC, PropsWithChildren } from "react";
+import { DeleteEnvironmentDialog } from "./delete-environment-dialog";
+import { UpdateEnvironmentDialog } from "./update-environment-dialog";
 
 export const EnvironmentCard: FC<{
-  environment: EnvironmentSummary
-  active?: boolean
+  environment: EnvironmentSummary;
+  active?: boolean;
 }> = ({ environment, active }) => {
   return (
     <Card>
@@ -34,15 +34,15 @@ export const EnvironmentCard: FC<{
           tooltipSide="right"
         >
           <CardTitle className="flex items-center gap-2">
-            <Stone className="size-4" /> {environment.name} {active && '*'}
+            <Stone className="size-4" /> {environment.name} {active && "*"}
           </CardTitle>
         </GoToEnvironment>
         <CardDescription>{environment.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex h-full items-end">
         <div className="flex flex-wrap gap-2">
-          <Badge variant={'outline'}>{environment.flagsCount} flag(s)</Badge>
-          <Badge variant={'outline'}>
+          <Badge variant={"outline"}>{environment.flagsCount} flag(s)</Badge>
+          <Badge variant={"outline"}>
             {environment.apiKeysCount} api key(s)
           </Badge>
         </div>
@@ -52,7 +52,7 @@ export const EnvironmentCard: FC<{
         <GoToEnvironment
           environment={environment}
           tooltipSide="bottom"
-          className={buttonVariants({ variant: 'secondary' })}
+          className={buttonVariants({ variant: "secondary" })}
         >
           <ExternalLink />
         </GoToEnvironment>
@@ -60,26 +60,26 @@ export const EnvironmentCard: FC<{
         <DeleteEnvironmentDialog environment={environment} />
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
 const GoToEnvironment: FC<
   {
-    environment: EnvironmentSummary
-    className?: string
-    tooltipSide?: ComponentProps<typeof TooltipContent>['side']
+    environment: EnvironmentSummary;
+    className?: string;
+    tooltipSide?: ComponentProps<typeof TooltipContent>["side"];
   } & PropsWithChildren
 > = ({ environment, children, className, tooltipSide }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <Tooltip>
       <TooltipTrigger
         className={cn(className)}
         onClick={() =>
           navigate({
-            to: '/projects/$projectId',
+            to: "/projects/$projectId",
             params: { projectId: environment.projectId },
-            search: { environment: environment._id, tab: 'flags' },
+            search: { environment: environment._id, tab: "flags" },
           })
         }
       >
@@ -87,5 +87,5 @@ const GoToEnvironment: FC<
       </TooltipTrigger>
       <TooltipContent side={tooltipSide}>Go to environment</TooltipContent>
     </Tooltip>
-  )
-}
+  );
+};

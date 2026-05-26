@@ -1,22 +1,22 @@
 import type {
   FlagValueType,
   SwitchboardClientOnErrorCallback,
-} from '@switchboard/common'
-import { $try, SwitchboardClientError } from '@switchboard/common'
-import type { ConnectionState } from 'convex/browser'
-import { ConvexClient } from 'convex/browser'
-import { anyApi } from 'convex/server'
+} from "@switchboard/common";
+import { $try, SwitchboardClientError } from "@switchboard/common";
+import type { ConnectionState } from "convex/browser";
+import { ConvexClient } from "convex/browser";
+import { anyApi } from "convex/server";
 
-const flagQuery = anyApi.sdk.queries.getFlagQuery
+const flagQuery = anyApi.sdk.queries.getFlagQuery;
 
 export type SwitchboardWsClientConstructorOpts = {
   /** The API key for authenticating with Switchboard (prefixed with `pk_`). */
-  apiKey: string
+  apiKey: string;
   /**
    * The URL of the Switchboard backend (Convex WebSocket endpoint).
    * @example "http://127.0.0.1:3210" -
    */
-  url: string
+  url: string;
   /**
    * Called whenever a flag operation fails but a `defaultValue` was provided.
    * Without this callback, errors are silently swallowed and the default is returned.
@@ -31,8 +31,8 @@ export type SwitchboardWsClientConstructorOpts = {
    * })
    * ```
    */
-  onError?: SwitchboardClientOnErrorCallback
-}
+  onError?: SwitchboardClientOnErrorCallback;
+};
 
 /**
  * Realtime Switchboard client that subscribes to flags via WebSocket.
@@ -58,14 +58,14 @@ export type SwitchboardWsClientConstructorOpts = {
  * ```
  */
 export class SwitchboardWsClient {
-  private client: ConvexClient
-  private apiKey: string
-  private onError?: SwitchboardClientOnErrorCallback
+  private client: ConvexClient;
+  private apiKey: string;
+  private onError?: SwitchboardClientOnErrorCallback;
 
   constructor({ apiKey, url, onError }: SwitchboardWsClientConstructorOpts) {
-    this.apiKey = apiKey
-    this.client = new ConvexClient(url)
-    this.onError = onError
+    this.apiKey = apiKey;
+    this.client = new ConvexClient(url);
+    this.onError = onError;
   }
 
   /**
@@ -83,34 +83,34 @@ export class SwitchboardWsClient {
   public async getFlag<T extends FlagValueType>(
     key: string,
     defaultValue: T,
-  ): Promise<T>
+  ): Promise<T>;
   public async getFlag<T extends FlagValueType>(
     key: string,
-  ): Promise<T | undefined>
+  ): Promise<T | undefined>;
   public async getFlag<T extends FlagValueType>(
     key: string,
     defaultValue?: T,
   ): Promise<T | undefined> {
     const [getFlagError, flag] = await $try<{
-      enabled: boolean
-      value: T
-      key: string
+      enabled: boolean;
+      value: T;
+      key: string;
     }>(
       this.client.query(flagQuery, {
         flagKey: key,
         apiKey: this.apiKey,
       }),
-    )
+    );
     if (getFlagError) {
-      const error = new SwitchboardClientError(getFlagError)
+      const error = new SwitchboardClientError(getFlagError);
       if (defaultValue !== undefined) {
-        this.onError?.(error)
-        return defaultValue
+        this.onError?.(error);
+        return defaultValue;
       }
-      throw error
+      throw error;
     }
-    if (flag.enabled) return flag.value
-    return defaultValue ?? undefined
+    if (flag.enabled) return flag.value;
+    return defaultValue ?? undefined;
   }
 
   /**
@@ -130,14 +130,14 @@ export class SwitchboardWsClient {
       flagQuery,
       { flagKey: key, apiKey: this.apiKey },
       (flag: { enabled: boolean; value: T; key: string }) => {
-        callback(flag.enabled ? flag.value : defaultValue)
+        callback(flag.enabled ? flag.value : defaultValue);
       },
       (e: Error) => {
-        const error = new SwitchboardClientError(e)
-        this.onError?.(error)
-        callback(defaultValue)
+        const error = new SwitchboardClientError(e);
+        this.onError?.(error);
+        callback(defaultValue);
       },
-    )
+    );
   }
 
   /**
@@ -149,11 +149,11 @@ export class SwitchboardWsClient {
   public onConnectionChange(
     callback: (state: ConnectionState) => void,
   ): () => void {
-    return this.client.subscribeToConnectionState(callback)
+    return this.client.subscribeToConnectionState(callback);
   }
 
   /** Close the WebSocket connection. */
   public async close(): Promise<void> {
-    await this.client.close()
+    await this.client.close();
   }
 }

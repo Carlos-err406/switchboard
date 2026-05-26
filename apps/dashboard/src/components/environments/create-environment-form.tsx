@@ -1,36 +1,36 @@
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import type { FC } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { Button } from '@switchboard/ui/components/button'
+import { onFormError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldError,
   FieldLabel,
   FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { toast } from 'sonner'
-import type { FunctionReturnType } from 'convex/server'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { toast } from "sonner";
+import type { FunctionReturnType } from "convex/server";
 
 const createEnvironmentSchema = z.object({
-  name: z.string().min(3, 'Must have at least 3 characters'),
+  name: z.string().min(3, "Must have at least 3 characters"),
   description: z.string().optional(),
-})
-type CreateEnvironmentInputs = z.infer<typeof createEnvironmentSchema>
+});
+type CreateEnvironmentInputs = z.infer<typeof createEnvironmentSchema>;
 type Props = {
   onSuccess?: (
     result: FunctionReturnType<
       typeof api.environments.mutations.createEnvironmentMutation
     >,
-  ) => void
-  projectId: Id<'projects'>
-}
+  ) => void;
+  projectId: Id<"projects">;
+};
 export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
   const {
     register,
@@ -39,22 +39,22 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
     reset,
     setError,
   } = useForm<CreateEnvironmentInputs>({
-    defaultValues: { name: '', description: '' },
+    defaultValues: { name: "", description: "" },
     resolver: zodResolver(createEnvironmentSchema),
-  })
+  });
 
   const mutationFn = useConvexMutation(
     api.environments.mutations.createEnvironmentMutation,
-  )
+  );
   const { mutate: createEnvironment, isPending } = useMutation({
     mutationFn,
     onError: onFormError(setError),
     onSuccess: (result) => {
-      reset()
-      toast.success('New environment created')
-      onSuccess?.(result)
+      reset();
+      toast.success("New environment created");
+      onSuccess?.(result);
     },
-  })
+  });
   return (
     <form
       noValidate
@@ -69,7 +69,7 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
       <FieldSet>
         <Field required>
           <FieldLabel htmlFor="name">Environment name</FieldLabel>
-          <Input id="name" {...register('name')} placeholder="CI/CID" />
+          <Input id="name" {...register("name")} placeholder="CI/CID" />
           {errors.name?.message && (
             <FieldError>{errors.name.message}</FieldError>
           )}
@@ -78,7 +78,7 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
           <FieldLabel htmlFor="description">Environment description</FieldLabel>
           <Input
             id="description"
-            {...register('description')}
+            {...register("description")}
             placeholder="to use in CI/CD pipelines"
           />
           {errors.description?.message && (
@@ -90,5 +90,5 @@ export const CreateEnvironmentForm: FC<Props> = ({ onSuccess, projectId }) => {
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

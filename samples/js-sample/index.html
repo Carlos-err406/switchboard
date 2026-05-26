@@ -8,10 +8,17 @@
   </head>
   <body class="bg-background text-foreground font-mono p-8 max-w-2xl mx-auto">
     <div class="flex items-center justify-between mb-1">
-      <a href="https://github.com/Carlos-err406/switchboard/tree/main/samples/js-sample">@switchboard/js-sample</a>
-      <span id="status" class="text-xs px-2 py-0.5 border border-border">connecting...</span>
+      <a
+        href="https://github.com/Carlos-err406/switchboard/tree/main/samples/js-sample"
+        >@switchboard/js-sample</a
+      >
+      <span id="status" class="text-xs px-2 py-0.5 border border-border"
+        >connecting...</span
+      >
     </div>
-    <p class="text-muted-foreground text-sm mb-6">Toggle flags in the dashboard — values update in realtime.</p>
+    <p class="text-muted-foreground text-sm mb-6">
+      Toggle flags in the dashboard — values update in realtime.
+    </p>
 
     <div class="border border-border rounded-lg overflow-hidden">
       <table class="w-full text-sm border-collapse">
@@ -27,7 +34,10 @@
       </table>
     </div>
 
-    <div id="log" class="mt-6 p-4 bg-muted border border-border rounded-lg text-xs max-h-[200px] overflow-y-auto"></div>
+    <div
+      id="log"
+      class="mt-6 p-4 bg-muted border border-border rounded-lg text-xs max-h-[200px] overflow-y-auto"
+    ></div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

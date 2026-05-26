@@ -1,4 +1,4 @@
-export type LogEntry = { time: string; message: string }
+export type LogEntry = { time: string; message: string };
 
 export function Log({ entries }: { entries: LogEntry[] }) {
   return (
@@ -12,5 +12,5 @@ export function Log({ entries }: { entries: LogEntry[] }) {
         </div>
       ))}
     </div>
-  )
+  );
 }

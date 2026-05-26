@@ -1,35 +1,35 @@
-import { Switch } from '@switchboard/ui/components/switch'
-import { Flag, RotateCw } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Switch } from "@switchboard/ui/components/switch";
+import { Flag, RotateCw } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface DemoFlag {
-  name: string
-  on: boolean
-  meta: string
+  name: string;
+  on: boolean;
+  meta: string;
 }
 
 const INITIAL_FLAGS: DemoFlag[] = [
-  { name: 'new_checkout', on: true, meta: 'boolean · last changed 2s ago' },
-  { name: 'dark_mode_v2', on: false, meta: 'boolean · 38% rollout' },
-  { name: 'ai_assistant', on: true, meta: 'boolean · prod + staging' },
-]
+  { name: "new_checkout", on: true, meta: "boolean · last changed 2s ago" },
+  { name: "dark_mode_v2", on: false, meta: "boolean · 38% rollout" },
+  { name: "ai_assistant", on: true, meta: "boolean · prod + staging" },
+];
 
 interface LogLine {
-  id: number
-  text: string
+  id: number;
+  text: string;
 }
 
-let logIdCounter = 0
+let logIdCounter = 0;
 
 export function DemoCard() {
-  const [flags, setFlags] = useState(INITIAL_FLAGS)
-  const [lines, setLines] = useState<LogLine[]>([])
-  const demoRef = useRef<HTMLDivElement>(null)
-  const pipeRef = useRef<HTMLDivElement>(null)
-  const prevLinesId = useRef(0)
+  const [flags, setFlags] = useState(INITIAL_FLAGS);
+  const [lines, setLines] = useState<LogLine[]>([]);
+  const demoRef = useRef<HTMLDivElement>(null);
+  const pipeRef = useRef<HTMLDivElement>(null);
+  const prevLinesId = useRef(0);
 
   const pushLog = useCallback((flag: string, val: string) => {
-    const ts = new Date().toISOString().split('T')[1]?.replace('Z', '') ?? ''
+    const ts = new Date().toISOString().split("T")[1]?.replace("Z", "") ?? "";
     setLines((prev) =>
       [
         {
@@ -38,54 +38,54 @@ export function DemoCard() {
         },
         ...prev,
       ].slice(0, 3),
-    )
-  }, [])
+    );
+  }, []);
 
   useEffect(() => {
-    const pipe = pipeRef.current
-    const topId = lines[0]?.id ?? 0
-    if (!pipe || topId === prevLinesId.current) return
-    prevLinesId.current = topId
-    pipe.style.transition = 'none'
-    pipe.style.transform = 'translateY(-18px)'
+    const pipe = pipeRef.current;
+    const topId = lines[0]?.id ?? 0;
+    if (!pipe || topId === prevLinesId.current) return;
+    prevLinesId.current = topId;
+    pipe.style.transition = "none";
+    pipe.style.transform = "translateY(-18px)";
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        pipe.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
-        pipe.style.transform = 'translateY(0)'
-      })
-    })
-  }, [lines])
+        pipe.style.transition = "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)";
+        pipe.style.transform = "translateY(0)";
+      });
+    });
+  }, [lines]);
 
-  const flagsRef = useRef(flags)
-  flagsRef.current = flags
+  const flagsRef = useRef(flags);
+  flagsRef.current = flags;
 
   const toggle = useCallback(
     (index: number) => {
-      const flag = flagsRef.current[index]
-      const next = !flag.on
+      const flag = flagsRef.current[index];
+      const next = !flag.on;
       setFlags((prev) =>
         prev.map((f, i) => (i === index ? { ...f, on: next } : f)),
-      )
-      pushLog(flag.name, String(next))
+      );
+      pushLog(flag.name, String(next));
       demoRef.current?.animate(
         [
-          { boxShadow: 'inset 0 0 0 0 #0a0a0a' },
-          { boxShadow: 'inset 0 0 0 2px #0a0a0a' },
-          { boxShadow: 'inset 0 0 0 0 #0a0a0a' },
+          { boxShadow: "inset 0 0 0 0 #0a0a0a" },
+          { boxShadow: "inset 0 0 0 2px #0a0a0a" },
+          { boxShadow: "inset 0 0 0 0 #0a0a0a" },
         ],
-        { duration: 420, easing: 'ease-out' },
-      )
+        { duration: 420, easing: "ease-out" },
+      );
     },
     [pushLog],
-  )
+  );
 
   useEffect(() => {
-    const t1 = setTimeout(() => pushLog('ai_assistant', 'true'), 800)
-    const t2 = setTimeout(() => pushLog('new_checkout', 'true'), 1500)
+    const t1 = setTimeout(() => pushLog("ai_assistant", "true"), 800);
+    const t2 = setTimeout(() => pushLog("new_checkout", "true"), 1500);
 
-    const flagCount = INITIAL_FLAGS.length
-    let lastToggled = -1
-    let autoTimer: ReturnType<typeof setTimeout>
+    const flagCount = INITIAL_FLAGS.length;
+    let lastToggled = -1;
+    let autoTimer: ReturnType<typeof setTimeout>;
     function autoToggle() {
       if (!document.hidden) {
         const pool =
@@ -93,22 +93,22 @@ export function DemoCard() {
             ? Array.from({ length: flagCount }, (_, i) => i).filter(
                 (i) => i !== lastToggled,
               )
-            : [0]
-        const pick = pool[Math.floor(Math.random() * pool.length)] ?? 0
-        toggle(pick)
-        lastToggled = pick
+            : [0];
+        const pick = pool[Math.floor(Math.random() * pool.length)] ?? 0;
+        toggle(pick);
+        lastToggled = pick;
       }
-      autoTimer = setTimeout(autoToggle, 3000 + Math.random() * 2000)
+      autoTimer = setTimeout(autoToggle, 3000 + Math.random() * 2000);
     }
-    const startTimer = setTimeout(autoToggle, 4000)
+    const startTimer = setTimeout(autoToggle, 4000);
 
     return () => {
-      clearTimeout(t1)
-      clearTimeout(t2)
-      clearTimeout(startTimer)
-      clearTimeout(autoTimer)
-    }
-  }, [pushLog, toggle])
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(startTimer);
+      clearTimeout(autoTimer);
+    };
+  }, [pushLog, toggle]);
 
   return (
     <div
@@ -151,7 +151,7 @@ export function DemoCard() {
 
         <div className="pt-3.5">
           <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-            <span>{'↳'} subscribers receive</span>
+            <span>{"↳"} subscribers receive</span>
             <span className="inline-flex items-center gap-1.5">
               <span className="size-1.75 rounded-full bg-[#13a36a] animate-[landing-pulse_1.6s_infinite]" />
               3 clients connected
@@ -161,19 +161,19 @@ export function DemoCard() {
             <div ref={pipeRef}>
               {lines.length === 0 ? (
                 <span className="text-muted-foreground">
-                  {'// awaiting next change...'}
+                  {"// awaiting next change..."}
                 </span>
               ) : (
                 lines.map((ln) => {
-                  const parts = ln.text.split(/(flag\.changed|\[ws\])/)
+                  const parts = ln.text.split(/(flag\.changed|\[ws\])/);
                   return (
                     <div key={ln.id}>
                       {parts.map((p, j) =>
-                        p === '[ws]' ? (
+                        p === "[ws]" ? (
                           <span key={j} className="text-[#9ae6b4]">
                             {p}
                           </span>
-                        ) : p === 'flag.changed' ? (
+                        ) : p === "flag.changed" ? (
                           <span key={j} className="text-[#7aa2f7]">
                             {p}
                           </span>
@@ -182,7 +182,7 @@ export function DemoCard() {
                         ),
                       )}
                     </div>
-                  )
+                  );
                 })
               )}
             </div>
@@ -197,5 +197,5 @@ export function DemoCard() {
         </span>
       </div>
     </div>
-  )
+  );
 }

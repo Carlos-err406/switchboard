@@ -1,4 +1,4 @@
-import { buttonVariants } from '@switchboard/ui/components/button'
+import { buttonVariants } from "@switchboard/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -6,21 +6,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@switchboard/ui/components/dialog'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { Flag } from 'lucide-react'
-import type { FC } from 'react'
-import { useState } from 'react'
-import { CreateFlagForm } from './create-flag-form'
+} from "@switchboard/ui/components/dialog";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { Flag } from "lucide-react";
+import type { FC } from "react";
+import { useState } from "react";
+import { CreateFlagForm } from "./create-flag-form";
 
 export const CreateFlagDialog: FC<{
-  environmentId: Id<'environments'>
+  environmentId: Id<"environments">;
 }> = ({ environmentId }) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className={buttonVariants({ variant: 'default' })}>
+      <DialogTrigger className={buttonVariants({ variant: "default" })}>
         <Flag /> Create Flag
       </DialogTrigger>
       <DialogContent>
@@ -37,5 +37,5 @@ export const CreateFlagDialog: FC<{
         />
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

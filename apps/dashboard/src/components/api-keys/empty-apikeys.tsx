@@ -4,13 +4,13 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@switchboard/ui/components/empty'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { Key } from 'lucide-react'
-import type { FC } from 'react'
-import { CreateApiKeyDialog } from './create-apikey-dialog'
+} from "@switchboard/ui/components/empty";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { Key } from "lucide-react";
+import type { FC } from "react";
+import { CreateApiKeyDialog } from "./create-apikey-dialog";
 
-export const EmptyApiKeys: FC<{ environmentId: Id<'environments'> }> = ({
+export const EmptyApiKeys: FC<{ environmentId: Id<"environments"> }> = ({
   environmentId,
 }) => (
   <Empty>
@@ -25,4 +25,4 @@ export const EmptyApiKeys: FC<{ environmentId: Id<'environments'> }> = ({
     </EmptyHeader>
     <CreateApiKeyDialog environmentId={environmentId} />
   </Empty>
-)
+);

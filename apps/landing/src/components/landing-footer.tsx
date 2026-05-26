@@ -1,5 +1,5 @@
-import { Separator } from '@switchboard/ui/components/separator'
-import { GITHUB_URL } from './github-icon'
+import { Separator } from "@switchboard/ui/components/separator";
+import { GITHUB_URL } from "./github-icon";
 
 export function LandingFooter() {
   return (
@@ -122,5 +122,5 @@ export function LandingFooter() {
         <span>* contributors appreciated</span>
       </div>
     </>
-  )
+  );
 }

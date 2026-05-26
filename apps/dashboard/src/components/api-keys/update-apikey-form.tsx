@@ -1,32 +1,32 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldError,
   FieldLabel,
   FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import type { FC } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { DatePickerInput } from '@switchboard/ui/components/date-picker-input'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { onFormError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import type { FC } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { DatePickerInput } from "@switchboard/ui/components/date-picker-input";
 
 const updateApiKeySchema = z.object({
-  name: z.string().min(3, 'Must have at least 3 characters'),
+  name: z.string().min(3, "Must have at least 3 characters"),
   description: z.string().optional(),
   expiresAt: z.number().nullable(),
-})
-type UpdateApiKeyInputs = z.infer<typeof updateApiKeySchema>
+});
+type UpdateApiKeyInputs = z.infer<typeof updateApiKeySchema>;
 type Props = {
-  apiKey: Doc<'apiKeys'>
-  onSuccess?: () => void
-}
+  apiKey: Doc<"apiKeys">;
+  onSuccess?: () => void;
+};
 export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
   const {
     register,
@@ -42,19 +42,19 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
       expiresAt: apiKey.expiresAt,
     },
     resolver: zodResolver(updateApiKeySchema),
-  })
+  });
 
   const mutationFn = useConvexMutation(
     api.api_keys.mutations.updateApiKeyMutation,
-  )
+  );
   const { mutate: updateApiKey, isPending } = useMutation({
     mutationFn,
     onError: onFormError(setError),
     onSuccess: () => {
-      onSuccess?.()
-      reset()
+      onSuccess?.();
+      reset();
     },
-  })
+  });
 
   return (
     <form
@@ -71,7 +71,7 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
       <FieldSet>
         <Field required>
           <FieldLabel htmlFor="key">ApiKey Name</FieldLabel>
-          <Input id="name" {...register('name')} placeholder="Main" />
+          <Input id="name" {...register("name")} placeholder="Main" />
           {errors.name?.message && (
             <FieldError>{errors.name.message}</FieldError>
           )}
@@ -80,7 +80,7 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
           <FieldLabel htmlFor="key">Description</FieldLabel>
           <Input
             id="description"
-            {...register('description')}
+            {...register("description")}
             placeholder="Main"
           />
           {errors.description?.message && (
@@ -94,7 +94,7 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
             control={control}
             name="expiresAt"
             render={({ field }) => {
-              return <DatePickerInput {...field} />
+              return <DatePickerInput {...field} />;
             }}
           />
 
@@ -106,5 +106,5 @@ export const UpdateApiKeyForm: FC<Props> = ({ apiKey, onSuccess }) => {
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

@@ -1,5 +1,5 @@
-import { Badge } from '@switchboard/ui/components/badge'
-import { Button } from '@switchboard/ui/components/button'
+import { Badge } from "@switchboard/ui/components/badge";
+import { Button } from "@switchboard/ui/components/button";
 import {
   Card,
   CardContent,
@@ -7,47 +7,47 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@switchboard/ui/components/card'
+} from "@switchboard/ui/components/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import { toastMutationError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { useMutation } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { useQuery } from 'convex/react'
-import { Mail, RefreshCw, Trash2 } from 'lucide-react'
-import type { FC } from 'react'
-import { PERMISSION_LABELS } from './utils'
+} from "@switchboard/ui/components/tooltip";
+import { toastMutationError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { useMutation } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useQuery } from "convex/react";
+import { Mail, RefreshCw, Trash2 } from "lucide-react";
+import type { FC } from "react";
+import { PERMISSION_LABELS } from "./utils";
 
-dayjs.extend(relativeTime)
+dayjs.extend(relativeTime);
 
-const InviteCard: FC<{ invite: Doc<'invites'> }> = ({ invite }) => {
-  const expired = dayjs().isAfter(dayjs(invite.expiresAt))
+const InviteCard: FC<{ invite: Doc<"invites"> }> = ({ invite }) => {
+  const expired = dayjs().isAfter(dayjs(invite.expiresAt));
 
   const resendFn = useConvexMutation(
     api.invites.mutations.resendInviteMutation,
-  )
+  );
   const { mutate: resend, isPending: isResending } = useMutation({
     mutationFn: resendFn,
     onError: toastMutationError,
-  })
+  });
 
   const revokeFn = useConvexMutation(
     api.invites.mutations.revokeInviteMutation,
-  )
+  );
   const { mutate: revoke, isPending: isRevoking } = useMutation({
     mutationFn: revokeFn,
     onError: toastMutationError,
-  })
+  });
 
   return (
-    <Card className={expired ? 'opacity-60' : ''}>
+    <Card className={expired ? "opacity-60" : ""}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Mail className="size-4" /> {invite.toEmail}
@@ -62,8 +62,8 @@ const InviteCard: FC<{ invite: Doc<'invites'> }> = ({ invite }) => {
           )}
         </CardTitle>
         <CardDescription>
-          Invited by {invite.createdByEmail} ·{' '}
-          {dayjs(invite._creationTime).format('MMM DD, YYYY')}
+          Invited by {invite.createdByEmail} ·{" "}
+          {dayjs(invite._creationTime).format("MMM DD, YYYY")}
           {expired
             ? ` · Expired ${dayjs(invite.expiresAt).fromNow()}`
             : ` · Expires ${dayjs(invite.expiresAt).fromNow()}`}
@@ -87,7 +87,7 @@ const InviteCard: FC<{ invite: Doc<'invites'> }> = ({ invite }) => {
               disabled={isResending}
               onClick={() => resend({ id: invite._id })}
             >
-              <RefreshCw className={isResending ? 'animate-spin' : ''} />
+              <RefreshCw className={isResending ? "animate-spin" : ""} />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">Resend invite</TooltipContent>
@@ -107,13 +107,13 @@ const InviteCard: FC<{ invite: Doc<'invites'> }> = ({ invite }) => {
         </Tooltip>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
 
 export const PendingInvitesGrid: FC = () => {
-  const invites = useQuery(api.invites.queries.getPendingInvitesQuery)
+  const invites = useQuery(api.invites.queries.getPendingInvitesQuery);
 
-  if (!invites?.length) return null
+  if (!invites?.length) return null;
 
   return (
     <div className="space-y-4">
@@ -124,5 +124,5 @@ export const PendingInvitesGrid: FC = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};

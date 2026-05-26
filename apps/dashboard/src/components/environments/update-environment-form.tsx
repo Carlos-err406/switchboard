@@ -1,36 +1,36 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldError,
   FieldLabel,
   FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import type { FunctionReturnType } from 'convex/server'
-import type { FC } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { onFormError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import type { FunctionReturnType } from "convex/server";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const updateEnvironmentSchema = z.object({
-  name: z.string().min(3, 'Must have at least 3 characters'),
+  name: z.string().min(3, "Must have at least 3 characters"),
   description: z.string().optional(),
-})
-type UpdateEnvironmentInputs = z.infer<typeof updateEnvironmentSchema>
+});
+type UpdateEnvironmentInputs = z.infer<typeof updateEnvironmentSchema>;
 
 type Props = {
-  environment: Doc<'environments'>
+  environment: Doc<"environments">;
   onSuccess?: (
     result: FunctionReturnType<
       typeof api.environments.mutations.updateEnvironmentMutation
     >,
-  ) => void
-}
+  ) => void;
+};
 export const UpdateEnvironmentForm: FC<Props> = ({
   environment,
   onSuccess,
@@ -47,19 +47,19 @@ export const UpdateEnvironmentForm: FC<Props> = ({
       description: environment.description,
     },
     resolver: zodResolver(updateEnvironmentSchema),
-  })
+  });
 
   const mutationFn = useConvexMutation(
     api.environments.mutations.updateEnvironmentMutation,
-  )
+  );
   const { mutate: updateEnvironment, isPending } = useMutation({
     mutationFn,
     onError: onFormError(setError),
     onSuccess: (result) => {
-      onSuccess?.(result)
-      reset()
+      onSuccess?.(result);
+      reset();
     },
-  })
+  });
 
   return (
     <form
@@ -77,7 +77,7 @@ export const UpdateEnvironmentForm: FC<Props> = ({
           <FieldLabel htmlFor="name">Name</FieldLabel>
           <Input
             id="name"
-            {...register('name')}
+            {...register("name")}
             placeholder="Acme environment"
           />
           {errors.name?.message && (
@@ -86,7 +86,7 @@ export const UpdateEnvironmentForm: FC<Props> = ({
         </Field>
         <Field>
           <FieldLabel htmlFor="description">Description</FieldLabel>
-          <Input id="description" {...register('description')} />
+          <Input id="description" {...register("description")} />
           {errors.description?.message && (
             <FieldError>{errors.description.message}</FieldError>
           )}
@@ -96,5 +96,5 @@ export const UpdateEnvironmentForm: FC<Props> = ({
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

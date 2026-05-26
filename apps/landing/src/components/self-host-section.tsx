@@ -1,29 +1,25 @@
-import { GITHUB_URL } from './github-icon'
-import { CodeBlock } from './code-block'
-import { SectionHead } from './section-head'
+import { GITHUB_URL } from "./github-icon";
+import { CodeBlock } from "./code-block";
+import { SectionHead } from "./section-head";
 
 const SETUP_STEPS: { title: string; desc: React.ReactNode }[] = [
   {
-    title: 'Clone the repo',
-    desc: 'One command, no submodules. Bring node 20+ and pnpm.',
+    title: "Clone the repo",
+    desc: "One command, no submodules. Bring node 20+ and pnpm.",
   },
   {
-    title: 'Configure .env',
-    desc: (
-      <>
-        Set the admin email, SMTP, and auth keys. That&rsquo;s it.
-      </>
-    ),
+    title: "Configure .env",
+    desc: <>Set the admin email, SMTP, and auth keys. That&rsquo;s it.</>,
   },
   {
-    title: 'docker compose up',
-    desc: 'Brings up the backend, the dashboard, and the websocket gateway behind a single port.',
+    title: "docker compose up",
+    desc: "Brings up the backend, the dashboard, and the websocket gateway behind a single port.",
   },
   {
-    title: 'Create a project & key',
-    desc: 'Sign in, create your first project + environment, mint an API key, point your client at it.',
+    title: "Create a project & key",
+    desc: "Sign in, create your first project + environment, mint an API key, point your client at it.",
   },
-]
+];
 
 const TERMINAL_CODE = `# clone
 $ git clone ${GITHUB_URL}
@@ -40,7 +36,7 @@ $ docker compose up -d
 ✓ websocket   listening on :5174
 
 # open the dashboard
-$ open https://switchboard.localhost`
+$ open https://switchboard.localhost`;
 
 export function SelfHostSection() {
   return (
@@ -58,7 +54,7 @@ export function SelfHostSection() {
               className="grid grid-cols-[auto_1fr] items-start gap-3.5"
             >
               <span className="border border-foreground px-1.75 py-0.75 text-[11px] leading-none text-muted-foreground">
-                {String(i + 1).padStart(2, '0')}
+                {String(i + 1).padStart(2, "0")}
               </span>
               <div>
                 <b className="font-medium">{step.title}</b>
@@ -77,5 +73,5 @@ export function SelfHostSection() {
         />
       </div>
     </section>
-  )
+  );
 }

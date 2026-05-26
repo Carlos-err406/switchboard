@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from '@switchboard/ui/components/button'
+import { Button, buttonVariants } from "@switchboard/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -7,49 +7,49 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@switchboard/ui/components/dialog'
+} from "@switchboard/ui/components/dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import { toastMutationError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { useMutation } from '@tanstack/react-query'
-import type { FunctionReturnType } from 'convex/server'
-import { RotateCcwKey } from 'lucide-react'
-import type { FC } from 'react'
-import { useState } from 'react'
-import { CopyApiKeyDialog } from './copy-apikey-dialog'
+} from "@switchboard/ui/components/tooltip";
+import { toastMutationError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { useMutation } from "@tanstack/react-query";
+import type { FunctionReturnType } from "convex/server";
+import { RotateCcwKey } from "lucide-react";
+import type { FC } from "react";
+import { useState } from "react";
+import { CopyApiKeyDialog } from "./copy-apikey-dialog";
 
-export const RotateApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
+export const RotateApiKeyDialog: FC<{ apiKey: Doc<"apiKeys"> }> = ({
   apiKey,
 }) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [result, setResult] = useState<FunctionReturnType<
     typeof api.api_keys.mutations.rotateApiKeyMutation
-  > | null>(null)
+  > | null>(null);
 
   const mutationFn = useConvexMutation(
     api.api_keys.mutations.rotateApiKeyMutation,
-  )
+  );
   const { mutate: rotateApiKey, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: (data) => {
-      setOpen(false)
-      setTimeout(() => setResult(data), 150)
+      setOpen(false);
+      setTimeout(() => setResult(data), 150);
     },
-  })
+  });
 
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <DialogTrigger className={buttonVariants({ variant: 'secondary' })}>
+            <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
               <RotateCcwKey />
             </DialogTrigger>
           </TooltipTrigger>
@@ -73,7 +73,7 @@ export const RotateApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
               disabled={isPending}
               onClick={() => rotateApiKey({ apiKeyId: apiKey._id })}
             >
-              {isPending ? 'Rotating...' : 'Rotate key'}
+              {isPending ? "Rotating..." : "Rotate key"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -85,5 +85,5 @@ export const RotateApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
         onClose={() => setResult(null)}
       />
     </>
-  )
-}
+  );
+};

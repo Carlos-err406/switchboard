@@ -1,6 +1,6 @@
-import { wrap } from './helpers'
+import { wrap } from "./helpers";
 
-export const SUBJECT = `Reset your Switchboard password`
+export const SUBJECT = `Reset your Switchboard password`;
 
 export const BODY = wrap(/* html */ `
 <body
@@ -156,4 +156,4 @@ export const BODY = wrap(/* html */ `
     </tr>
   </table>
 </body>
-`)
+`);

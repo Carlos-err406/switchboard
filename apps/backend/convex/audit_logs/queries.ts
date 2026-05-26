@@ -13,7 +13,8 @@ function byProjectId(
 ) {
   const base = ctx.db.query("auditLogs").withIndex("by_project_id", (q) => {
     const eq = q.eq("projectId", projectId);
-    if (startDate && endDate) return eq.gte("_creationTime", startDate).lte("_creationTime", endDate);
+    if (startDate && endDate)
+      return eq.gte("_creationTime", startDate).lte("_creationTime", endDate);
     if (startDate) return eq.gte("_creationTime", startDate);
     if (endDate) return eq.lte("_creationTime", endDate);
     return eq;
@@ -28,7 +29,8 @@ function byActor(
 ) {
   return ctx.db.query("auditLogs").withIndex("by_actor", (q) => {
     const eq = q.eq("actor", actor);
-    if (startDate && endDate) return eq.gte("_creationTime", startDate).lte("_creationTime", endDate);
+    if (startDate && endDate)
+      return eq.gte("_creationTime", startDate).lte("_creationTime", endDate);
     if (startDate) return eq.gte("_creationTime", startDate);
     if (endDate) return eq.lte("_creationTime", endDate);
     return eq;
@@ -42,7 +44,8 @@ function byResource(
 ) {
   return ctx.db.query("auditLogs").withIndex("by_resource", (q) => {
     const eq = q.eq("resource", resource);
-    if (startDate && endDate) return eq.gte("_creationTime", startDate).lte("_creationTime", endDate);
+    if (startDate && endDate)
+      return eq.gte("_creationTime", startDate).lte("_creationTime", endDate);
     if (startDate) return eq.gte("_creationTime", startDate);
     if (endDate) return eq.lte("_creationTime", endDate);
     return eq;

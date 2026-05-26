@@ -1,40 +1,40 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { api } from '@convex/_generated/api.js'
-import { useAuthActions } from '@convex-dev/auth/react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useQuery } from 'convex/react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { api } from "@convex/_generated/api.js";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "convex/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
 
-export const Route = createFileRoute('/invite/$token/')({
+export const Route = createFileRoute("/invite/$token/")({
   component: RouteComponent,
-})
+});
 
 const acceptInviteSchema = z
   .object({
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    error: 'Passwords do not match',
-  })
-type AcceptInviteInputs = z.infer<typeof acceptInviteSchema>
+    path: ["confirmPassword"],
+    error: "Passwords do not match",
+  });
+type AcceptInviteInputs = z.infer<typeof acceptInviteSchema>;
 
 function RouteComponent() {
-  const { token } = Route.useParams()
-  const invite = useQuery(api.invites.queries.getInviteByTokenQuery, { token })
-  const { signIn } = useAuthActions()
-  const navigate = useNavigate()
+  const { token } = Route.useParams();
+  const invite = useQuery(api.invites.queries.getInviteByTokenQuery, { token });
+  const { signIn } = useAuthActions();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -43,26 +43,26 @@ function RouteComponent() {
     formState: { errors, isSubmitting },
   } = useForm<AcceptInviteInputs>({
     resolver: zodResolver(acceptInviteSchema),
-    defaultValues: { password: '', confirmPassword: '' },
-  })
+    defaultValues: { password: "", confirmPassword: "" },
+  });
 
-  if (!invite) return null
+  if (!invite) return null;
 
   const onSubmit = async (data: AcceptInviteInputs) => {
     try {
-      await signIn('password', {
+      await signIn("password", {
         email: invite.toEmail,
         password: data.password,
         inviteToken: token,
-      })
-      navigate({ to: '/projects' })
+      });
+      navigate({ to: "/projects" });
     } catch {
-      setError('root', {
-        type: 'server',
-        message: 'Failed to accept invitation. Please try again.',
-      })
+      setError("root", {
+        type: "server",
+        message: "Failed to accept invitation. Please try again.",
+      });
     }
-  }
+  };
 
   return (
     <div className="flex items-center justify-center h-[calc(100svh-theme(size.16))] w-full">
@@ -73,7 +73,7 @@ function RouteComponent() {
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">
                 {invite.createdByEmail}
-              </span>{' '}
+              </span>{" "}
               invited you to join Switchboard.
             </p>
           </div>
@@ -94,7 +94,7 @@ function RouteComponent() {
                 id="invite-password"
                 type="password"
                 placeholder="Choose a password"
-                {...register('password')}
+                {...register("password")}
               />
               <FieldError>{errors.password?.message}</FieldError>
             </Field>
@@ -106,7 +106,7 @@ function RouteComponent() {
                 id="invite-confirm-password"
                 type="password"
                 placeholder="Confirm your password"
-                {...register('confirmPassword')}
+                {...register("confirmPassword")}
               />
               <FieldError>{errors.confirmPassword?.message}</FieldError>
             </Field>
@@ -117,10 +117,10 @@ function RouteComponent() {
           )}
 
           <Button type="submit" disabled={isSubmitting} className="ml-auto">
-            {isSubmitting ? 'Creating account...' : 'Create account'}
+            {isSubmitting ? "Creating account..." : "Create account"}
           </Button>
         </FieldSet>
       </form>
     </div>
-  )
+  );
 }

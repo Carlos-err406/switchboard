@@ -1,9 +1,9 @@
-import { AuditLogList } from '#/components/logs/audit-log-list.tsx'
-import { createFileRoute } from '@tanstack/react-router'
+import { AuditLogList } from "#/components/logs/audit-log-list.tsx";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/(authenticated)/logs/')({
+export const Route = createFileRoute("/(authenticated)/logs/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (
@@ -11,5 +11,5 @@ function RouteComponent() {
       <h1>Audit Logs</h1>
       <AuditLogList />
     </div>
-  )
+  );
 }

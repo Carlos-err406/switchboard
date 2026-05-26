@@ -1,7 +1,7 @@
-import { Badge } from '@switchboard/ui/components/badge'
-import { Button } from '@switchboard/ui/components/button'
-import { CircleAlert, FileText } from 'lucide-react'
-import { GitHubIcon, GITHUB_URL } from './github-icon'
+import { Badge } from "@switchboard/ui/components/badge";
+import { Button } from "@switchboard/ui/components/button";
+import { CircleAlert, FileText } from "lucide-react";
+import { GitHubIcon, GITHUB_URL } from "./github-icon";
 
 export function ContributeSection() {
   return (
@@ -56,5 +56,5 @@ export function ContributeSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

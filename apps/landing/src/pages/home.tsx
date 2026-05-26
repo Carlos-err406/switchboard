@@ -1,4 +1,4 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Code2,
   Globe,
@@ -7,61 +7,61 @@ import {
   RefreshCw,
   Shield,
   Zap,
-} from 'lucide-react'
-import { ArchDiagram } from '../components/arch-diagram'
-import { ClientTabs } from '../components/client-tabs'
-import { ContributeSection } from '../components/contribute-section'
-import { DemoCard } from '../components/demo-card'
-import { GitHubIcon, GITHUB_URL } from '../components/github-icon'
-import { LandingFooter } from '../components/landing-footer'
-import { SectionHead } from '../components/section-head'
-import { SelfHostSection } from '../components/self-host-section'
+} from "lucide-react";
+import { ArchDiagram } from "../components/arch-diagram";
+import { ClientTabs } from "../components/client-tabs";
+import { ContributeSection } from "../components/contribute-section";
+import { DemoCard } from "../components/demo-card";
+import { GitHubIcon, GITHUB_URL } from "../components/github-icon";
+import { LandingFooter } from "../components/landing-footer";
+import { SectionHead } from "../components/section-head";
+import { SelfHostSection } from "../components/self-host-section";
 
 interface Feature {
-  icon: React.ReactNode
-  num: string
-  title: string
-  desc: string
+  icon: React.ReactNode;
+  num: string;
+  title: string;
+  desc: string;
 }
 
 const FEATURES: Feature[] = [
   {
     icon: <Zap className="size-5.5" strokeWidth={1.6} />,
-    num: '01 / realtime',
-    title: 'WebSocket updates',
-    desc: 'Clients subscribe once. Toggles propagate in <100ms. No polling, no stale flags, no reload loops.',
+    num: "01 / realtime",
+    title: "WebSocket updates",
+    desc: "Clients subscribe once. Toggles propagate in <100ms. No polling, no stale flags, no reload loops.",
   },
   {
     icon: <Grid3X3 className="size-5.5" strokeWidth={1.6} />,
-    num: '02 / multi-env',
-    title: 'Environments & projects',
-    desc: 'Production, staging, dev, or your own. Scoped API keys per environment. Promote flags across with one click.',
+    num: "02 / multi-env",
+    title: "Environments & projects",
+    desc: "Production, staging, dev, or your own. Scoped API keys per environment. Promote flags across with one click.",
   },
   {
     icon: <Globe className="size-5.5" strokeWidth={1.6} />,
-    num: '03 / reactive',
-    title: 'Reactive backend',
-    desc: 'Reactive database that does the heavy lifting. Sockets, auth, sync, and audit log out of the box.',
+    num: "03 / reactive",
+    title: "Reactive backend",
+    desc: "Reactive database that does the heavy lifting. Sockets, auth, sync, and audit log out of the box.",
   },
   {
     icon: <Shield className="size-5.5" strokeWidth={1.6} />,
-    num: '04 / RBAC',
-    title: 'Members & permissions',
-    desc: 'Admins and members. Per-project membership. Granular permissions for create / view / invite / delete.',
+    num: "04 / RBAC",
+    title: "Members & permissions",
+    desc: "Admins and members. Per-project membership. Granular permissions for create / view / invite / delete.",
   },
   {
     icon: <RefreshCw className="size-5.5" strokeWidth={1.6} />,
-    num: '05 / server-ready',
-    title: 'HTTP client too',
+    num: "05 / server-ready",
+    title: "HTTP client too",
     desc: "For SSR, jobs, and edge runtimes that can't hold a socket. Same query over HTTP, same scoping.",
   },
   {
     icon: <Monitor className="size-5.5" strokeWidth={1.6} />,
-    num: '06 / self-hosted',
-    title: 'Self-hosted only',
-    desc: 'One docker-compose up. Your data stays on your boxes. No SaaS tier, no upsell email, no rate limit.',
+    num: "06 / self-hosted",
+    title: "Self-hosted only",
+    desc: "One docker-compose up. Your data stays on your boxes. No SaaS tier, no upsell email, no rate limit.",
   },
-]
+];
 
 export function Home() {
   return (
@@ -106,11 +106,11 @@ export function Home() {
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.07]"
             style={{
-              backgroundImage: 'radial-gradient(#0a0a0a 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-              mask: 'linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%)',
+              backgroundImage: "radial-gradient(#0a0a0a 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
+              mask: "linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%)",
               WebkitMask:
-                'linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%)',
+                "linear-gradient(180deg, transparent 0%, #000 30%, #000 60%, transparent 100%)",
             }}
           />
           <div className="relative z-1 grid items-center gap-12 lg:grid-cols-[1.1fr_.9fr] lg:gap-16">
@@ -120,7 +120,7 @@ export function Home() {
               </span>
               <h1
                 className="mt-4.5 font-medium tracking-tight text-foreground text-[clamp(40px,5.4vw,72px)] leading-none"
-                style={{ textWrap: 'balance' }}
+                style={{ textWrap: "balance" }}
               >
                 Flip a flag:
                 <br />
@@ -217,5 +217,5 @@ export function Home() {
 
       <LandingFooter />
     </div>
-  )
+  );
 }

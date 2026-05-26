@@ -1,36 +1,36 @@
-import { Badge } from '@switchboard/ui/components/badge'
-import { api } from '@convex/_generated/api.js'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { useQuery } from 'convex/react'
-import { useSearch } from '@tanstack/react-router'
-import type { FC } from 'react'
-import { AuditLogFilters } from './audit-log-filters'
+import { Badge } from "@switchboard/ui/components/badge";
+import { api } from "@convex/_generated/api.js";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useQuery } from "convex/react";
+import { useSearch } from "@tanstack/react-router";
+import type { FC } from "react";
+import { AuditLogFilters } from "./audit-log-filters";
 
-dayjs.extend(relativeTime)
+dayjs.extend(relativeTime);
 
 const ACTION_VARIANTS: Record<
   string,
-  'default' | 'secondary' | 'destructive' | 'outline'
+  "default" | "secondary" | "destructive" | "outline"
 > = {
-  created: 'default',
-  updated: 'secondary',
-  deleted: 'destructive',
-  rotated: 'secondary',
-  invited: 'default',
-  locked: 'destructive',
-  unlocked: 'default',
-}
+  created: "default",
+  updated: "secondary",
+  deleted: "destructive",
+  rotated: "secondary",
+  invited: "default",
+  locked: "destructive",
+  unlocked: "default",
+};
 
 export const AuditLogList: FC = () => {
-  const { q } = useSearch({ from: '__root__' })
-  const { action, resource } = useSearch({ from: '/(authenticated)/logs' })
+  const { q } = useSearch({ from: "__root__" });
+  const { action, resource } = useSearch({ from: "/(authenticated)/logs" });
 
   const logs = useQuery(api.audit_logs.queries.getAuditLogsQuery, {
     q: q || undefined,
     action: action || undefined,
     resource: resource || undefined,
-  })
+  });
 
   return (
     <div className="space-y-4">
@@ -49,7 +49,7 @@ export const AuditLogList: FC = () => {
             <div className="flex flex-col gap-1 flex-1 min-w-0">
               <p className="text-sm">{log.message}</p>
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant={ACTION_VARIANTS[log.action] ?? 'outline'}>
+                <Badge variant={ACTION_VARIANTS[log.action] ?? "outline"}>
                   {log.action}
                 </Badge>
                 <Badge variant="outline">{log.resource}</Badge>
@@ -74,5 +74,5 @@ export const AuditLogList: FC = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};

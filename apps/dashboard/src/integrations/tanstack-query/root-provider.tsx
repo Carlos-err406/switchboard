@@ -1,8 +1,8 @@
-import { QueryClient } from '@tanstack/react-query'
-import { createConvexQueryClient } from '../convex/client'
+import { QueryClient } from "@tanstack/react-query";
+import { createConvexQueryClient } from "../convex/client";
 
 export function getContext() {
-  const convexQueryClient = createConvexQueryClient()
+  const convexQueryClient = createConvexQueryClient();
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -10,12 +10,12 @@ export function getContext() {
         queryFn: convexQueryClient.queryFn(),
       },
     },
-  })
-  convexQueryClient.connect(queryClient)
+  });
+  convexQueryClient.connect(queryClient);
 
   return {
     queryClient,
     convexQueryClient,
-  }
+  };
 }
 export default function TanstackQueryProvider() {}

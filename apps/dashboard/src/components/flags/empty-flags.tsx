@@ -4,13 +4,13 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@switchboard/ui/components/empty'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { Flag } from 'lucide-react'
-import type { FC } from 'react'
-import { CreateFlagDialog } from './create-flag-dialog'
+} from "@switchboard/ui/components/empty";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { Flag } from "lucide-react";
+import type { FC } from "react";
+import { CreateFlagDialog } from "./create-flag-dialog";
 
-export const EmptyFlags: FC<{ environmentId: Id<'environments'> }> = ({
+export const EmptyFlags: FC<{ environmentId: Id<"environments"> }> = ({
   environmentId,
 }) => (
   <Empty>
@@ -25,4 +25,4 @@ export const EmptyFlags: FC<{ environmentId: Id<'environments'> }> = ({
     </EmptyHeader>
     <CreateFlagDialog environmentId={environmentId} />
   </Empty>
-)
+);

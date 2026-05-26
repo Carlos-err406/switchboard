@@ -1,78 +1,78 @@
 export type EmailTemplateTypes =
-  | 'invite'
-  | 'welcome'
-  | 'forgot_password'
-  | 'account_locked'
-  | 'account_unlocked'
-  | 'password_changed'
-  | 'permissions_changed'
+  | "invite"
+  | "welcome"
+  | "forgot_password"
+  | "account_locked"
+  | "account_unlocked"
+  | "password_changed"
+  | "permissions_changed";
 
 interface TemplateVariables<T extends EmailTemplateTypes> {
-  template: T
-  variables?: Record<string, unknown>
+  template: T;
+  variables?: Record<string, unknown>;
 }
 
-interface InviteVariables extends TemplateVariables<'invite'> {
+interface InviteVariables extends TemplateVariables<"invite"> {
   variables: {
-    email: string
-    platformName: string
-    orgName: string
-    url: string
-    invitedBy: string
-    expiresIn: string
-  }
+    email: string;
+    platformName: string;
+    orgName: string;
+    url: string;
+    invitedBy: string;
+    expiresIn: string;
+  };
 }
 
-interface WelcomeVariables extends TemplateVariables<'welcome'> {
+interface WelcomeVariables extends TemplateVariables<"welcome"> {
   variables: {
-    email: string
-    platformName: string
-    orgName: string
-    url: string
-  }
+    email: string;
+    platformName: string;
+    orgName: string;
+    url: string;
+  };
 }
 
-interface ForgotPasswordVariables extends TemplateVariables<'forgot_password'> {
+interface ForgotPasswordVariables extends TemplateVariables<"forgot_password"> {
   variables: {
-    platformName: string
-    orgName: string
-    email: string
-    url: string
-    expiresIn: string
-  }
+    platformName: string;
+    orgName: string;
+    email: string;
+    url: string;
+    expiresIn: string;
+  };
 }
 
-interface AccountLockedVariables extends TemplateVariables<'account_locked'> {
+interface AccountLockedVariables extends TemplateVariables<"account_locked"> {
   variables: {
-    email: string
-    platformName: string
-    orgName: string
-  }
+    email: string;
+    platformName: string;
+    orgName: string;
+  };
 }
 
-interface AccountUnlockedVariables extends TemplateVariables<'account_unlocked'> {
+interface AccountUnlockedVariables extends TemplateVariables<"account_unlocked"> {
   variables: {
-    email: string
-    platformName: string
-    orgName: string
-    url: string
-  }
+    email: string;
+    platformName: string;
+    orgName: string;
+    url: string;
+  };
 }
 
-interface PasswordChangedVariables extends TemplateVariables<'password_changed'> {
+interface PasswordChangedVariables extends TemplateVariables<"password_changed"> {
   variables: {
-    email: string
-    platformName: string
-    orgName: string
-  }
+    email: string;
+    platformName: string;
+    orgName: string;
+  };
 }
 
-interface PermissionsChangedVariables extends TemplateVariables<'permissions_changed'> {
+interface PermissionsChangedVariables extends TemplateVariables<"permissions_changed"> {
   variables: {
-    email: string
-    platformName: string
-    orgName: string
-  }
+    email: string;
+    platformName: string;
+    orgName: string;
+  };
 }
 
 export type Email<T extends EmailTemplateTypes> = Extract<
@@ -84,4 +84,4 @@ export type Email<T extends EmailTemplateTypes> = Extract<
   | PasswordChangedVariables
   | PermissionsChangedVariables,
   { template: T }
->
+>;

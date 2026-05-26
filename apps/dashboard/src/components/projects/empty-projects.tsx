@@ -4,10 +4,10 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@switchboard/ui/components/empty'
-import { Folder } from 'lucide-react'
-import type { FC } from 'react'
-import { CreateProjectDialog } from './create-project-dialog'
+} from "@switchboard/ui/components/empty";
+import { Folder } from "lucide-react";
+import type { FC } from "react";
+import { CreateProjectDialog } from "./create-project-dialog";
 
 export const EmptyProjects: FC = () => (
   <Empty>
@@ -23,4 +23,4 @@ export const EmptyProjects: FC = () => (
     </EmptyHeader>
     <CreateProjectDialog />
   </Empty>
-)
+);

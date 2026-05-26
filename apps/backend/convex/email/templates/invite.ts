@@ -1,6 +1,6 @@
-import { wrap } from './helpers'
+import { wrap } from "./helpers";
 
-export const SUBJECT = `Invitation to Switchboard`
+export const SUBJECT = `Invitation to Switchboard`;
 
 export const BODY = wrap(/* html */ `
   <body style="margin:0;padding:0;background:#f6f7f9;font-family:Inter,Arial,sans-serif;color:#111827;">
@@ -55,4 +55,4 @@ export const BODY = wrap(/* html */ `
     </td>
   </tr>
 </table>
-`)
+`);

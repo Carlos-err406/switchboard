@@ -1,43 +1,43 @@
-import { onFormError } from '#/lib/utils.ts';
-import { useConvexMutation } from '@convex-dev/react-query';
-import { api } from '@convex/_generated/api.js';
-import type { Doc } from '@convex/_generated/dataModel.js';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@switchboard/ui/components/button';
+import { onFormError } from "#/lib/utils.ts";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@switchboard/ui/components/button";
 import {
-    Field,
-    FieldError,
-    FieldLabel,
-    FieldSet,
-} from '@switchboard/ui/components/field';
-import { Input } from '@switchboard/ui/components/input';
-import { useMutation } from '@tanstack/react-query';
-import type { FC } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldSet,
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { useMutation } from "@tanstack/react-query";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const updateFlagSchema = z.object({
-  key: z.string().min(3, 'Must have at least 3 characters'),
+  key: z.string().min(3, "Must have at least 3 characters"),
   description: z.string().optional(),
   value: z
     .union([z.string(), z.number(), z.boolean(), z.null()])
     .transform((arg) =>
-      arg === 'null'
+      arg === "null"
         ? null
-        : arg === 'true'
+        : arg === "true"
           ? true
-          : arg === 'false'
+          : arg === "false"
             ? false
             : isNaN(Number(arg))
               ? arg
               : Number(arg),
     ),
-})
-type UpdateFlagInputs = z.infer<typeof updateFlagSchema>
+});
+type UpdateFlagInputs = z.infer<typeof updateFlagSchema>;
 type Props = {
-  flag: Doc<'flags'>
-  onSuccess?: () => void
-}
+  flag: Doc<"flags">;
+  onSuccess?: () => void;
+};
 export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
   const {
     register,
@@ -52,17 +52,17 @@ export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
       value: String(flag.value),
     },
     resolver: zodResolver(updateFlagSchema),
-  })
+  });
 
-  const mutationFn = useConvexMutation(api.flags.mutations.updateFlagMutation)
+  const mutationFn = useConvexMutation(api.flags.mutations.updateFlagMutation);
   const { mutate: updateFlag, isPending } = useMutation({
     mutationFn,
     onError: onFormError(setError),
     onSuccess: () => {
-      onSuccess?.()
-      reset()
+      onSuccess?.();
+      reset();
     },
-  })
+  });
 
   return (
     <form
@@ -79,7 +79,7 @@ export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
       <FieldSet>
         <Field required>
           <FieldLabel htmlFor="key">Flag Key</FieldLabel>
-          <Input id="key" {...register('key')} placeholder="logs.enable" />
+          <Input id="key" {...register("key")} placeholder="logs.enable" />
           {errors.key?.message && <FieldError>{errors.key.message}</FieldError>}
         </Field>
 
@@ -87,8 +87,8 @@ export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
           <FieldLabel htmlFor="value">Flag Value</FieldLabel>
           <Input
             id="value"
-            {...register('value')}
-            placeholder={'OFF | null | true | 99 | hi'}
+            {...register("value")}
+            placeholder={"OFF | null | true | 99 | hi"}
           />
           {errors.value?.message && (
             <FieldError>{errors.value.message}</FieldError>
@@ -99,7 +99,7 @@ export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
           <FieldLabel htmlFor="description">Flag Description</FieldLabel>
           <Input
             id="description"
-            {...register('description')}
+            {...register("description")}
             placeholder="Enables the logs client-side"
           />
           {errors.description?.message && (
@@ -111,5 +111,5 @@ export const UpdateFlagForm: FC<Props> = ({ flag, onSuccess }) => {
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

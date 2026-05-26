@@ -1,20 +1,20 @@
 /** Wraps all errors originating from Switchboard flag operations. Check `cause` for the underlying error. */
 
 export class SwitchboardClientError extends Error {
-  constructor(error: Error)
-  constructor(message: string)
+  constructor(error: Error);
+  constructor(message: string);
   constructor(messageOrError: string | Error) {
     if (messageOrError instanceof Error) {
-      super(messageOrError.message, { cause: messageOrError })
+      super(messageOrError.message, { cause: messageOrError });
     } else {
-      super(messageOrError, { cause: messageOrError })
+      super(messageOrError, { cause: messageOrError });
     }
-    this.name = 'SwitchboardClientError'
+    this.name = "SwitchboardClientError";
   }
 }
 
 export type SwitchboardClientOnErrorCallback = (
   error: SwitchboardClientError,
-) => void
+) => void;
 
-export type FlagValueType = string | number | boolean | null
+export type FlagValueType = string | number | boolean | null;

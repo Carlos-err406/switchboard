@@ -3,7 +3,7 @@ import {
   QueryErrorCode,
   isAppError,
   isQueryError,
-} from '@convex/errors/helpers'
+} from "@convex/errors/helpers";
 import {
   CalendarX,
   CircleAlert,
@@ -14,17 +14,17 @@ import {
   Link2Off,
   TriangleAlert,
   UserX,
-} from 'lucide-react'
-import type { ComponentType } from 'react'
+} from "lucide-react";
+import type { ComponentType } from "react";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@switchboard/ui/components/empty'
+} from "@switchboard/ui/components/empty";
 
-type QueryErrorStateProps = Record<string, never>
+type QueryErrorStateProps = Record<string, never>;
 
 const queryErrorComponents: Record<
   QueryErrorCode,
@@ -86,16 +86,16 @@ const queryErrorComponents: Record<
       description="This user doesn't exist or has been removed."
     />
   ),
-}
+};
 
 function ErrorEmpty({
   icon: Icon,
   title,
   description,
 }: {
-  icon: ComponentType
-  title: string
-  description: string
+  icon: ComponentType;
+  title: string;
+  description: string;
 }) {
   return (
     <Empty>
@@ -107,18 +107,18 @@ function ErrorEmpty({
         <EmptyDescription>{description}</EmptyDescription>
       </EmptyHeader>
     </Empty>
-  )
+  );
 }
 
 function QueryErrorState({ error }: { error: unknown }) {
-  if (!isQueryError(error)) return <AppErrorState error={error} />
+  if (!isQueryError(error)) return <AppErrorState error={error} />;
 
-  const Component = queryErrorComponents[error.data.code]
-  return <Component />
+  const Component = queryErrorComponents[error.data.code];
+  return <Component />;
 }
 
 function AppErrorState({ error }: { error: unknown }) {
-  if (!isAppError(error)) return <UnexpectedErrorState />
+  if (!isAppError(error)) return <UnexpectedErrorState />;
 
   return (
     <ErrorEmpty
@@ -127,10 +127,10 @@ function AppErrorState({ error }: { error: unknown }) {
       description={
         error.data.type === ErrorTypes.GENERIC_ERROR
           ? error.data.message
-          : 'An unexpected error occurred.'
+          : "An unexpected error occurred."
       }
     />
-  )
+  );
 }
 
 function UnexpectedErrorState() {
@@ -140,7 +140,7 @@ function UnexpectedErrorState() {
       title="Something Went Wrong"
       description="An unexpected error occurred. Please try again later."
     />
-  )
+  );
 }
 
 function NotFoundState() {
@@ -150,7 +150,7 @@ function NotFoundState() {
       title="Page Not Found"
       description="The page you're looking for doesn't exist or has been moved."
     />
-  )
+  );
 }
 
-export { AppErrorState, NotFoundState, QueryErrorState, UnexpectedErrorState }
+export { AppErrorState, NotFoundState, QueryErrorState, UnexpectedErrorState };

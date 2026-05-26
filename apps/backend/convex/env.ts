@@ -1,7 +1,7 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-if (typeof window !== 'undefined')
-  throw new Error('env.server.ts must not be imported on the client')
+if (typeof window !== "undefined")
+  throw new Error("env.server.ts must not be imported on the client");
 
 export const env = z
   .object({
@@ -10,7 +10,7 @@ export const env = z
     SMTP_SERVER: z.string(),
     SMTP_FROM: z.string(),
     SITE_URL: z.string().url(),
-    ORG_NAME: z.string().optional().default('Your organization'),
-    PLATFORM_NAME: z.string().optional().default('Switchboard'),
+    ORG_NAME: z.string().optional().default("Your organization"),
+    PLATFORM_NAME: z.string().optional().default("Switchboard"),
   })
-  .parse(process.env)
+  .parse(process.env);

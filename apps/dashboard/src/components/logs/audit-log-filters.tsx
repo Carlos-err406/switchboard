@@ -4,24 +4,24 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@switchboard/ui/components/select'
-import { AUDIT_ACTIONS, AUDIT_RESOURCES } from '@convex/audit_logs/helpers'
-import { useNavigate, useSearch } from '@tanstack/react-router'
-import type { FC } from 'react'
+} from "@switchboard/ui/components/select";
+import { AUDIT_ACTIONS, AUDIT_RESOURCES } from "@convex/audit_logs/helpers";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import type { FC } from "react";
 
 export const AuditLogFilters: FC = () => {
-  const { action, resource } = useSearch({ from: '/(authenticated)/logs' })
-  const navigate = useNavigate({ from: '/logs' })
+  const { action, resource } = useSearch({ from: "/(authenticated)/logs" });
+  const navigate = useNavigate({ from: "/logs" });
 
   return (
     <div className="flex items-center gap-3 flex-wrap">
       <Select
-        value={action ?? 'all'}
+        value={action ?? "all"}
         onValueChange={(v) =>
           navigate({
             search: (prev) => ({
               ...prev,
-              action: v === 'all' ? undefined : v,
+              action: v === "all" ? undefined : v,
             }),
           })
         }
@@ -39,12 +39,12 @@ export const AuditLogFilters: FC = () => {
         </SelectContent>
       </Select>
       <Select
-        value={resource ?? 'all'}
+        value={resource ?? "all"}
         onValueChange={(v) =>
           navigate({
             search: (prev) => ({
               ...prev,
-              resource: v === 'all' ? undefined : v,
+              resource: v === "all" ? undefined : v,
             }),
           })
         }
@@ -62,5 +62,5 @@ export const AuditLogFilters: FC = () => {
         </SelectContent>
       </Select>
     </div>
-  )
-}
+  );
+};

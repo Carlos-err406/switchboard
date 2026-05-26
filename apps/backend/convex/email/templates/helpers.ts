@@ -5,4 +5,4 @@ export const wrap = (body: string) => /* html */ `
         ${body}
     </body>
 </html>
-`
+`;

@@ -1,22 +1,22 @@
-import { Switch } from '@switchboard/ui/components/switch'
+import { Switch } from "@switchboard/ui/components/switch";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import { toastMutationError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { useMutation } from '@tanstack/react-query'
-import type { FC } from 'react'
+} from "@switchboard/ui/components/tooltip";
+import { toastMutationError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { useMutation } from "@tanstack/react-query";
+import type { FC } from "react";
 
-export const FlagToggle: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
-  const mutationFn = useConvexMutation(api.flags.mutations.updateFlagMutation)
+export const FlagToggle: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
+  const mutationFn = useConvexMutation(api.flags.mutations.updateFlagMutation);
   const { mutate: updateFlag, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
-  })
+  });
 
   return (
     <Tooltip>
@@ -36,8 +36,8 @@ export const FlagToggle: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
       </TooltipTrigger>
 
       <TooltipContent>
-        {flag.enabled ? 'Disable' : 'Enable'} flag
+        {flag.enabled ? "Disable" : "Enable"} flag
       </TooltipContent>
     </Tooltip>
-  )
-}
+  );
+};

@@ -2,8 +2,8 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from '@switchboard/ui/components/avatar'
-import { Button } from '@switchboard/ui/components/button'
+} from "@switchboard/ui/components/avatar";
+import { Button } from "@switchboard/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,20 +12,20 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@switchboard/ui/components/dropdown-menu'
-import { ChangePasswordDialog } from '#/components/users/change-password-dialog'
-import { api } from '@convex/_generated/api.js'
-import { useAuthActions } from '@convex-dev/auth/react'
-import { Link, useNavigate } from '@tanstack/react-router'
+} from "@switchboard/ui/components/dropdown-menu";
+import { ChangePasswordDialog } from "#/components/users/change-password-dialog";
+import { api } from "@convex/_generated/api.js";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Authenticated,
   AuthLoading,
   Unauthenticated,
   useQuery,
-} from 'convex/react'
-import { Asterisk, DoorOpen } from 'lucide-react'
-import type { FC } from 'react'
-import { useState } from 'react'
+} from "convex/react";
+import { Asterisk, DoorOpen } from "lucide-react";
+import type { FC } from "react";
+import { useState } from "react";
 
 export const HeaderUser: FC = () => {
   return (
@@ -40,16 +40,16 @@ export const HeaderUser: FC = () => {
         <Link to="/auth/signin">Sign in</Link>
       </Unauthenticated>
     </>
-  )
-}
+  );
+};
 
 export function AvatarDropdown() {
-  const user = useQuery(api.users.queries.currentUserQuery)
-  const { signOut } = useAuthActions()
-  const navigate = useNavigate()
-  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
-  if (!user) return null
-  const fallback = user.email.slice(0, 2)
+  const user = useQuery(api.users.queries.currentUserQuery);
+  const { signOut } = useAuthActions();
+  const navigate = useNavigate();
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  if (!user) return null;
+  const fallback = user.email.slice(0, 2);
   return (
     <>
       <DropdownMenu>
@@ -78,7 +78,7 @@ export function AvatarDropdown() {
           <DropdownMenuGroup>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => signOut().then(() => navigate({ to: '/' }))}
+              onClick={() => signOut().then(() => navigate({ to: "/" }))}
             >
               <DoorOpen /> Log out
             </DropdownMenuItem>
@@ -93,5 +93,5 @@ export function AvatarDropdown() {
         setOpen={setChangePasswordOpen}
       />
     </>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { Badge } from '@switchboard/ui/components/badge'
+import { Badge } from "@switchboard/ui/components/badge";
 import {
   Card,
   CardContent,
@@ -6,34 +6,34 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@switchboard/ui/components/card'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import type { UserPermissionValue } from '@convex/schema/helpers.js'
-import dayjs from 'dayjs'
-import { User } from 'lucide-react'
-import type { FC } from 'react'
-import { SeparatorContent } from '@switchboard/ui/components/separator'
-import { DeleteUserDialog } from './delete-user-dialog'
+} from "@switchboard/ui/components/card";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import type { UserPermissionValue } from "@convex/schema/helpers.js";
+import dayjs from "dayjs";
+import { User } from "lucide-react";
+import type { FC } from "react";
+import { SeparatorContent } from "@switchboard/ui/components/separator";
+import { DeleteUserDialog } from "./delete-user-dialog";
 
 const PERMISSION_LABELS: Record<UserPermissionValue, string> = {
-  'projects.create': 'Create projects',
-  'users.list': 'View users',
-  'users.invite': 'Invite users',
-  'users.delete': 'Delete users',
-}
+  "projects.create": "Create projects",
+  "users.list": "View users",
+  "users.invite": "Invite users",
+  "users.delete": "Delete users",
+};
 
-export const UserCard: FC<{ user: Doc<'users'> }> = ({ user }) => {
+export const UserCard: FC<{ user: Doc<"users"> }> = ({ user }) => {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="size-4" /> {user.name ?? user.email}
-          <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+          <Badge variant={user.role === "admin" ? "default" : "secondary"}>
             {user.role}
           </Badge>
         </CardTitle>
         <CardDescription>
-          {user.email} · {dayjs(user._creationTime).format('MMM DD, YYYY')}
+          {user.email} · {dayjs(user._creationTime).format("MMM DD, YYYY")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -53,5 +53,5 @@ export const UserCard: FC<{ user: Doc<'users'> }> = ({ user }) => {
         <DeleteUserDialog user={user} />
       </CardFooter>
     </Card>
-  )
-}
+  );
+};

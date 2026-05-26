@@ -1,4 +1,4 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldDescription,
@@ -6,36 +6,36 @@ import {
   FieldLabel,
   FieldSet,
   FieldTitle,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { Switch } from '@switchboard/ui/components/switch'
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import { USER_PERMISSIONS } from '@convex/schema/helpers.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { useQuery } from 'convex/react'
-import type { FunctionReturnType } from 'convex/server'
-import { Send } from 'lucide-react'
-import type { FC } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
-import { PERMISSION_LABELS } from './utils'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { Switch } from "@switchboard/ui/components/switch";
+import { onFormError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import { USER_PERMISSIONS } from "@convex/schema/helpers.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
+import { Send } from "lucide-react";
+import type { FC } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { PERMISSION_LABELS } from "./utils";
 
 const inviteUserSchema = z.object({
-  email: z.email({ error: 'Not a valid email' }),
+  email: z.email({ error: "Not a valid email" }),
   permissions: z.array(z.enum(USER_PERMISSIONS)),
-})
-type InviteUserInputs = z.infer<typeof inviteUserSchema>
+});
+type InviteUserInputs = z.infer<typeof inviteUserSchema>;
 
 type Props = {
   onSuccess?: (
     result: FunctionReturnType<typeof api.invites.mutations.inviteUserMutation>,
-  ) => void
-}
+  ) => void;
+};
 export const InviteUserForm: FC<Props> = ({ onSuccess }) => {
-  const currentUser = useQuery(api.users.queries.currentUserQuery)
+  const currentUser = useQuery(api.users.queries.currentUserQuery);
   const {
     register,
     control,
@@ -44,19 +44,21 @@ export const InviteUserForm: FC<Props> = ({ onSuccess }) => {
     reset,
     setError,
   } = useForm<InviteUserInputs>({
-    defaultValues: { email: '', permissions: [] },
+    defaultValues: { email: "", permissions: [] },
     resolver: zodResolver(inviteUserSchema),
-  })
+  });
 
-  const mutationFn = useConvexMutation(api.invites.mutations.inviteUserMutation)
+  const mutationFn = useConvexMutation(
+    api.invites.mutations.inviteUserMutation,
+  );
   const { mutate: inviteUser, isPending } = useMutation({
     mutationFn,
     onError: onFormError(setError),
     onSuccess: (result) => {
-      reset()
-      onSuccess?.(result)
+      reset();
+      onSuccess?.(result);
     },
-  })
+  });
 
   return (
     <form
@@ -71,7 +73,7 @@ export const InviteUserForm: FC<Props> = ({ onSuccess }) => {
           <Input
             type="email"
             id="email"
-            {...register('email')}
+            {...register("email")}
             placeholder="john.doe@sb.com"
           />
           <FieldError>{errors.email?.message}</FieldError>
@@ -89,8 +91,8 @@ export const InviteUserForm: FC<Props> = ({ onSuccess }) => {
             render={({ field }) => (
               <div className="grid grid-cols-2 gap-2">
                 {USER_PERMISSIONS.map((permission) => {
-                  const enabled = currentUser?.permissions.includes(permission)
-                  const checked = field.value.includes(permission)
+                  const enabled = currentUser?.permissions.includes(permission);
+                  const checked = field.value.includes(permission);
                   return (
                     <div className="flex items-center gap-2">
                       <Switch
@@ -103,7 +105,7 @@ export const InviteUserForm: FC<Props> = ({ onSuccess }) => {
                             on
                               ? [...field.value, permission]
                               : field.value.filter((p) => p !== permission),
-                          )
+                          );
                         }}
                       />
                       <FieldLabel
@@ -115,7 +117,7 @@ export const InviteUserForm: FC<Props> = ({ onSuccess }) => {
                         {PERMISSION_LABELS[permission]}
                       </FieldLabel>
                     </div>
-                  )
+                  );
                 })}
               </div>
             )}
@@ -129,5 +131,5 @@ export const InviteUserForm: FC<Props> = ({ onSuccess }) => {
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

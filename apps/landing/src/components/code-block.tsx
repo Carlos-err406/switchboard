@@ -1,26 +1,26 @@
-import Prism from 'prismjs'
-import 'prismjs/components/prism-jsx'
-import 'prismjs/components/prism-tsx'
-import 'prismjs/components/prism-typescript'
-import 'prismjs/components/prism-bash'
-import { useEffect, useRef } from 'react'
+import Prism from "prismjs";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-bash";
+import { useEffect, useRef } from "react";
 
 export function CodeBlock({
   code,
-  language = 'tsx',
-  className = '',
+  language = "tsx",
+  className = "",
 }: {
-  code: string
-  language?: string
-  className?: string
+  code: string;
+  language?: string;
+  className?: string;
 }) {
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (ref.current) {
-      Prism.highlightElement(ref.current)
+      Prism.highlightElement(ref.current);
     }
-  }, [code])
+  }, [code]);
 
   return (
     <pre
@@ -30,5 +30,5 @@ export function CodeBlock({
         {code}
       </code>
     </pre>
-  )
+  );
 }

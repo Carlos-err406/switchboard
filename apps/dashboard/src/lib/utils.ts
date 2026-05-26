@@ -1,29 +1,29 @@
-import { ErrorTypes, isAppError } from '@convex/errors/helpers'
-import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
-import { toast } from 'sonner'
+import { ErrorTypes, isAppError } from "@convex/errors/helpers";
+import type { FieldValues, Path, UseFormSetError } from "react-hook-form";
+import { toast } from "sonner";
 
 export function setMutationFormErrors<T extends FieldValues>(
   setError: UseFormSetError<T>,
   error: unknown,
 ) {
-  if (!isAppError(error)) return false
-  if (error.data.type !== ErrorTypes.MUTATION_ERROR) return false
+  if (!isAppError(error)) return false;
+  if (error.data.type !== ErrorTypes.MUTATION_ERROR) return false;
 
   for (const [field, messages] of Object.entries(error.data.fieldErrors)) {
     setError(field as Path<T>, {
-      type: 'server',
+      type: "server",
       message: messages[0],
-    })
+    });
   }
 
   if (error.data.formErrors[0]) {
-    setError('root', {
-      type: 'server',
+    setError("root", {
+      type: "server",
       message: error.data.formErrors[0],
-    })
+    });
   }
 
-  return true
+  return true;
 }
 
 export const toastMutationError = (error: unknown) => {
@@ -32,14 +32,14 @@ export const toastMutationError = (error: unknown) => {
       ? error.data.message
       : error instanceof Error
         ? error.message
-        : 'Something went wrong'
+        : "Something went wrong";
 
-  toast.error(message)
-}
+  toast.error(message);
+};
 
 export const onFormError =
   <T extends FieldValues>(setError: UseFormSetError<T>) =>
   (error: unknown) => {
-    if (setMutationFormErrors(setError, error)) return
-    toastMutationError(error)
-  }
+    if (setMutationFormErrors(setError, error)) return;
+    toastMutationError(error);
+  };

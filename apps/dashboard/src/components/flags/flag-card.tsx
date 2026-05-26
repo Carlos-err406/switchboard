@@ -5,24 +5,24 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@switchboard/ui/components/card'
+} from "@switchboard/ui/components/card";
 
-import { Badge } from '@switchboard/ui/components/badge'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import type { FC } from 'react'
-import { DeleteFlagDialog } from './delete-flag-dialog'
-import { FlagToggle } from './flag-toggle'
-import { UpdateFlagDialog } from './update-flag-dialog'
-import { Flag } from 'lucide-react'
+import { Badge } from "@switchboard/ui/components/badge";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import type { FC } from "react";
+import { DeleteFlagDialog } from "./delete-flag-dialog";
+import { FlagToggle } from "./flag-toggle";
+import { UpdateFlagDialog } from "./update-flag-dialog";
+import { Flag } from "lucide-react";
 
-export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
+export const FlagCard: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
   const valueType = () => {
-    const arg = flag.value
-    if (arg == null) return 'null'
-    if (arg === true || arg === false) return 'boolean'
-    if (/^\d+$/.test(String(arg))) return 'number'
-    return 'string'
-  }
+    const arg = flag.value;
+    if (arg == null) return "null";
+    if (arg === true || arg === false) return "boolean";
+    if (/^\d+$/.test(String(arg))) return "number";
+    return "string";
+  };
   return (
     <Card>
       <CardHeader>
@@ -36,10 +36,10 @@ export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
       </CardHeader>
       <CardContent className="flex-1 gap-2 flex flex-col">
         <div className="w-full flex bg-muted p-1.5 mt-auto">
-          <pre>{flag.value?.toString() ?? 'null'}</pre>
+          <pre>{flag.value?.toString() ?? "null"}</pre>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge variant={'outline'}>type: {valueType()}</Badge>
+          <Badge variant={"outline"}>type: {valueType()}</Badge>
         </div>
       </CardContent>
 
@@ -48,5 +48,5 @@ export const FlagCard: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
         <DeleteFlagDialog flag={flag} />
       </CardFooter>
     </Card>
-  )
-}
+  );
+};

@@ -5,21 +5,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@switchboard/ui/components/dialog'
-import { useState } from 'react'
-import type { FC } from 'react'
-import { InviteUserForm } from './invite-user-form'
-import { Mail } from 'lucide-react'
-import { buttonVariants } from '@switchboard/ui/components/button'
-import { useHasPermissions } from '#/hooks/use-has-permission.ts'
+} from "@switchboard/ui/components/dialog";
+import { useState } from "react";
+import type { FC } from "react";
+import { InviteUserForm } from "./invite-user-form";
+import { Mail } from "lucide-react";
+import { buttonVariants } from "@switchboard/ui/components/button";
+import { useHasPermissions } from "#/hooks/use-has-permission.ts";
 
 export const InviteUserDialog: FC = () => {
-  const [open, setOpen] = useState(false)
-  const canInvite = useHasPermissions(['users.invite'])
+  const [open, setOpen] = useState(false);
+  const canInvite = useHasPermissions(["users.invite"]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        className={buttonVariants({ variant: 'default' })}
+        className={buttonVariants({ variant: "default" })}
         disabled={!canInvite}
       >
         <Mail /> Invite user
@@ -35,5 +35,5 @@ export const InviteUserDialog: FC = () => {
         <InviteUserForm onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

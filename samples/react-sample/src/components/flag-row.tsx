@@ -1,26 +1,26 @@
-import { useFlag } from '@switchboard/react'
-import { Badge } from '@switchboard/ui/components/badge'
-import { Flag } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { useFlag } from "@switchboard/react";
+import { Badge } from "@switchboard/ui/components/badge";
+import { Flag } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export function FlagRow({
   name,
   defaultValue,
   onUpdate,
 }: {
-  name: string
-  defaultValue?: string | number | boolean | null
-  onUpdate?: (name: string, value: unknown) => void
+  name: string;
+  defaultValue?: string | number | boolean | null;
+  onUpdate?: (name: string, value: unknown) => void;
 }) {
-  const value = useFlag(name, defaultValue)
-  const prev = useRef(value)
+  const value = useFlag(name, defaultValue);
+  const prev = useRef(value);
 
   useEffect(() => {
     if (prev.current !== value) {
-      prev.current = value
-      onUpdate?.(name, value)
+      prev.current = value;
+      onUpdate?.(name, value);
     }
-  }, [value, name, onUpdate])
+  }, [value, name, onUpdate]);
 
   return (
     <tr className="border-b border-border">
@@ -30,17 +30,17 @@ export function FlagRow({
       </td>
       <td className="p-2.5">
         <code className="bg-muted px-1.5 py-0.5 text-xs">
-          {String(defaultValue ?? 'undefined')}
+          {String(defaultValue ?? "undefined")}
         </code>
       </td>
       <td className="p-2.5">
         <code className="bg-muted px-1.5 py-0.5 text-xs">
-          {String(value ?? 'undefined')}
+          {String(value ?? "undefined")}
         </code>
       </td>
       <td className="p-2.5">
         <Badge variant="outline">{typeof value}</Badge>
       </td>
     </tr>
-  )
+  );
 }

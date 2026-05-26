@@ -1,39 +1,39 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { useAction } from 'convex/react'
-import type { FC } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { onFormError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useAction } from "convex/react";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
 
 const changePasswordSchema = z
   .object({
     oldPassword: z.string().optional(),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    error: 'Passwords do not match',
-  })
-type ChangePasswordInputs = z.infer<typeof changePasswordSchema>
+    path: ["confirmPassword"],
+    error: "Passwords do not match",
+  });
+type ChangePasswordInputs = z.infer<typeof changePasswordSchema>;
 
 type Props = {
-  userId: Id<'users'>
-  requireOldPassword?: boolean
-  onSuccess?: () => void
-}
+  userId: Id<"users">;
+  requireOldPassword?: boolean;
+  onSuccess?: () => void;
+};
 
 export const ChangePasswordForm: FC<Props> = ({
   userId,
@@ -48,10 +48,10 @@ export const ChangePasswordForm: FC<Props> = ({
     formState: { errors },
   } = useForm<ChangePasswordInputs>({
     resolver: zodResolver(changePasswordSchema),
-    defaultValues: { oldPassword: '', password: '', confirmPassword: '' },
-  })
+    defaultValues: { oldPassword: "", password: "", confirmPassword: "" },
+  });
 
-  const changePassword = useAction(api.users.actions.changeUserPasswordAction)
+  const changePassword = useAction(api.users.actions.changeUserPasswordAction);
   const { mutate, isPending } = useMutation({
     mutationFn: (data: ChangePasswordInputs) =>
       changePassword({
@@ -61,10 +61,10 @@ export const ChangePasswordForm: FC<Props> = ({
       }),
     onError: onFormError(setError),
     onSuccess: () => {
-      reset()
-      onSuccess?.()
+      reset();
+      onSuccess?.();
     },
-  })
+  });
 
   return (
     <form noValidate onSubmit={handleSubmit((data) => mutate(data))}>
@@ -77,7 +77,7 @@ export const ChangePasswordForm: FC<Props> = ({
                 id="old-password"
                 type="password"
                 placeholder="Current password"
-                {...register('oldPassword')}
+                {...register("oldPassword")}
               />
               <FieldError>{errors.oldPassword?.message}</FieldError>
             </Field>
@@ -88,7 +88,7 @@ export const ChangePasswordForm: FC<Props> = ({
               id="new-password"
               type="password"
               placeholder="New password"
-              {...register('password')}
+              {...register("password")}
             />
             <FieldError>{errors.password?.message}</FieldError>
           </Field>
@@ -98,7 +98,7 @@ export const ChangePasswordForm: FC<Props> = ({
               id="confirm-password"
               type="password"
               placeholder="Confirm password"
-              {...register('confirmPassword')}
+              {...register("confirmPassword")}
             />
             <FieldError>{errors.confirmPassword?.message}</FieldError>
           </Field>
@@ -107,9 +107,9 @@ export const ChangePasswordForm: FC<Props> = ({
         {errors.root?.message && <FieldError>{errors.root.message}</FieldError>}
 
         <Button type="submit" disabled={isPending} className="ml-auto">
-          {isPending ? 'Saving...' : 'Change password'}
+          {isPending ? "Saving..." : "Change password"}
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

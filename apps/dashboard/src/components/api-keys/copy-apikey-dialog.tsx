@@ -1,4 +1,4 @@
-import { cn } from '@switchboard/ui'
+import { cn } from "@switchboard/ui";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -6,47 +6,47 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@switchboard/ui/components/alert-dialog'
-import { Button } from '@switchboard/ui/components/button'
+} from "@switchboard/ui/components/alert-dialog";
+import { Button } from "@switchboard/ui/components/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import { Check, Clipboard, Info } from 'lucide-react'
-import type { FC } from 'react'
-import { useEffect, useRef, useState } from 'react'
+} from "@switchboard/ui/components/tooltip";
+import { Check, Clipboard, Info } from "lucide-react";
+import type { FC } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
-  title: string
-  value: { apiKey: string; preview: string } | null
-  onClose: () => void
-}
+  title: string;
+  value: { apiKey: string; preview: string } | null;
+  onClose: () => void;
+};
 
 export const CopyApiKeyDialog: FC<Props> = ({ title, value, onClose }) => {
-  const copiedOnce = useRef(false)
-  const [copied, setCopied] = useState(false)
+  const copiedOnce = useRef(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!value) {
-      copiedOnce.current = false
-      setCopied(false)
+      copiedOnce.current = false;
+      setCopied(false);
     }
-  }, [value])
+  }, [value]);
 
   useEffect(() => {
-    if (!value) return
+    if (!value) return;
     const preventEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        e.stopPropagation()
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
       }
-    }
-    window.addEventListener('keydown', preventEscape, { capture: true })
+    };
+    window.addEventListener("keydown", preventEscape, { capture: true });
     return () => {
-      window.removeEventListener('keydown', preventEscape, { capture: true })
-    }
-  }, [value])
+      window.removeEventListener("keydown", preventEscape, { capture: true });
+    };
+  }, [value]);
 
   return (
     <AlertDialog open={!!value}>
@@ -61,11 +61,11 @@ export const CopyApiKeyDialog: FC<Props> = ({ title, value, onClose }) => {
           <p className="text-xs text-center flex-1">{value?.preview}</p>
           <Button
             onClick={async () => {
-              if (!value) return
-              await navigator.clipboard.writeText(value.apiKey)
-              copiedOnce.current = true
-              setCopied(true)
-              setTimeout(() => setCopied(false), 2_000)
+              if (!value) return;
+              await navigator.clipboard.writeText(value.apiKey);
+              copiedOnce.current = true;
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2_000);
             }}
           >
             {copied ? <Check /> : <Clipboard />}
@@ -80,13 +80,13 @@ export const CopyApiKeyDialog: FC<Props> = ({ title, value, onClose }) => {
             <TooltipTrigger asChild>
               <Button
                 variant="secondary"
-                className={cn(!copiedOnce.current && 'opacity-50')}
+                className={cn(!copiedOnce.current && "opacity-50")}
                 onClick={(e) => {
                   if (!copiedOnce.current) {
-                    e.stopPropagation()
-                    e.preventDefault()
+                    e.stopPropagation();
+                    e.preventDefault();
                   } else {
-                    onClose()
+                    onClose();
                   }
                 }}
               >
@@ -102,5 +102,5 @@ export const CopyApiKeyDialog: FC<Props> = ({ title, value, onClose }) => {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};

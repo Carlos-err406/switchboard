@@ -1,6 +1,6 @@
-@import '@switchboard/ui/styles.css';
+@import "@switchboard/ui/styles.css";
 @source "../../../packages/ui/src/**/*.tsx";
-@import './styles/landing-arch.css';
+@import "./styles/landing-arch.css";
 
 @layer base {
   * {
@@ -16,7 +16,7 @@
   }
 }
 
-.landing a:not([data-slot='button']) {
+.landing a:not([data-slot="button"]) {
   border-bottom-width: 0;
 }
 
@@ -30,9 +30,9 @@
 }
 
 /* prism theme — monochrome with subtle color accents */
-code[class*='language-'],
-pre[class*='language-'] {
-  font-family: 'JetBrains Mono Variable', monospace;
+code[class*="language-"],
+pre[class*="language-"] {
+  font-family: "JetBrains Mono Variable", monospace;
 }
 
 .token.comment,

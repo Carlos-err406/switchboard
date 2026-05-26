@@ -11,12 +11,12 @@ npm install @switchboard/edge
 ## Setup
 
 ```ts
-import { SwitchboardHttpClient } from '@switchboard/edge'
+import { SwitchboardHttpClient } from "@switchboard/edge";
 
 const client = new SwitchboardHttpClient({
-  apiKey: 'pk_...',
-  switchboardHost: 'https://flags.example.com',
-})
+  apiKey: "pk_...",
+  switchboardHost: "https://flags.example.com",
+});
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ const client = new SwitchboardHttpClient({
 Returns the default on any failure — network errors, invalid key, disabled flag. Your app never breaks because of a flag fetch.
 
 ```ts
-const enabled = await client.getFlag('new-checkout', false)
+const enabled = await client.getFlag("new-checkout", false);
 // => true | false (never throws)
 ```
 
@@ -35,7 +35,7 @@ const enabled = await client.getFlag('new-checkout', false)
 Throws a `SwitchboardClientError` if the flag can't be fetched.
 
 ```ts
-const value = await client.getFlag<string>('banner-text')
+const value = await client.getFlag<string>("banner-text");
 // => string | undefined (throws on network/auth errors)
 ```
 
@@ -45,13 +45,13 @@ By default, errors are silently swallowed when a `defaultValue` is provided. Use
 
 ```ts
 const client = new SwitchboardHttpClient({
-  apiKey: 'pk_...',
-  switchboardHost: 'https://flags.example.com',
+  apiKey: "pk_...",
+  switchboardHost: "https://flags.example.com",
   onError: (err) => {
-    console.error('Switchboard error:', err.message)
+    console.error("Switchboard error:", err.message);
     // or: Sentry.captureException(err)
   },
-})
+});
 ```
 
 The behavior matrix:

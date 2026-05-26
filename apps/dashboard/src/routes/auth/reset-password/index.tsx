@@ -1,37 +1,37 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
-} from '@switchboard/ui/components/field'
-import { Input } from '@switchboard/ui/components/input'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Link, createFileRoute } from '@tanstack/react-router'
-import { useMutation } from 'convex/react'
-import { useState } from 'react'
-import type { SubmitHandler } from 'react-hook-form'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
-import { api } from '@convex/_generated/api'
+} from "@switchboard/ui/components/field";
+import { Input } from "@switchboard/ui/components/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { useMutation } from "convex/react";
+import { useState } from "react";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { api } from "@convex/_generated/api";
 
 const forgotSchema = z.object({
-  email: z.email({ error: 'Not a valid email' }),
-})
-type ForgotInputs = z.infer<typeof forgotSchema>
+  email: z.email({ error: "Not a valid email" }),
+});
+type ForgotInputs = z.infer<typeof forgotSchema>;
 
-export const Route = createFileRoute('/auth/reset-password/')({
+export const Route = createFileRoute("/auth/reset-password/")({
   validateSearch: z.object({ email: z.string().optional() }).parse,
   component: ForgotPassword,
-})
+});
 
 function ForgotPassword() {
-  const [sent, setSent] = useState(false)
-  const search = Route.useSearch()
+  const [sent, setSent] = useState(false);
+  const search = Route.useSearch();
   const createResetToken = useMutation(
     api.password_resets.mutations.createPasswordResetTokenMutation,
-  )
+  );
   const {
     register,
     handleSubmit,
@@ -39,12 +39,12 @@ function ForgotPassword() {
   } = useForm<ForgotInputs>({
     resolver: zodResolver(forgotSchema),
     defaultValues: { email: search.email },
-  })
+  });
 
   const onSubmit: SubmitHandler<ForgotInputs> = async (data) => {
-    await createResetToken({ email: data.email })
-    setSent(true)
-  }
+    await createResetToken({ email: data.email });
+    setSent(true);
+  };
 
   if (sent) {
     return (
@@ -58,7 +58,7 @@ function ForgotPassword() {
           Back to sign in
         </Link>
       </div>
-    )
+    );
   }
 
   return (
@@ -72,7 +72,7 @@ function ForgotPassword() {
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input
-              {...register('email')}
+              {...register("email")}
               type="email"
               placeholder="you@example.com"
               autoFocus
@@ -85,10 +85,10 @@ function ForgotPassword() {
             Back to sign in
           </Link>
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Sending...' : 'Send reset link'}
+            {isSubmitting ? "Sending..." : "Send reset link"}
           </Button>
         </div>
       </FieldSet>
     </form>
-  )
+  );
 }

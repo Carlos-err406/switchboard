@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const env = z
   .object({
@@ -6,4 +6,4 @@ export const env = z
     VITE_CONVEX_URL: z.string().url(),
     VITE_LANDING_URL: z.string().url(),
   })
-  .parse(import.meta.env)
+  .parse(import.meta.env);

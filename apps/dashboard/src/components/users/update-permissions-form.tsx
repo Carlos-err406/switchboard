@@ -1,4 +1,4 @@
-import { Button } from '@switchboard/ui/components/button'
+import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
   FieldDescription,
@@ -6,33 +6,33 @@ import {
   FieldLabel,
   FieldSet,
   FieldTitle,
-} from '@switchboard/ui/components/field'
-import { Switch } from '@switchboard/ui/components/switch'
-import { onFormError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { USER_PERMISSIONS } from '@convex/schema/helpers.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { useQuery } from 'convex/react'
-import type { FC } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
-import { PERMISSION_LABELS } from './utils'
+} from "@switchboard/ui/components/field";
+import { Switch } from "@switchboard/ui/components/switch";
+import { onFormError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { USER_PERMISSIONS } from "@convex/schema/helpers.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "convex/react";
+import type { FC } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod/v4";
+import { PERMISSION_LABELS } from "./utils";
 
 const updatePermissionsSchema = z.object({
   permissions: z.array(z.enum(USER_PERMISSIONS)),
-})
-type UpdatePermissionsInputs = z.infer<typeof updatePermissionsSchema>
+});
+type UpdatePermissionsInputs = z.infer<typeof updatePermissionsSchema>;
 
 type Props = {
-  user: Doc<'users'>
-  onSuccess?: () => void
-}
+  user: Doc<"users">;
+  onSuccess?: () => void;
+};
 
 export const UpdatePermissionsForm: FC<Props> = ({ user, onSuccess }) => {
-  const currentUser = useQuery(api.users.queries.currentUserQuery)
+  const currentUser = useQuery(api.users.queries.currentUserQuery);
   const {
     control,
     formState: { errors },
@@ -41,14 +41,14 @@ export const UpdatePermissionsForm: FC<Props> = ({ user, onSuccess }) => {
   } = useForm<UpdatePermissionsInputs>({
     defaultValues: { permissions: [...user.permissions] },
     resolver: zodResolver(updatePermissionsSchema),
-  })
+  });
 
-  const mutationFn = useConvexMutation(api.users.mutations.updateUserMutation)
+  const mutationFn = useConvexMutation(api.users.mutations.updateUserMutation);
   const { mutate: updateUser, isPending } = useMutation({
     mutationFn,
     onError: onFormError(setError),
     onSuccess,
-  })
+  });
 
   return (
     <form
@@ -70,8 +70,8 @@ export const UpdatePermissionsForm: FC<Props> = ({ user, onSuccess }) => {
             render={({ field }) => (
               <div className="grid grid-cols-2 gap-2">
                 {USER_PERMISSIONS.map((permission) => {
-                  const enabled = currentUser?.permissions.includes(permission)
-                  const checked = field.value.includes(permission)
+                  const enabled = currentUser?.permissions.includes(permission);
+                  const checked = field.value.includes(permission);
                   return (
                     <div key={permission} className="flex items-center gap-2">
                       <Switch
@@ -84,7 +84,7 @@ export const UpdatePermissionsForm: FC<Props> = ({ user, onSuccess }) => {
                             on
                               ? [...field.value, permission]
                               : field.value.filter((p) => p !== permission),
-                          )
+                          );
                         }}
                       />
                       <FieldLabel
@@ -95,7 +95,7 @@ export const UpdatePermissionsForm: FC<Props> = ({ user, onSuccess }) => {
                         {PERMISSION_LABELS[permission]}
                       </FieldLabel>
                     </div>
-                  )
+                  );
                 })}
               </div>
             )}
@@ -105,9 +105,9 @@ export const UpdatePermissionsForm: FC<Props> = ({ user, onSuccess }) => {
         </Field>
 
         <Button type="submit" disabled={isPending} className="ml-auto">
-          {isPending ? 'Saving...' : 'Save permissions'}
+          {isPending ? "Saving..." : "Save permissions"}
         </Button>
       </FieldSet>
     </form>
-  )
-}
+  );
+};

@@ -4,13 +4,13 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@switchboard/ui/components/empty'
-import type { Id } from '@convex/_generated/dataModel.js'
-import { Stone } from 'lucide-react'
-import type { FC } from 'react'
-import { CreateEnvironmentDialog } from './create-environment-dialog'
+} from "@switchboard/ui/components/empty";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { Stone } from "lucide-react";
+import type { FC } from "react";
+import { CreateEnvironmentDialog } from "./create-environment-dialog";
 
-export const EmptyEnvironments: FC<{ projectId: Id<'projects'> }> = ({
+export const EmptyEnvironments: FC<{ projectId: Id<"projects"> }> = ({
   projectId,
 }) => (
   <Empty>
@@ -25,4 +25,4 @@ export const EmptyEnvironments: FC<{ projectId: Id<'projects'> }> = ({
     </EmptyHeader>
     <CreateEnvironmentDialog projectId={projectId} />
   </Empty>
-)
+);

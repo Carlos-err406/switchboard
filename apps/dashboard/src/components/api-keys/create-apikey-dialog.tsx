@@ -1,4 +1,4 @@
-import { buttonVariants } from '@switchboard/ui/components/button'
+import { buttonVariants } from "@switchboard/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -6,28 +6,28 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@switchboard/ui/components/dialog'
-import type { api } from '@convex/_generated/api.js'
-import type { Id } from '@convex/_generated/dataModel.js'
-import type { FunctionReturnType } from 'convex/server'
-import { Key } from 'lucide-react'
-import type { FC } from 'react'
-import { useState } from 'react'
-import { CopyApiKeyDialog } from './copy-apikey-dialog'
-import { CreateApiKeyForm } from './create-apikey-form'
+} from "@switchboard/ui/components/dialog";
+import type { api } from "@convex/_generated/api.js";
+import type { Id } from "@convex/_generated/dataModel.js";
+import type { FunctionReturnType } from "convex/server";
+import { Key } from "lucide-react";
+import type { FC } from "react";
+import { useState } from "react";
+import { CopyApiKeyDialog } from "./copy-apikey-dialog";
+import { CreateApiKeyForm } from "./create-apikey-form";
 
 export const CreateApiKeyDialog: FC<{
-  environmentId: Id<'environments'>
+  environmentId: Id<"environments">;
 }> = ({ environmentId }) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [copyResult, setCopyResult] = useState<FunctionReturnType<
     typeof api.api_keys.mutations.createApiKeyMutation
-  > | null>(null)
+  > | null>(null);
 
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className={buttonVariants({ variant: 'default' })}>
+        <DialogTrigger className={buttonVariants({ variant: "default" })}>
           <Key /> Create ApiKey
         </DialogTrigger>
         <DialogContent>
@@ -41,8 +41,8 @@ export const CreateApiKeyDialog: FC<{
           <CreateApiKeyForm
             environmentId={environmentId}
             onSuccess={(result) => {
-              setOpen(false)
-              setTimeout(() => setCopyResult(result), 150)
+              setOpen(false);
+              setTimeout(() => setCopyResult(result), 150);
             }}
           />
         </DialogContent>
@@ -53,5 +53,5 @@ export const CreateApiKeyDialog: FC<{
         onClose={() => setCopyResult(null)}
       />
     </>
-  )
-}
+  );
+};

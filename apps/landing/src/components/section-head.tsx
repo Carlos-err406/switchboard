@@ -3,9 +3,9 @@ export function SectionHead({
   title,
   sub,
 }: {
-  eyebrow: string
-  title: string
-  sub: string
+  eyebrow: string;
+  title: string;
+  sub: string;
 }) {
   return (
     <div className="mb-12 flex flex-col items-start gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -19,5 +19,5 @@ export function SectionHead({
       </div>
       <p className="max-w-[42ch] text-muted-foreground lg:text-right">{sub}</p>
     </div>
-  )
+  );
 }

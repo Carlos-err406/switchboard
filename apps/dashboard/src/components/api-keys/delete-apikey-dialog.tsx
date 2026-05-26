@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from '@switchboard/ui/components/button'
+import { Button, buttonVariants } from "@switchboard/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -7,39 +7,39 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@switchboard/ui/components/dialog'
+} from "@switchboard/ui/components/dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import { toastMutationError } from '#/lib/utils.ts'
-import { api } from '@convex/_generated/api.js'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { useConvexMutation } from '@convex-dev/react-query'
-import { useMutation } from '@tanstack/react-query'
-import { Trash2 } from 'lucide-react'
-import type { FC } from 'react'
-import { useState } from 'react'
+} from "@switchboard/ui/components/tooltip";
+import { toastMutationError } from "#/lib/utils.ts";
+import { api } from "@convex/_generated/api.js";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
+import type { FC } from "react";
+import { useState } from "react";
 
-export const DeleteApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
+export const DeleteApiKeyDialog: FC<{ apiKey: Doc<"apiKeys"> }> = ({
   apiKey,
 }) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const mutationFn = useConvexMutation(
     api.api_keys.mutations.deleteApiKeyMutation,
-  )
+  );
   const { mutate: deleteApiKey, isPending } = useMutation({
     mutationFn,
     onError: toastMutationError,
     onSuccess: () => setOpen(false),
-  })
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <DialogTrigger className={buttonVariants({ variant: 'destructive' })}>
+          <DialogTrigger className={buttonVariants({ variant: "destructive" })}>
             <Trash2 />
           </DialogTrigger>
         </TooltipTrigger>
@@ -60,7 +60,7 @@ export const DeleteApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
         <DialogFooter>
           <Button
             onClick={() => deleteApiKey({ apiKeyId: apiKey._id })}
-            variant={'destructive'}
+            variant={"destructive"}
             disabled={isPending}
             className="ml-auto"
           >
@@ -69,5 +69,5 @@ export const DeleteApiKeyDialog: FC<{ apiKey: Doc<'apiKeys'> }> = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

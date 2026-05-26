@@ -1,4 +1,4 @@
-import { buttonVariants } from '@switchboard/ui/components/button'
+import { buttonVariants } from "@switchboard/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -6,26 +6,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@switchboard/ui/components/dialog'
+} from "@switchboard/ui/components/dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@switchboard/ui/components/tooltip'
-import type { Doc } from '@convex/_generated/dataModel.js'
-import { Pencil } from 'lucide-react'
-import type { FC } from 'react'
-import { useState } from 'react'
-import { UpdateFlagForm } from './update-flag-form'
+} from "@switchboard/ui/components/tooltip";
+import type { Doc } from "@convex/_generated/dataModel.js";
+import { Pencil } from "lucide-react";
+import type { FC } from "react";
+import { useState } from "react";
+import { UpdateFlagForm } from "./update-flag-form";
 
-export const UpdateFlagDialog: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
-  const [open, setOpen] = useState(false)
+export const UpdateFlagDialog: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
+  const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <DialogTrigger className={buttonVariants({ variant: 'secondary' })}>
+          <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
             <Pencil />
           </DialogTrigger>
         </TooltipTrigger>
@@ -43,5 +43,5 @@ export const UpdateFlagDialog: FC<{ flag: Doc<'flags'> }> = ({ flag }) => {
         <UpdateFlagForm flag={flag} onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

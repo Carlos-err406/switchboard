@@ -1,43 +1,43 @@
-import { Switch } from '@switchboard/ui/components/switch'
-import { Flag } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Switch } from "@switchboard/ui/components/switch";
+import { Flag } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface ArchStep {
-  num: string
-  label: string
-  title: string
-  desc: string
+  num: string;
+  label: string;
+  title: string;
+  desc: string;
 }
 
 const ARCH_STEPS: ArchStep[] = [
   {
-    num: '01',
-    label: '01 / mutation lands',
-    title: 'Admin flips a flag',
-    desc: 'The dashboard writes one mutation. The backend records it and fans it out to every subscriber on that environment.',
+    num: "01",
+    label: "01 / mutation lands",
+    title: "Admin flips a flag",
+    desc: "The dashboard writes one mutation. The backend records it and fans it out to every subscriber on that environment.",
   },
   {
-    num: '02',
-    label: '02 / sockets receive',
-    title: 'Patch, not snapshot',
-    desc: 'Connected clients get just the diff — not the whole flag set. Bandwidth stays flat as the flag count grows.',
+    num: "02",
+    label: "02 / sockets receive",
+    title: "Patch, not snapshot",
+    desc: "Connected clients get just the diff — not the whole flag set. Bandwidth stays flat as the flag count grows.",
   },
   {
-    num: '03',
-    label: '03 / components react',
-    title: 'useFlag re-renders',
-    desc: 'Only the components that actually read the changed flag re-render. The rest of the tree is untouched.',
+    num: "03",
+    label: "03 / components react",
+    title: "useFlag re-renders",
+    desc: "Only the components that actually read the changed flag re-render. The rest of the tree is untouched.",
   },
   {
-    num: '04',
-    label: '04 / server fallback',
-    title: 'HTTP for SSR / edge',
+    num: "04",
+    label: "04 / server fallback",
+    title: "HTTP for SSR / edge",
     desc: "Runtimes that can't hold a socket call the same query over HTTP. Same data, same scoping.",
   },
-]
+];
 
 const ANIM_SELECTORS =
-  '.arch-pulse-send, .arch-trunk-dot, .arch-pulse-core, .arch-fanout-master, .arch-child-dot, .arch-pulse-client'
+  ".arch-pulse-send, .arch-trunk-dot, .arch-pulse-core, .arch-fanout-master, .arch-child-dot, .arch-pulse-client";
 
 function NodeCard({
   title,
@@ -45,14 +45,14 @@ function NodeCard({
   items,
   footLeft,
   footRight,
-  className = '',
+  className = "",
 }: {
-  title: string
-  kind: string
-  items: string[]
-  footLeft: string
-  footRight: string
-  className?: string
+  title: string;
+  kind: string;
+  items: string[];
+  footLeft: string;
+  footRight: string;
+  className?: string;
 }) {
   return (
     <div className={`border border-foreground bg-white p-5 ${className}`}>
@@ -79,59 +79,59 @@ function NodeCard({
         <span>{footRight}</span>
       </div>
     </div>
-  )
+  );
 }
 
 export function ArchDiagram() {
-  const [sampleOn, setSampleOn] = useState(true)
-  const diagramRef = useRef<HTMLDivElement>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const [sampleOn, setSampleOn] = useState(true);
+  const diagramRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const restartAnim = useCallback(() => {
-    const diagram = diagramRef.current
-    if (!diagram) return
+    const diagram = diagramRef.current;
+    if (!diagram) return;
     diagram.querySelectorAll(ANIM_SELECTORS).forEach((el) => {
-      const htmlEl = el as HTMLElement
-      htmlEl.style.animation = 'none'
-      void htmlEl.offsetWidth
-      htmlEl.style.animation = ''
-    })
-  }, [])
+      const htmlEl = el as HTMLElement;
+      htmlEl.style.animation = "none";
+      void htmlEl.offsetWidth;
+      htmlEl.style.animation = "";
+    });
+  }, []);
 
   const flipSample = useCallback(() => {
-    setSampleOn((prev) => !prev)
-    restartAnim()
-  }, [restartAnim])
+    setSampleOn((prev) => !prev);
+    restartAnim();
+  }, [restartAnim]);
 
   const scheduleFlip = useCallback(() => {
-    clearTimeout(timerRef.current)
+    clearTimeout(timerRef.current);
     timerRef.current = setTimeout(
       () => {
         if (!document.hidden) {
-          flipSample()
+          flipSample();
         }
-        scheduleFlip()
+        scheduleFlip();
       },
       3000 + Math.random() * 2000,
-    )
-  }, [flipSample])
+    );
+  }, [flipSample]);
 
   useEffect(() => {
-    scheduleFlip()
+    scheduleFlip();
     const onVisibility = () => {
-      if (!document.hidden) scheduleFlip()
-    }
-    document.addEventListener('visibilitychange', onVisibility)
+      if (!document.hidden) scheduleFlip();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
-      clearTimeout(timerRef.current)
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [scheduleFlip])
+      clearTimeout(timerRef.current);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [scheduleFlip]);
 
   const handleManualFlip = () => {
-    flipSample()
-    scheduleFlip()
-  }
+    flipSample();
+    scheduleFlip();
+  };
 
   return (
     <div className="grid gap-8">
@@ -174,9 +174,9 @@ export function ArchDiagram() {
             title="Dashboard"
             kind="admin"
             items={[
-              'Flip flags & rollouts',
-              'Environments & keys',
-              'Members & audit log',
+              "Flip flags & rollouts",
+              "Environments & keys",
+              "Members & audit log",
             ]}
             footLeft="web"
             footRight="https"
@@ -194,10 +194,10 @@ export function ArchDiagram() {
             title="Switchboard core"
             kind="server"
             items={[
-              'Reactive database',
-              'WebSocket gateway',
-              'HTTP + WS query API',
-              'Auth + RBAC + Audit log',
+              "Reactive database",
+              "WebSocket gateway",
+              "HTTP + WS query API",
+              "Auth + RBAC + Audit log",
             ]}
             footLeft="ws"
             footRight="http"
@@ -223,7 +223,7 @@ export function ArchDiagram() {
             className="arch-pulse-client"
             title="React"
             kind="client"
-            items={['useFlag hook', 'Realtime subscriptions']}
+            items={["useFlag hook", "Realtime subscriptions"]}
             footLeft="browser"
             footRight="ws"
           />
@@ -231,7 +231,7 @@ export function ArchDiagram() {
             className="arch-pulse-client"
             title="Vanilla JS"
             kind="client"
-            items={['~2kb gzipped', 'sb.on(flag, cb)']}
+            items={["~2kb gzipped", "sb.on(flag, cb)"]}
             footLeft="browser"
             footRight="ws"
           />
@@ -249,7 +249,7 @@ export function ArchDiagram() {
           <NodeCard
             title="Edge / SSR"
             kind="http"
-            items={['Same query over HTTP', 'Next, Remix, Workers, edge']}
+            items={["Same query over HTTP", "Next, Remix, Workers, edge"]}
             footLeft="node / edge"
             footRight="http"
           />
@@ -271,5 +271,5 @@ export function ArchDiagram() {
         ))}
       </div>
     </div>
-  )
+  );
 }

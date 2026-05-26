@@ -1,11 +1,11 @@
-import { InviteUserDialog } from '#/components/users/invite-user-dialog.tsx'
-import { PendingInvitesGrid } from '#/components/users/pending-invites-grid.tsx'
-import { UsersGrid } from '#/components/users/users-grid.tsx'
-import { createFileRoute } from '@tanstack/react-router'
+import { InviteUserDialog } from "#/components/users/invite-user-dialog.tsx";
+import { PendingInvitesGrid } from "#/components/users/pending-invites-grid.tsx";
+import { UsersGrid } from "#/components/users/users-grid.tsx";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/(authenticated)/users/')({
+export const Route = createFileRoute("/(authenticated)/users/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (
@@ -19,5 +19,5 @@ function RouteComponent() {
       </div>
       <PendingInvitesGrid />
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import { wrap } from './helpers'
+import { wrap } from "./helpers";
 
-export const SUBJECT = `Your Switchboard account has been locked`
+export const SUBJECT = `Your Switchboard account has been locked`;
 
 export const BODY = wrap(/* html */ `
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;background:#f6f7f9;">
@@ -32,4 +32,4 @@ export const BODY = wrap(/* html */ `
       </td>
     </tr>
   </table>
-`)
+`);

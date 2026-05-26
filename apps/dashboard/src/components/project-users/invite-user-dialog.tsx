@@ -4,14 +4,14 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@switchboard/ui/components/dialog'
-import type { FC } from 'react'
-import { InviteUserForm } from './invite-user-form'
+} from "@switchboard/ui/components/dialog";
+import type { FC } from "react";
+import { InviteUserForm } from "./invite-user-form";
 
 type Props = {
-  open: boolean
-  setOpen: (open: boolean) => void
-}
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
 export const CreateUserDialog: FC<Props> = ({ open, setOpen }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -26,10 +26,10 @@ export const CreateUserDialog: FC<Props> = ({ open, setOpen }) => {
         </DialogHeader>
         <InviteUserForm
           onSuccess={() => {
-            setOpen(false)
+            setOpen(false);
           }}
         />
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
