@@ -10,7 +10,7 @@ interface DemoFlag {
 
 const INITIAL_FLAGS: DemoFlag[] = [
   { name: "new_checkout", on: true, meta: "boolean · last changed 2s ago" },
-  { name: "dark_mode_v2", on: false, meta: "boolean · 38% rollout" },
+  { name: "dark_mode_v2", on: false, meta: "boolean · last changed 1h ago" },
   { name: "ai_assistant", on: true, meta: "boolean · prod + staging" },
 ];
 

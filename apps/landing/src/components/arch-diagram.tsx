@@ -174,7 +174,7 @@ export function ArchDiagram() {
             title="Dashboard"
             kind="admin"
             items={[
-              "Flip flags & rollouts",
+              "Flip flags & payloads",
               "Environments & keys",
               "Members & audit log",
             ]}
