@@ -14,15 +14,9 @@ import { DeleteFlagDialog } from "./delete-flag-dialog";
 import { FlagToggle } from "./flag-toggle";
 import { UpdateFlagDialog } from "./update-flag-dialog";
 import { Flag } from "lucide-react";
+import { payloadType } from "@switchboard/common";
 
 export const FlagCard: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
-  const valueType = () => {
-    const arg = flag.value;
-    if (arg == null) return "null";
-    if (arg === true || arg === false) return "boolean";
-    if (/^\d+$/.test(String(arg))) return "number";
-    return "string";
-  };
   return (
     <Card>
       <CardHeader>
@@ -36,10 +30,10 @@ export const FlagCard: FC<{ flag: Doc<"flags"> }> = ({ flag }) => {
       </CardHeader>
       <CardContent className="flex-1 gap-2 flex flex-col">
         <div className="w-full flex bg-muted p-1.5 mt-auto">
-          <pre>{flag.value?.toString() ?? "null"}</pre>
+          <pre>{flag.payload?.toString() ?? "undefined"}</pre>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge variant={"outline"}>type: {valueType()}</Badge>
+          <Badge variant={"outline"}>type: {payloadType(flag.payload)}</Badge>
         </div>
       </CardContent>
 

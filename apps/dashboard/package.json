@@ -11,12 +11,13 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@switchboard/ui": "workspace:*",
     "@auth/core": "0.37.0",
     "@convex-dev/auth": "^0.0.92",
     "@convex-dev/react-query": "0.1.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
+    "@switchboard/common": "workspace:*",
+    "@switchboard/ui": "workspace:*",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-query": "latest",

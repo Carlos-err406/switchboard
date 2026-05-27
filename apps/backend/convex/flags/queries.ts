@@ -43,7 +43,7 @@ export const getFlagsQuery = query({
       (flag) =>
         flag.key.toLowerCase().includes(searchQuery) ||
         flag.description?.toLowerCase().includes(searchQuery) ||
-        String(flag.value).toLowerCase().includes(searchQuery),
+        String(flag.payload).toLowerCase().includes(searchQuery),
     );
   },
 });

@@ -1,16 +1,17 @@
+import { onFormError } from "#/lib/utils.ts";
+import { useConvexMutation } from "@convex-dev/react-query";
+import { api } from "@convex/_generated/api.js";
+import type { Id } from "@convex/_generated/dataModel.js";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@switchboard/ui/components/button";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldLabel,
   FieldSet,
 } from "@switchboard/ui/components/field";
 import { Input } from "@switchboard/ui/components/input";
-import { onFormError } from "#/lib/utils.ts";
-import { api } from "@convex/_generated/api.js";
-import type { Id } from "@convex/_generated/dataModel.js";
-import { useConvexMutation } from "@convex-dev/react-query";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
@@ -19,13 +20,15 @@ import { z } from "zod";
 const createFlagSchema = z.object({
   key: z.string().min(3, "Must have at least 3 characters"),
   description: z.string().optional(),
-  value: z
-    .union([z.string(), z.number(), z.boolean(), z.null()])
+  payload: z
+    .union([z.string(), z.null(), z.boolean(), z.undefined(), z.number()])
     .transform((arg) => {
-      if (arg == null || arg === "null" || arg === "") return null;
-      if (arg === "true") return true;
-      if (arg === "false") return false;
+      if (arg === "null" || arg === null) return null;
+      if (arg === "true" || arg === true) return true;
+      if (arg === "false" || arg === false) return false;
       if (/^\d+$/.test(String(arg))) return Number(arg);
+      const strArg = String(arg);
+      if (!strArg || strArg.trim() === "") return undefined;
       return String(arg);
     }),
 });
@@ -42,7 +45,7 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
     reset,
     setError,
   } = useForm<CreateFlagInputs>({
-    defaultValues: { key: "", description: "", value: "" },
+    defaultValues: { key: "", description: "", payload: "" },
     resolver: zodResolver(createFlagSchema),
   });
 
@@ -62,7 +65,7 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
       onSubmit={handleSubmit((data) =>
         createFlag({
           key: data.key,
-          value: data.value,
+          payload: data.payload,
           description: data.description,
           environmentId,
         }),
@@ -72,19 +75,20 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
         <Field required>
           <FieldLabel htmlFor="key">Flag Key</FieldLabel>
           <Input id="key" {...register("key")} placeholder="logs.enable" />
-          {errors.key?.message && <FieldError>{errors.key.message}</FieldError>}
+          <FieldError>{errors.key?.message}</FieldError>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="value">Flag Value</FieldLabel>
+          <FieldLabel htmlFor="payload">Payload</FieldLabel>
           <Input
-            id="value"
-            {...register("value")}
+            id="payload"
+            {...register("payload")}
             placeholder={"OFF | null | true | 99 | hi"}
           />
-          {errors.value?.message && (
-            <FieldError>{errors.value.message}</FieldError>
-          )}
+          <FieldDescription>
+            Optional extra data sent to clients alongside the flag state.
+          </FieldDescription>
+          <FieldError>{errors.payload?.message}</FieldError>
         </Field>
 
         <Field>
@@ -94,9 +98,8 @@ export const CreateFlagForm: FC<Props> = ({ environmentId, onSuccess }) => {
             {...register("description")}
             placeholder="Enables the logs client-side"
           />
-          {errors.description?.message && (
-            <FieldError>{errors.description.message}</FieldError>
-          )}
+
+          <FieldError>{errors.description?.message}</FieldError>
         </Field>
         <Button type="submit" disabled={isPending} className="ml-auto">
           Submit

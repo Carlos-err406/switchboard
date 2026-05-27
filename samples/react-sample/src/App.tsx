@@ -1,3 +1,4 @@
+import type { Flag } from "@switchboard/common";
 import {
   Card,
   CardContent,
@@ -21,8 +22,8 @@ function App() {
   }, []);
 
   const onFlagUpdate = useCallback(
-    (name: string, value: unknown) => {
-      log(`${name} → ${String(value)}`);
+    (name: string, flag: Flag) => {
+      log(`${name} → enabled=${flag.enabled}, payload=${String(flag.payload)}`);
     },
     [log],
   );
@@ -51,22 +52,14 @@ function App() {
             <thead>
               <tr className="border-b-2 border-foreground">
                 <th className="text-left p-2.5 font-medium">Flag</th>
-                <th className="text-left p-2.5 font-medium">Default</th>
-                <th className="text-left p-2.5 font-medium">Value</th>
+                <th className="text-left p-2.5 font-medium">Enabled</th>
+                <th className="text-left p-2.5 font-medium">Payload</th>
                 <th className="text-left p-2.5 font-medium">Type</th>
               </tr>
             </thead>
             <tbody>
-              <FlagRow
-                name="ui_v2"
-                defaultValue={false}
-                onUpdate={onFlagUpdate}
-              />
-              <FlagRow
-                name="max_items"
-                defaultValue={10}
-                onUpdate={onFlagUpdate}
-              />
+              <FlagRow name="ui_v2" onUpdate={onFlagUpdate} />
+              <FlagRow name="max_items" onUpdate={onFlagUpdate} />
               <FlagRow name="banner" onUpdate={onFlagUpdate} />
             </tbody>
           </table>

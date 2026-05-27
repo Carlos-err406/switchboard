@@ -24,6 +24,6 @@ export const getFlagQuery = query({
       environmentId: apiKey.environmentId,
     });
     if (!flag) throw flagNotFound();
-    return { value: flag.value, flag: flag.key, enabled: flag.enabled };
+    return { key: flag.key, enabled: flag.enabled, payload: flag.payload };
   },
 });

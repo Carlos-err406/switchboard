@@ -1,5 +1,6 @@
 import type {
-  FlagValueType,
+  Flag,
+  FlagPayloadType,
   SwitchboardClientOnErrorCallback,
 } from "@switchboard/common";
 import { $try, SwitchboardClientError } from "@switchboard/common";
@@ -14,13 +15,11 @@ export type SwitchboardWsClientConstructorOpts = {
   apiKey: string;
   /**
    * The URL of the Switchboard backend (Convex WebSocket endpoint).
-   * @example "http://127.0.0.1:3210" -
+   * @example "http://127.0.0.1:3210"
    */
   url: string;
   /**
-   * Called whenever a flag operation fails but a `defaultValue` was provided.
-   * Without this callback, errors are silently swallowed and the default is returned.
-   * Without a `defaultValue`, errors are always thrown regardless of this callback.
+   * Called when a flag subscription encounters an error.
    *
    * @example
    * ```ts
@@ -36,7 +35,6 @@ export type SwitchboardWsClientConstructorOpts = {
 
 /**
  * Realtime Switchboard client that subscribes to flags via WebSocket.
- * Designed for browser and JS environments where live flag updates are needed.
  *
  * @example
  * ```ts
@@ -46,14 +44,11 @@ export type SwitchboardWsClientConstructorOpts = {
  * })
  *
  * // One-shot read — throws if the flag doesn't exist
- * const value = await client.getFlag<boolean>('new-checkout')
- *
- * // With default — returns the default on any error
- * const value = await client.getFlag('new-checkout', false)
+ * const { enabled, payload } = await client.getFlag<boolean>('new-checkout')
  *
  * // Realtime subscription
- * const unsubscribe = client.on('new-checkout', false, (value) => {
- *   console.log('flag changed:', value)
+ * const unsubscribe = client.on('new-checkout', ({ enabled, payload }) => {
+ *   console.log('flag changed:', enabled, payload)
  * })
  * ```
  */
@@ -69,31 +64,15 @@ export class SwitchboardWsClient {
   }
 
   /**
-   * Fetch a feature flag value by key (one-shot).
-   *
-   * With `defaultValue`: returns the default on any failure
-   * and notifies the `onError` callback if one was provided.
-   *
-   * Without `defaultValue`: throws a {@link SwitchboardWsClientError} on failure.
-   *
-   * @param key - The flag key to look up.
-   * @param defaultValue - Fallback value returned when the flag is disabled or the request fails.
-   * @returns The flag value, the default, or `undefined` if the flag is disabled and no default was given.
+   * Fetch a feature flag by key (one-shot).
+   * Throws a {@link SwitchboardClientError} on failure.
    */
-  public async getFlag<T extends FlagValueType>(
+  public async getFlag<T extends FlagPayloadType>(
     key: string,
-    defaultValue: T,
-  ): Promise<T>;
-  public async getFlag<T extends FlagValueType>(
-    key: string,
-  ): Promise<T | undefined>;
-  public async getFlag<T extends FlagValueType>(
-    key: string,
-    defaultValue?: T,
-  ): Promise<T | undefined> {
-    const [getFlagError, flag] = await $try<{
+  ): Promise<Flag<T>> {
+    const [error, flag] = await $try<{
       enabled: boolean;
-      value: T;
+      payload?: T;
       key: string;
     }>(
       this.client.query(flagQuery, {
@@ -101,41 +80,29 @@ export class SwitchboardWsClient {
         apiKey: this.apiKey,
       }),
     );
-    if (getFlagError) {
-      const error = new SwitchboardClientError(getFlagError);
-      if (defaultValue !== undefined) {
-        this.onError?.(error);
-        return defaultValue;
-      }
-      throw error;
-    }
-    if (flag.enabled) return flag.value;
-    return defaultValue ?? undefined;
+    if (error) throw new SwitchboardClientError(error);
+    return { enabled: flag.enabled, payload: flag.payload };
   }
 
   /**
    * Subscribe to realtime updates for a flag.
    *
    * @param key - The flag key to subscribe to.
-   * @param defaultValue - Fallback value used when the flag is disabled or on error.
-   * @param callback - Called with the flag value whenever it changes.
-   * @returns An unsubscribe function to stop the subscription.
+   * @param callback - Called with the flag state whenever it changes.
+   * @returns An unsubscribe function.
    */
-  public on<T extends FlagValueType>(
+  public on<T extends FlagPayloadType>(
     key: string,
-    callback: (value: T | undefined) => void,
-    defaultValue?: T,
+    callback: (flag: Flag<T>) => void,
   ): () => void {
     return this.client.onUpdate(
       flagQuery,
       { flagKey: key, apiKey: this.apiKey },
-      (flag: { enabled: boolean; value: T; key: string }) => {
-        callback(flag.enabled ? flag.value : defaultValue);
+      (flag: { enabled: boolean; payload?: T; key: string }) => {
+        callback({ enabled: flag.enabled, payload: flag.payload });
       },
       (e: Error) => {
-        const error = new SwitchboardClientError(e);
-        this.onError?.(error);
-        callback(defaultValue);
+        this.onError?.(new SwitchboardClientError(e));
       },
     );
   }

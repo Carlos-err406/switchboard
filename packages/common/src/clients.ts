@@ -17,4 +17,9 @@ export type SwitchboardClientOnErrorCallback = (
   error: SwitchboardClientError,
 ) => void;
 
-export type FlagValueType = string | number | boolean | null;
+export type FlagPayloadType = string | number | boolean | null | undefined;
+
+export type Flag<T extends FlagPayloadType = FlagPayloadType> = {
+  enabled: boolean;
+  payload?: T;
+};

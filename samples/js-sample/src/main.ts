@@ -9,11 +9,7 @@ const client = new SwitchboardWsClient({
   onError: (err) => log(`error: ${err.message}`),
 });
 
-const flags = [
-  { name: "ui_v2", defaultValue: false },
-  { name: "max_items", defaultValue: 10 },
-  { name: "banner", defaultValue: undefined },
-] as const;
+const flagKeys = ["ui_v2", "max_items", "banner"] as const;
 
 const tbody = document.getElementById("flags")!;
 const logEl = document.getElementById("log")!;
@@ -48,7 +44,7 @@ function log(msg: string) {
   logEl.prepend(div);
 }
 
-function renderRow(name: string, defaultValue: unknown, value: unknown) {
+function renderRow<T>(name: string, enabled: boolean, payload: T) {
   let row = document.getElementById(`flag-${name}`);
   if (!row) {
     row = document.createElement("tr");
@@ -58,22 +54,18 @@ function renderRow(name: string, defaultValue: unknown, value: unknown) {
   }
   row.innerHTML = /* html */ `
     <td class="p-2.5">${name}</td>
-    <td class="p-2.5"><code class="bg-muted px-1.5 py-0.5 text-xs">${String(defaultValue ?? "undefined")}</code></td>
-    <td class="p-2.5"><code class="bg-muted px-1.5 py-0.5 text-xs">${String(value ?? "undefined")}</code></td>
-    <td class="p-2.5"><span class="border border-border px-2 py-0.5 text-xs">${typeof value}</span></td>
+    <td class="p-2.5"><span class="border border-border px-2 py-0.5 text-xs">${enabled ? "on" : "off"}</span></td>
+    <td class="p-2.5"><code class="bg-muted px-1.5 py-0.5 text-xs">${String(payload ?? "undefined")}</code></td>
+    <td class="p-2.5"><span class="border border-border px-2 py-0.5 text-xs">${typeof payload}</span></td>
   `;
 }
 
-for (const { name, defaultValue } of flags) {
-  renderRow(name, defaultValue, "...");
-  client.on(
-    name,
-    (value) => {
-      log(`${name} → ${String(value)}`);
-      renderRow(name, defaultValue, value);
-    },
-    defaultValue,
-  );
+for (const name of flagKeys) {
+  renderRow(name, false, "...");
+  client.on(name, (flag) => {
+    log(`${name} → enabled=${flag.enabled}, payload=${String(flag.payload)}`);
+    renderRow(name, flag.enabled, flag.payload);
+  });
 }
 
 log("waiting for flag updates");

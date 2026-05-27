@@ -34,9 +34,9 @@ const REACT_WS_RIGHT = /* js */ `// 2. read flags anywhere — they update live
 import { useFlag } from "@switchboard/react";
 
 export function Checkout() {
-  const variant = useFlag<"v1" | "v2">("checkout", "v1");
+  const flag = useFlag("checkout");
 
-  return variant === "v2"
+  return flag?.enabled
     ? <CheckoutV2 />
     : <CheckoutV1 />;
 }
@@ -50,18 +50,17 @@ import { SwitchboardHttpClient } from "@switchboard/edge";
 const client = new SwitchboardHttpClient({
   apiKey: process.env.SB_KEY,
   switchboardHost: "https://flags.acme.io",
-  onError: (err) => console.error(err),
 });
 
 app.get("/checkout", async (req, res) => {
-  const variant = await client.getFlag<"v1" | "v2">("checkout_variant", "v1");
-  res.json({ checkout: variant });
+  const { enabled, payload } = await client.getFlag("checkout_variant");
+  res.json({ checkout: enabled ? payload : "v1" });
 });`;
 
-const EDGE_RIGHT = /* typescript */ `// flags can be string, number, boolean, or null
-const dark = await client.getFlag("dark_mode", false);
-const max  = await client.getFlag("max_items", 10);
-const note = await client.getFlag<string | null>("banner");
+const EDGE_RIGHT = /* typescript */ `// { enabled, payload? } — payload can be string | number | boolean | null | undefined
+const dark = await client.getFlag("dark_mode");
+const max  = await client.getFlag("max_items");
+const note = await client.getFlag("banner");
 
 // same query as the WebSocket client, just over HTTP.
 // drop into Express, Hono, Fastify, Cloudflare Workers,
@@ -78,22 +77,23 @@ const VANILLA_LEFT = /* html */ `<!-- no framework, no build step -->
   });
 
   // realtime — callback fires on every change
-  client.on("ui_v2", (enabled) => {
+  client.on("ui_v2", ({ enabled, payload }) => {
     document.querySelector("#app").dataset.version =
       enabled ? "v2" : "v1";
-  }, false);
+  });
 </script>`;
 
-const VANILLA_RIGHT = /* javascript */ `// one-shot read with default
-const max = await client.getFlag("max_items", 10);
-
-// without default — throws on error
-const banner = await client.getFlag("banner");
+const VANILLA_RIGHT = /* javascript */ `// one-shot read
+const { enabled, payload } = await client.getFlag("max_items");
 
 // subscribe to multiple flags
-client.on("checkout_variant", (v) => {
-  mountCheckout(v);
-}, "v1");`;
+client.on("checkout_variant", (flag) => {
+  mountCheckout(flag.enabled ? flag.payload : "v1");
+});
+
+client.on("banner", ({ enabled, payload }) => {
+  setBanner(enabled ? payload : null);
+});`;
 
 const CODE_PANELS: Record<
   string,

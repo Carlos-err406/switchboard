@@ -1,45 +1,47 @@
+import type { Flag } from "@switchboard/common";
+import { payloadType } from "@switchboard/common";
 import { useFlag } from "@switchboard/react";
 import { Badge } from "@switchboard/ui/components/badge";
-import { Flag } from "lucide-react";
+import { Flag as FlagIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 export function FlagRow({
   name,
-  defaultValue,
   onUpdate,
 }: {
   name: string;
-  defaultValue?: string | number | boolean | null;
-  onUpdate?: (name: string, value: unknown) => void;
+  onUpdate?: (name: string, flag: Flag) => void;
 }) {
-  const value = useFlag(name, defaultValue);
-  const prev = useRef(value);
+  const flag = useFlag(name);
+  const prev = useRef(flag);
 
   useEffect(() => {
-    if (prev.current !== value) {
-      prev.current = value;
-      onUpdate?.(name, value);
+    if (prev.current !== flag && flag) {
+      prev.current = flag;
+      onUpdate?.(name, flag);
     }
-  }, [value, name, onUpdate]);
+  }, [flag, name, onUpdate]);
 
   return (
-    <tr className="border-b border-border">
-      <td className="p-2.5 flex items-center gap-2">
-        <Flag className="size-3.5 text-muted-foreground" />
+    <tr className="border-b">
+      <td className="py-2 flex items-center gap-2">
+        <FlagIcon className="size-3.5 text-muted-foreground" />
         {name}
       </td>
-      <td className="p-2.5">
+      <td className="py-2">
+        <Badge variant="outline" className="px-1.5">
+          {flag?.enabled ? "on" : "off"}
+        </Badge>
+      </td>
+      <td>
         <code className="bg-muted px-1.5 py-0.5 text-xs">
-          {String(defaultValue ?? "undefined")}
+          {String(flag?.payload ?? "undefined")}
         </code>
       </td>
-      <td className="p-2.5">
-        <code className="bg-muted px-1.5 py-0.5 text-xs">
-          {String(value ?? "undefined")}
-        </code>
-      </td>
-      <td className="p-2.5">
-        <Badge variant="outline">{typeof value}</Badge>
+      <td className="py-2">
+        <Badge variant="outline" className="px-1.5">
+          {payloadType(flag?.payload)}
+        </Badge>
       </td>
     </tr>
   );

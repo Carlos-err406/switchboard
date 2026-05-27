@@ -1,4 +1,4 @@
-import type { SwitchboardClientOnErrorCallback } from "@switchboard/common";
+import type { Flag, FlagPayloadType } from "@switchboard/common";
 import { $try, SwitchboardClientError } from "@switchboard/common";
 import { ConvexHttpClient } from "convex/browser";
 import { anyApi } from "convex/server";
@@ -13,21 +13,6 @@ export type SwitchboardHttpClientConstructorOpts = {
    * @example "http://127.0.0.1:3210"
    */
   switchboardHost: string;
-  /**
-   * Called whenever a flag fetch fails but a `defaultValue` was provided.
-   * Without this callback, errors are silently swallowed and the default is returned.
-   * Without a `defaultValue`, errors are always thrown regardless of this callback.
-   *
-   * @example
-   * ```ts
-   * const client = new SwitchboardHttpClient({
-   *   apiKey: 'pk_...',
-   *   switchboardHost: 'https://flags.example.com',
-   *   onError: (err) => Sentry.captureException(err),
-   * })
-   * ```
-   */
-  onError?: SwitchboardClientOnErrorCallback;
 };
 
 /**
@@ -41,47 +26,31 @@ export type SwitchboardHttpClientConstructorOpts = {
  *   switchboardHost: 'https://flags.example.com',
  * })
  *
- * // Throws if the flag doesn't exist or the request fails
- * const value = await client.getFlag<boolean>('new-checkout')
- *
- * // Returns the default value on any error, and notifies via onError
- * const value = await client.getFlag('new-checkout', false)
+ * const { enabled, payload } = await client.getFlag<boolean>('new-checkout')
  * ```
  */
 export class SwitchboardHttpClient {
   private client: ConvexHttpClient;
   private apiKey: string;
-  private onError?: SwitchboardClientOnErrorCallback;
 
   constructor({
     apiKey,
     switchboardHost,
-    onError,
   }: SwitchboardHttpClientConstructorOpts) {
     this.apiKey = apiKey;
     this.client = new ConvexHttpClient(switchboardHost);
-    this.onError = onError;
   }
 
   /**
-   * Fetch a feature flag value by key.
-   *
-   * With `defaultValue`: returns the default on any failure (network, auth, parse)
-   * and notifies the `onError` callback if one was provided.
-   *
-   * Without `defaultValue`: throws a {@link SwitchboardClientError} on failure.
-   *
-   * @param key - The flag key to look up.
-   * @param defaultValue - Fallback value returned when the flag is disabled or the request fails.
-   * @returns The flag value, the default, or `undefined` if the flag is disabled and no default was given.
+   * Fetch a feature flag by key.
+   * Throws a {@link SwitchboardClientError} on failure.
    */
-  public async getFlag<T extends string | number | boolean | null>(
+  public async getFlag<T extends FlagPayloadType>(
     key: string,
-    defaultValue?: T,
-  ): Promise<T | undefined> {
+  ): Promise<Flag<T>> {
     const [error, flag] = await $try<{
       enabled: boolean;
-      value: T;
+      payload?: T;
       key: string;
     }>(
       this.client.query(flagQuery, {
@@ -89,17 +58,7 @@ export class SwitchboardHttpClient {
         apiKey: this.apiKey,
       }),
     );
-
-    if (error) {
-      const wrapped = new SwitchboardClientError(error);
-      if (defaultValue !== undefined) {
-        this.onError?.(wrapped);
-        return defaultValue;
-      }
-      throw wrapped;
-    }
-
-    if (flag.enabled) return flag.value;
-    return defaultValue ?? undefined;
+    if (error) throw new SwitchboardClientError(error);
+    return { enabled: flag.enabled, payload: flag.payload };
   }
 }

@@ -18,7 +18,7 @@ export const createFlagMutation = mutationWithAudit({
   args: {
     environmentId: v.id("environments"),
     key: v.string(),
-    value: v.union(v.string(), v.number(), v.boolean(), v.null()),
+    payload: v.optional(v.union(v.string(), v.number(), v.boolean(), v.null())),
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -43,7 +43,7 @@ export const createFlagMutation = mutationWithAudit({
       projectId: project._id,
       environmentId: environment._id,
       key: args.key,
-      value: args.value,
+      payload: args.payload,
       description: args.description,
       enabled: true,
     });
@@ -56,7 +56,9 @@ export const createFlagMutation = mutationWithAudit({
       message: `${ctx.user.email} created flag "${args.key}" in environment "${environment.name}"`,
       metadata: {
         key: args.key,
-        value: String(args.value),
+        ...(args.payload !== undefined
+          ? { payload: String(args.payload) }
+          : {}),
         environment: environment.name,
         ...(args.description ? { description: args.description } : {}),
       },
@@ -68,7 +70,7 @@ export const updateFlagMutation = mutationWithAudit({
   args: {
     flagId: v.id("flags"),
     key: v.optional(v.string()),
-    value: v.optional(v.union(v.string(), v.number(), v.boolean(), v.null())),
+    payload: v.optional(v.union(v.string(), v.number(), v.boolean(), v.null())),
     enabled: v.optional(v.boolean()),
     description: v.optional(v.string()),
   },
@@ -102,7 +104,7 @@ export const updateFlagMutation = mutationWithAudit({
     const updatedFlag: typeof flag = {
       ...flag,
       key: args.key !== undefined ? args.key : flag.key,
-      value: args.value !== undefined ? args.value : flag.value,
+      payload: args.payload !== undefined ? args.payload : flag.payload,
       enabled: args.enabled !== undefined ? args.enabled : flag.enabled,
       description:
         args.description !== undefined ? args.description : flag.description,

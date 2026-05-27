@@ -32,7 +32,7 @@ export const flags = defineTable({
   key: v.string(),
   environmentId: v.id("environments"),
   projectId: v.id("projects"),
-  value: v.union(v.string(), v.number(), v.boolean(), v.null()),
+  payload: v.optional(v.union(v.string(), v.number(), v.boolean(), v.null())),
   description: v.optional(v.string()),
   enabled: v.boolean(),
 })
