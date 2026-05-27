@@ -1,9 +1,23 @@
 {
   "name": "@switchboard/common",
   "version": "0.0.1",
-  "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      }
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --format=esm --outdir=dist --packages=external --minify && tsc -p tsconfig.build.json --emitDeclarationOnly"
   }
 }
