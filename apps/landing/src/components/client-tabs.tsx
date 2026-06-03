@@ -68,12 +68,13 @@ const note = await client.getFlag("banner");
 
 const VANILLA_LEFT = /* html */ `<!-- no framework, no build step -->
 <script type="module">
-  import { SwitchboardWsClient } from "https://esm.sh/@switchboard/js";
+  import { SwitchboardClient } from "https://esm.sh/@switchboard/js";
 
-  const client = new SwitchboardWsClient({
+  const client = new SwitchboardClient({
     url: "https://flags.acme.io",
     apiKey: "pk_...",
     onError: (err) => console.error(err),
+    // mode: "poll", pollInterval: 15_000  ← high-traffic option
   });
 
   // realtime — callback fires on every change

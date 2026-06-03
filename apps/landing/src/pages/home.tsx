@@ -28,8 +28,8 @@ const FEATURES: Feature[] = [
   {
     icon: <Zap className="size-5.5" strokeWidth={1.6} />,
     num: "01 / realtime",
-    title: "WebSocket updates",
-    desc: "Clients subscribe once. Toggles propagate in <100ms. No polling, no stale flags, no reload loops.",
+    title: "WebSocket or polling",
+    desc: "Realtime by default — toggles propagate in <100ms over a persistent socket. Switch to HTTP polling for high-traffic deployments with one flag.",
   },
   {
     icon: <Grid3X3 className="size-5.5" strokeWidth={1.6} />,
@@ -51,9 +51,9 @@ const FEATURES: Feature[] = [
   },
   {
     icon: <RefreshCw className="size-5.5" strokeWidth={1.6} />,
-    num: "05 / server-ready",
-    title: "HTTP client too",
-    desc: "For SSR, jobs, and edge runtimes that can't hold a socket. Same query over HTTP, same scoping.",
+    num: "05 / scalable",
+    title: "Scales to your traffic",
+    desc: "Dedicated HTTP client for SSR and edge. Browser clients can switch to polling mode when WebSocket connections outgrow a single node.",
   },
   {
     icon: <Monitor className="size-5.5" strokeWidth={1.6} />,
@@ -133,8 +133,8 @@ export function Home() {
               </h1>
               <p className="mt-5.5 max-w-[48ch] text-base leading-normal text-muted-foreground">
                 Switchboard is a minimal, self-hosted feature flag provider.
-                WebSocket-based, with first-class React and vanilla JS clients.
-                No vendors, no quotas, no tracking pixels.
+                Realtime WebSocket by default, HTTP polling when you need scale.
+                First-class React, JS, and Edge clients. No vendors, no quotas.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button size="lg" asChild>
@@ -156,9 +156,9 @@ export function Home() {
               <div className="mt-9 flex flex-wrap gap-4 text-xs text-muted-foreground">
                 <span>realtime</span>
                 <span>&middot;</span>
-                <span>websocket</span>
+                <span>websocket + polling</span>
                 <span>&middot;</span>
-                <span>react + vanilla js</span>
+                <span>react + js + edge</span>
                 <span>&middot;</span>
                 <span>MIT</span>
               </div>

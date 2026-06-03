@@ -30,9 +30,9 @@ const ARCH_STEPS: ArchStep[] = [
   },
   {
     num: "04",
-    label: "04 / server fallback",
-    title: "HTTP for SSR / edge",
-    desc: "Runtimes that can't hold a socket call the same query over HTTP. Same data, same scoping.",
+    label: "04 / scale fallback",
+    title: "HTTP polling or edge",
+    desc: "Browser clients can switch to polling mode for high-traffic deploys. Edge runtimes use the same query over HTTP.",
   },
 ];
 
@@ -223,9 +223,9 @@ export function ArchDiagram() {
             className="arch-pulse-client"
             title="React"
             kind="client"
-            items={["useFlag hook", "Realtime subscriptions"]}
+            items={["useFlag hook", "Realtime or polling"]}
             footLeft="browser"
-            footRight="ws"
+            footRight="ws / poll"
           />
           <NodeCard
             className="arch-pulse-client"
@@ -233,7 +233,7 @@ export function ArchDiagram() {
             kind="client"
             items={["~2kb gzipped", "sb.on(flag, cb)"]}
             footLeft="browser"
-            footRight="ws"
+            footRight="ws / poll"
           />
         </div>
 

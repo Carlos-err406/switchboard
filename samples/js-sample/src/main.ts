@@ -1,9 +1,9 @@
-import { SwitchboardWsClient } from "@switchboard/js";
+import { SwitchboardClient } from "@switchboard/js";
 
 const API_KEY = import.meta.env.VITE_SB_API_KEY;
 const HOST = import.meta.env.VITE_SB_HOST ?? "http://127.0.0.1:3210";
 
-const client = new SwitchboardWsClient({
+const client = new SwitchboardClient({
   apiKey: API_KEY,
   url: HOST,
   onError: (err) => log(`error: ${err.message}`),
